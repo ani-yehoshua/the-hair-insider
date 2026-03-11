@@ -9,61 +9,40 @@ export default function CallbackClient() {
     const [status, setStatus] = React.useState("Signing you in...");
 
     React.useEffect(() => {
-        let cancelled = false;
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session) {
+                setStatus("Finalizing your account...");
 
-        const run = async () => {
-            // retry a few times in case session isn't available immediately
-            for (let i = 0; i < 30; i++) {
-                const { data } = await supabase.auth.getSession();
-                if (data.session) {
-                    if (cancelled) return;
+                try {
+                    const res = await fetch("/api/stripe/ensure-customer", {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${session.access_token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: "{}",
+                    });
 
-                    setStatus("Finalizing your account...");
-
-                    // Ensure Stripe customer exists (non-blocking)
-                    try {
-                        const res = await fetch("/api/stripe/ensure-customer", {
-                            method: "POST",
-                            headers: {
-                                Authorization: `Bearer ${data.session.access_token}`,
-                                "Content-Type": "application/json",
-                            },
-                            body: "{}",
-                        });
-
-                        if (!res.ok) {
-                            console.error(
-                                "ensure-customer failed",
-                                await res.text(),
-                            );
-                        }
-                    } catch (e) {
-                        console.error("ensure-customer threw:", e);
+                    if (!res.ok) {
+                        console.error(
+                            "ensure-customer failed",
+                            await res.text(),
+                        );
                     }
-
-                    const next = localStorage.getItem("postAuthRedirect");
-                    if (next) localStorage.removeItem("postAuthRedirect");
-
-                    router.replace(next || "/");
-                    return;
+                } catch (e) {
+                    console.error("ensure-customer threw:", e);
                 }
 
-                // wait 150ms then try again
-                await new Promise(r => setTimeout(r, 150));
+                const next = localStorage.getItem("postAuthRedirect");
+                if (next) localStorage.removeItem("postAuthRedirect");
+
+                router.replace(next || "/");
             }
+        });
 
-            if (!cancelled) {
-                setStatus(
-                    "Couldn’t complete sign-in. Please try logging in again.",
-                );
-            }
-        };
-
-        run();
-
-        return () => {
-            cancelled = true;
-        };
+        return () => subscription.unsubscribe();
     }, [router]);
 
     return (
