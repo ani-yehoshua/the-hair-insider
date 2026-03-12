@@ -99,7 +99,7 @@ export default function SignInClient() {
         return true;
     }, [status, email, password, confirmPassword, mode]);
 
-    async function onSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         setMessage("");
 
@@ -128,6 +128,7 @@ export default function SignInClient() {
         }
 
         try {
+            // Sign in
             if (mode === "signin") {
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
@@ -153,15 +154,14 @@ export default function SignInClient() {
                 return;
             }
 
+            // Sign up
             const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
-                options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
-                },
             });
             if (error) throw error;
 
+            // If email confirmations are ON, session will be null until they confirm
             if (!data.session) {
                 setStatus("success");
                 setMessage(
@@ -171,6 +171,7 @@ export default function SignInClient() {
                 return;
             }
 
+            // If confirmations are OFF, they may be signed in immediately
             const token = data.session.access_token;
             fetch("/api/stripe/ensure-customer", {
                 method: "POST",
