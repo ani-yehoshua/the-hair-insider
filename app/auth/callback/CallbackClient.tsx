@@ -9,9 +9,11 @@ export default function CallbackClient() {
     const [status, setStatus] = React.useState("Signing you in...");
 
     React.useEffect(() => {
+        console.log("CallbackClient mounted");
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log("onAuthStateChange fired:", event, !!session);
             if (!session) return;
 
             setStatus("Finalizing your account...");
