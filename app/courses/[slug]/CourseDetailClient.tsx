@@ -321,7 +321,7 @@ export default function CourseDetailClient({
                                     </p>
                                 ) : null}
 
-                                {!authLoading && !signedIn ? (
+                                {/* {!authLoading && !signedIn ? (
                                     <p className='mt-4 text-sm'>
                                         Already purchased?{" "}
                                         <Link
@@ -331,7 +331,7 @@ export default function CourseDetailClient({
                                         </Link>
                                         .
                                     </p>
-                                ) : null}
+                                ) : null} */}
                             </div>
 
                             <Separator className='my-10' />
