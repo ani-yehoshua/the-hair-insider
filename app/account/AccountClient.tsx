@@ -66,7 +66,11 @@ export default function AccountClient() {
 
     // Guard
     React.useEffect(() => {
-        if (!loading && !signedIn) router.replace("/signin");
+        if (!loading && !signedIn) {
+            router.replace(
+                `/signin?next=${encodeURIComponent(window.location.pathname + window.location.search)}`,
+            );
+        }
     }, [loading, signedIn, router]);
 
     // Keep URL in sync
