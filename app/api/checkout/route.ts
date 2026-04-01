@@ -85,7 +85,7 @@ export async function POST(req: Request) {
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
             success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${siteUrl}/courses/${course.slug}`,
+            cancel_url: `${siteUrl}/courses#${course.slug}`,
             customer: stripeCustomerId,
             // customer_email: userData.user.email ?? undefined, // dev bypass
             metadata: {
