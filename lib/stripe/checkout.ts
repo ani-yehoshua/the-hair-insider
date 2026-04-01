@@ -6,7 +6,7 @@ export async function startCheckout(courseSlug: string) {
 
     // Not signed in: redirect to signin and come back to this course
     if (!token) {
-        const next = encodeURIComponent(`/courses/${courseSlug}`);
+        const next = encodeURIComponent(`/courses#${courseSlug}`);
         window.location.href = `/signin?next=${next}`;
         return;
     }
