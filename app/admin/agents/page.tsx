@@ -232,13 +232,13 @@ export default function AgentsDashboard() {
                                 key={m.label}
                                 className='rounded-3xl'>
                                 <CardContent className='pt-5'>
-                                    <p className='text-xs text-muted-foreground mb-1'>
+                                    <p className='text-xs mb-1'>
                                         {m.label}
                                     </p>
                                     <p className='text-2xl font-semibold'>
                                         {m.value}
                                     </p>
-                                    <p className='text-xs text-muted-foreground mt-1'>
+                                    <p className='text-xs mt-1'>
                                         {m.sub}
                                     </p>
                                 </CardContent>
@@ -250,13 +250,13 @@ export default function AgentsDashboard() {
                     {pendingReview.map(run => (
                         <Card
                             key={run.run_id}
-                            className='rounded-3xl mb-4 border-yellow-300 bg-yellow-50 dark:bg-yellow-950/20'>
-                            <CardContent className='pt-5 flex items-center gap-4 flex-wrap'>
+                            className='rounded-3xl mb-4 border-yellow-300 bg-yellow-300/50'>
+                            <CardContent className='flex items-center gap-4 flex-wrap'>
                                 <div className='flex-1 min-w-0'>
                                     <p className='text-sm font-medium'>
                                         Waiting for approval — {run.name}
                                     </p>
-                                    <p className='text-xs text-muted-foreground mt-0.5'>
+                                    <p className='text-xs mt-0.5'>
                                         Agent #6 scored below auto-approve
                                         threshold · {timeAgo(run.created_at)}
                                     </p>
@@ -274,7 +274,7 @@ export default function AgentsDashboard() {
                                     </Button>
                                     <Button
                                         size='sm'
-                                        variant='outline'
+                                        variant='secondary'
                                         onClick={() => setOpenId(run.run_id)}>
                                         Review
                                     </Button>
@@ -289,7 +289,7 @@ export default function AgentsDashboard() {
                     </h2>
 
                     {loading ? (
-                        <p className='text-sm text-muted-foreground'>
+                        <p className='text-sm'>
                             Loading…
                         </p>
                     ) : runs.length === 0 ? (
@@ -327,7 +327,7 @@ export default function AgentsDashboard() {
                                             </CardTitle>
                                         </div>
                                         <div className='flex items-center gap-3 flex-shrink-0'>
-                                            <span className='text-xs text-muted-foreground'>
+                                            <span className='text-xs'>
                                                 {timeAgo(run.created_at)}
                                             </span>
                                             <StatusBadge status={run.status} />
@@ -379,7 +379,7 @@ export default function AgentsDashboard() {
                                                                         step.agent}
                                                                     {step.score !=
                                                                         null && (
-                                                                        <span className='ml-2 text-xs font-normal text-muted-foreground'>
+                                                                        <span className='ml-2 text-xs font-normal'>
                                                                             {
                                                                                 step.score
                                                                             }
@@ -387,12 +387,12 @@ export default function AgentsDashboard() {
                                                                         </span>
                                                                     )}
                                                                 </p>
-                                                                <p className='text-xs text-muted-foreground mt-0.5 leading-relaxed'>
+                                                                <p className='text-xs mt-0.5 leading-relaxed'>
                                                                     {
                                                                         step.detail
                                                                     }
                                                                 </p>
-                                                                <p className='text-xs text-muted-foreground/50 mt-1'>
+                                                                <p className='text-xs text-muted-foreground mt-1'>
                                                                     {step.tokens_in.toLocaleString()}{" "}
                                                                     in ·{" "}
                                                                     {step.tokens_out.toLocaleString()}{" "}
@@ -405,7 +405,7 @@ export default function AgentsDashboard() {
                                                         </div>
                                                     ))}
                                                 <Separator className='mt-1' />
-                                                <div className='flex justify-between text-xs text-muted-foreground'>
+                                                <div className='flex justify-between text-xs'>
                                                     <span>
                                                         Run ID:{" "}
                                                         {run.run_id.slice(0, 8)}
