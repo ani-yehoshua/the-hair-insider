@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/useAuth";
 import { Overlay } from "@/components/site/Overlay";
 import { Navbar } from "@/components/site/navbar";
 import { LibraryTab } from "@/components/site/LibraryTab";
+import { HairProfileTab } from "@/components/site/HairProfileTab";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -187,8 +188,11 @@ export default function AccountClient() {
                         value={tab}
                         onValueChange={setTab}
                         className='w-full'>
-                        <TabsList className='grid w-full grid-cols-3'>
+                        <TabsList className='grid w-full grid-cols-4'>
                             <TabsTrigger value='library'>Library</TabsTrigger>
+                            <TabsTrigger value='hair-profile'>
+                                Hair Profile
+                            </TabsTrigger>
                             <TabsTrigger value='profile'>Profile</TabsTrigger>
                             <TabsTrigger value='security'>Security</TabsTrigger>
                         </TabsList>
@@ -197,6 +201,12 @@ export default function AccountClient() {
                             value='library'
                             className='mt-6'>
                             <LibraryTab />
+                        </TabsContent>
+
+                        <TabsContent
+                            value='hair-profile'
+                            className='mt-6'>
+                            <HairProfileTab />
                         </TabsContent>
 
                         <TabsContent
