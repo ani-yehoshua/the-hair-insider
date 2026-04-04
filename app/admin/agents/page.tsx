@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useInView } from "react-intersection-observer";
+import { FadeIn } from "@/components/site/FadeIn";
+import { Overlay } from "@/components/site/Overlay";
+import { Navbar } from "@/components/site/navbar";
+import { SiteBreadcrumbs } from "@/components/site/breadcrumbs";
+import { supabase } from "@/lib/supabase/client";
+import { useAdminGuard } from "@/lib/admin/useAdminGuard";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 type Step = {
     agent: string;
@@ -30,14 +40,6 @@ const AGENT_LABELS: Record<string, string> = {
     review_taste: "#6 Review & Taste",
 };
 
-const STATUS_STYLES: Record<string, string> = {
-    pass: "bg-green-50 text-green-800",
-    fail: "bg-red-50 text-red-800",
-    review: "bg-purple-50 text-purple-800",
-    running: "bg-amber-50 text-amber-800",
-    skip: "bg-gray-100 text-gray-500",
-};
-
 const STATUS_DOT: Record<string, string> = {
     pass: "bg-green-500",
     fail: "bg-red-500",
@@ -51,13 +53,6 @@ const STATUS_LABEL: Record<string, string> = {
     review: "Needs review",
     running: "Running",
 };
-
-function getSupabase() {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    );
-}
 
 function timeAgo(ts: string): string {
     const diff = Date.now() - new Date(ts).getTime();
@@ -76,15 +71,37 @@ function totalCost(steps: Step[]): string {
     return `$${cost.toFixed(4)}`;
 }
 
+function StatusBadge({ status }: { status: string }) {
+    const variants: Record<string, string> = {
+        pass: "bg-green-400 text-primary",
+        fail: "bg-red-400 text-primary",
+        review: "bg-yellow-300 text-primary",
+        running: "bg-amber-300 text-primary",
+        skip: "bg-muted text-muted-foreground",
+    };
+    return (
+        <Badge className={variants[status] ?? "bg-muted text-muted-foreground"}>
+            {STATUS_LABEL[status] ?? status}
+        </Badge>
+    );
+}
+
 export default function AgentsDashboard() {
+    const { ready } = useAdminGuard();
     const [runs, setRuns] = useState<Run[]>([]);
     const [openId, setOpenId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [approving, setApproving] = useState<string | null>(null);
 
+    const { ref: pageRef, inView: pageIn } = useInView({
+        triggerOnce: true,
+        threshold: 0.1,
+    });
+
     useEffect(() => {
+        if (!ready) return;
+
         async function load() {
-            const supabase = getSupabase();
             const { data } = await supabase
                 .from("agent_pipeline_runs")
                 .select("*, agent_run_steps(*)")
@@ -93,19 +110,14 @@ export default function AgentsDashboard() {
             setRuns(data ?? []);
             setLoading(false);
         }
+
         load();
 
-        // Live updates — page refreshes automatically when a run changes
-        const supabase = getSupabase();
         const channel = supabase
             .channel("agent_runs")
             .on(
                 "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "agent_pipeline_runs",
-                },
+                { event: "*", schema: "public", table: "agent_pipeline_runs" },
                 () => load(),
             )
             .subscribe();
@@ -113,7 +125,7 @@ export default function AgentsDashboard() {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, []);
+    }, [ready]);
 
     async function handleApprove(runId: string) {
         setApproving(runId);
@@ -125,10 +137,10 @@ export default function AgentsDashboard() {
         setApproving(null);
     }
 
-    const todayRuns = runs.filter(r => {
-        const run = new Date(r.created_at);
-        return run.toDateString() === new Date().toDateString();
-    });
+    const todayRuns = runs.filter(
+        r =>
+            new Date(r.created_at).toDateString() === new Date().toDateString(),
+    );
 
     const autoApprovedPct =
         todayRuns.length > 0
@@ -142,8 +154,8 @@ export default function AgentsDashboard() {
     const avgCost =
         todayRuns.length > 0
             ? `$${(
-                  todayRuns.reduce((acc, r) => {
-                      return (
+                  todayRuns.reduce(
+                      (acc, r) =>
                           acc +
                           r.agent_run_steps.reduce(
                               (a, s) =>
@@ -151,187 +163,269 @@ export default function AgentsDashboard() {
                                   (s.tokens_in * 3 + s.tokens_out * 15) /
                                       1_000_000,
                               0,
-                          )
-                      );
-                  }, 0) / todayRuns.length
+                          ),
+                      0,
+                  ) / todayRuns.length
               ).toFixed(4)}`
             : "$0.00";
 
     const pendingReview = runs.filter(r => r.status === "review");
 
+    if (!ready) return null;
+
     return (
-        <div className='max-w-4xl mx-auto px-6 py-10'>
-            <h1 className='text-2xl font-medium mb-1'>Agent pipeline</h1>
-            <p className='text-sm text-gray-500 mb-8'>
-                The Hair Insider · live ops
-            </p>
+        <div className='relative min-h-[100dvh] text-foreground'>
+            <Overlay />
+            <Navbar />
+            <SiteBreadcrumbs />
 
-            {/* Metrics */}
-            <div className='grid grid-cols-4 gap-3 mb-8'>
-                {[
-                    {
-                        label: "Runs today",
-                        value: todayRuns.length,
-                        sub: `${todayRuns.filter(r => r.status === "pass").length} passed`,
-                    },
-                    {
-                        label: "Avg cost / run",
-                        value: avgCost,
-                        sub: "Sonnet pricing",
-                    },
-                    {
-                        label: "Auto-approved",
-                        value: `${autoApprovedPct}%`,
-                        sub: "Agent #6 learning",
-                    },
-                    {
-                        label: "Pending review",
-                        value: pendingReview.length,
-                        sub:
-                            pendingReview.length > 0
-                                ? "Needs Lauren"
-                                : "All clear",
-                    },
-                ].map(m => (
-                    <div
-                        key={m.label}
-                        className='bg-gray-50 rounded-xl p-4'>
-                        <p className='text-xs text-gray-500 mb-1'>{m.label}</p>
-                        <p className='text-2xl font-medium'>{m.value}</p>
-                        <p className='text-xs text-gray-400 mt-1'>{m.sub}</p>
-                    </div>
-                ))}
-            </div>
-
-            {/* Pending approval banners */}
-            {pendingReview.map(run => (
-                <div
-                    key={run.run_id}
-                    className='bg-purple-50 border border-purple-200 rounded-xl p-4 mb-4 flex items-center gap-4 flex-wrap'>
-                    <div className='flex-1 min-w-0'>
-                        <p className='text-sm font-medium text-purple-900'>
-                            Waiting for approval — {run.name}
-                        </p>
-                        <p className='text-xs text-purple-600 mt-0.5'>
-                            Agent #6 scored below auto-approve threshold ·{" "}
-                            {timeAgo(run.created_at)}
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => handleApprove(run.run_id)}
-                        disabled={approving === run.run_id}
-                        className='px-4 py-2 bg-green-700 text-white text-sm rounded-lg font-medium disabled:opacity-50'>
-                        {approving === run.run_id
-                            ? "Approving…"
-                            : "Approve + deploy"}
-                    </button>
-                    <button
-                        onClick={() => setOpenId(run.run_id)}
-                        className='px-4 py-2 border border-purple-300 text-purple-800 text-sm rounded-lg'>
-                        Review
-                    </button>
-                </div>
-            ))}
-
-            {/* Run list */}
-            <p className='text-xs font-medium text-gray-400 uppercase tracking-wider mb-3'>
-                Recent runs
-            </p>
-
-            {loading && <p className='text-sm text-gray-400'>Loading…</p>}
-
-            <div className='flex flex-col gap-2'>
-                {runs.map(run => (
-                    <div
-                        key={run.run_id}
-                        className={`border rounded-xl overflow-hidden transition-all ${
-                            openId === run.run_id
-                                ? "border-gray-300"
-                                : "border-gray-100 hover:border-gray-200"
-                        }`}>
-                        <button
-                            onClick={() =>
-                                setOpenId(
-                                    openId === run.run_id ? null : run.run_id,
-                                )
-                            }
-                            className='w-full flex items-center gap-3 px-4 py-3 text-left bg-white'>
-                            <span
-                                className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_DOT[run.status] ?? "bg-gray-300"}`}
-                            />
-                            <span className='text-sm font-medium flex-1'>
-                                {run.name}
-                            </span>
-                            <span className='text-xs text-gray-400'>
-                                {timeAgo(run.created_at)}
-                            </span>
-                            <span
-                                className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${STATUS_STYLES[run.status]}`}>
-                                {STATUS_LABEL[run.status] ?? run.status}
-                            </span>
-                        </button>
-
-                        {openId === run.run_id && (
-                            <div className='border-t border-gray-100 bg-gray-50 px-4 py-3 flex flex-col gap-3'>
-                                {run.agent_run_steps
-                                    .sort(
-                                        (a, b) =>
-                                            new Date(a.timestamp).getTime() -
-                                            new Date(b.timestamp).getTime(),
-                                    )
-                                    .map((step, i) => (
-                                        <div
-                                            key={i}
-                                            className='flex items-start gap-3'>
-                                            <span
-                                                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 ${
-                                                    step.status === "pass"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : step.status === "fail"
-                                                          ? "bg-red-100 text-red-700"
-                                                          : "bg-gray-100 text-gray-400"
-                                                }`}>
-                                                {step.status === "pass"
-                                                    ? "✓"
-                                                    : step.status === "fail"
-                                                      ? "✗"
-                                                      : "–"}
-                                            </span>
-                                            <div className='flex-1 min-w-0'>
-                                                <p className='text-sm font-medium'>
-                                                    {AGENT_LABELS[step.agent] ??
-                                                        step.agent}
-                                                    {step.score != null && (
-                                                        <span className='ml-2 text-xs font-normal text-gray-400'>
-                                                            {step.score}/100
-                                                        </span>
-                                                    )}
-                                                </p>
-                                                <p className='text-xs text-gray-500 mt-0.5 leading-relaxed'>
-                                                    {step.detail}
-                                                </p>
-                                                <p className='text-xs text-gray-300 mt-1'>
-                                                    {step.tokens_in.toLocaleString()}{" "}
-                                                    in ·{" "}
-                                                    {step.tokens_out.toLocaleString()}{" "}
-                                                    out · {totalCost([step])}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                <div className='pt-2 border-t border-gray-200 flex justify-between text-xs text-gray-400'>
-                                    <span>
-                                        Run ID: {run.run_id.slice(0, 8)}…
-                                    </span>
-                                    <span>
-                                        Total cost:{" "}
-                                        {totalCost(run.agent_run_steps)}
-                                    </span>
-                                </div>
+            <div
+                ref={pageRef}
+                className='mx-auto max-w-6xl px-6 pt-8 pb-16'>
+                <FadeIn
+                    inView={pageIn}
+                    delayMs={100}>
+                    <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
+                        <div>
+                            <div className='flex items-center gap-3'>
+                                <Badge variant='secondary'>Admin</Badge>
                             </div>
-                        )}
+                            <h1 className='mt-3 text-3xl font-semibold tracking-tight'>
+                                Agent pipeline
+                            </h1>
+                            <p className='mt-2 text-sm'>
+                                Live ops — runs, scores, approvals, and costs.
+                            </p>
+                        </div>
                     </div>
-                ))}
+
+                    <Separator className='my-8' />
+
+                    {/* Metrics */}
+                    <div className='grid grid-cols-2 gap-3 sm:grid-cols-4 mb-8'>
+                        {[
+                            {
+                                label: "Runs today",
+                                value: todayRuns.length,
+                                sub: `${todayRuns.filter(r => r.status === "pass").length} passed`,
+                            },
+                            {
+                                label: "Avg cost / run",
+                                value: avgCost,
+                                sub: "Sonnet pricing",
+                            },
+                            {
+                                label: "Auto-approved",
+                                value: `${autoApprovedPct}%`,
+                                sub: "Agent #6 learning",
+                            },
+                            {
+                                label: "Pending review",
+                                value: pendingReview.length,
+                                sub:
+                                    pendingReview.length > 0
+                                        ? "Needs Lauren"
+                                        : "All clear",
+                            },
+                        ].map(m => (
+                            <Card
+                                key={m.label}
+                                className='rounded-3xl'>
+                                <CardContent className='pt-5'>
+                                    <p className='text-xs text-muted-foreground mb-1'>
+                                        {m.label}
+                                    </p>
+                                    <p className='text-2xl font-semibold'>
+                                        {m.value}
+                                    </p>
+                                    <p className='text-xs text-muted-foreground mt-1'>
+                                        {m.sub}
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {/* Pending approval banners */}
+                    {pendingReview.map(run => (
+                        <Card
+                            key={run.run_id}
+                            className='rounded-3xl mb-4 border-yellow-300 bg-yellow-50 dark:bg-yellow-950/20'>
+                            <CardContent className='pt-5 flex items-center gap-4 flex-wrap'>
+                                <div className='flex-1 min-w-0'>
+                                    <p className='text-sm font-medium'>
+                                        Waiting for approval — {run.name}
+                                    </p>
+                                    <p className='text-xs text-muted-foreground mt-0.5'>
+                                        Agent #6 scored below auto-approve
+                                        threshold · {timeAgo(run.created_at)}
+                                    </p>
+                                </div>
+                                <div className='flex gap-2'>
+                                    <Button
+                                        size='sm'
+                                        onClick={() =>
+                                            handleApprove(run.run_id)
+                                        }
+                                        disabled={approving === run.run_id}>
+                                        {approving === run.run_id
+                                            ? "Approving…"
+                                            : "Approve + deploy"}
+                                    </Button>
+                                    <Button
+                                        size='sm'
+                                        variant='outline'
+                                        onClick={() => setOpenId(run.run_id)}>
+                                        Review
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+
+                    {/* Run list */}
+                    <h2 className='text-base font-semibold mb-4'>
+                        Recent runs
+                    </h2>
+
+                    {loading ? (
+                        <p className='text-sm text-muted-foreground'>
+                            Loading…
+                        </p>
+                    ) : runs.length === 0 ? (
+                        <Card className='rounded-3xl'>
+                            <CardHeader>
+                                <CardTitle className='text-base'>
+                                    No runs yet
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className='text-sm text-muted-foreground'>
+                                Runs will appear here once the pipeline is
+                                triggered.
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className='grid gap-4'>
+                            {runs.map(run => (
+                                <Card
+                                    key={run.run_id}
+                                    className='rounded-3xl cursor-pointer'
+                                    onClick={() =>
+                                        setOpenId(
+                                            openId === run.run_id
+                                                ? null
+                                                : run.run_id,
+                                        )
+                                    }>
+                                    <CardHeader className='flex-row items-center justify-between space-y-0 pb-2'>
+                                        <div className='flex items-center gap-3 min-w-0'>
+                                            <span
+                                                className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_DOT[run.status] ?? "bg-muted"}`}
+                                            />
+                                            <CardTitle className='text-base truncate'>
+                                                {run.name}
+                                            </CardTitle>
+                                        </div>
+                                        <div className='flex items-center gap-3 flex-shrink-0'>
+                                            <span className='text-xs text-muted-foreground'>
+                                                {timeAgo(run.created_at)}
+                                            </span>
+                                            <StatusBadge status={run.status} />
+                                        </div>
+                                    </CardHeader>
+
+                                    {openId === run.run_id && (
+                                        <CardContent className='pt-0'>
+                                            <Separator className='mb-4' />
+                                            <div className='flex flex-col gap-3'>
+                                                {run.agent_run_steps
+                                                    .sort(
+                                                        (a, b) =>
+                                                            new Date(
+                                                                a.timestamp,
+                                                            ).getTime() -
+                                                            new Date(
+                                                                b.timestamp,
+                                                            ).getTime(),
+                                                    )
+                                                    .map((step, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className='flex items-start gap-3'>
+                                                            <span
+                                                                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 mt-0.5 font-medium ${
+                                                                    step.status ===
+                                                                    "pass"
+                                                                        ? "bg-green-100 text-green-700"
+                                                                        : step.status ===
+                                                                            "fail"
+                                                                          ? "bg-red-100 text-red-700"
+                                                                          : "bg-muted text-muted-foreground"
+                                                                }`}>
+                                                                {step.status ===
+                                                                "pass"
+                                                                    ? "✓"
+                                                                    : step.status ===
+                                                                        "fail"
+                                                                      ? "✗"
+                                                                      : "–"}
+                                                            </span>
+                                                            <div className='flex-1 min-w-0'>
+                                                                <p className='text-sm font-medium'>
+                                                                    {AGENT_LABELS[
+                                                                        step
+                                                                            .agent
+                                                                    ] ??
+                                                                        step.agent}
+                                                                    {step.score !=
+                                                                        null && (
+                                                                        <span className='ml-2 text-xs font-normal text-muted-foreground'>
+                                                                            {
+                                                                                step.score
+                                                                            }
+                                                                            /100
+                                                                        </span>
+                                                                    )}
+                                                                </p>
+                                                                <p className='text-xs text-muted-foreground mt-0.5 leading-relaxed'>
+                                                                    {
+                                                                        step.detail
+                                                                    }
+                                                                </p>
+                                                                <p className='text-xs text-muted-foreground/50 mt-1'>
+                                                                    {step.tokens_in.toLocaleString()}{" "}
+                                                                    in ·{" "}
+                                                                    {step.tokens_out.toLocaleString()}{" "}
+                                                                    out ·{" "}
+                                                                    {totalCost([
+                                                                        step,
+                                                                    ])}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                <Separator className='mt-1' />
+                                                <div className='flex justify-between text-xs text-muted-foreground'>
+                                                    <span>
+                                                        Run ID:{" "}
+                                                        {run.run_id.slice(0, 8)}
+                                                        …
+                                                    </span>
+                                                    <span>
+                                                        Total cost:{" "}
+                                                        {totalCost(
+                                                            run.agent_run_steps,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    )}
+                                </Card>
+                            ))}
+                        </div>
+                    )}
+                </FadeIn>
             </div>
         </div>
     );
