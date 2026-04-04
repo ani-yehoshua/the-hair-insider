@@ -2,16 +2,20 @@
 // Triggered automatically on every successful Vercel deployment.
 
 import { runPipeline } from '@/agents/pipeline';
-import { createHmac } from 'crypto';
+import crypto from 'crypto';
 
 function verifySignature(
     body: string,
     signature: string,
     secret: string,
 ): boolean {
-    const hmac = createHmac('sha1', secret);
-    const digest = hmac.update(body).digest('hex');
-    return `sha1=${digest}` === signature;
+    const bodyBuffer = Buffer.from(body, 'utf-8');
+    const digest = crypto
+        .createHmac('sha1', secret)
+        .update(bodyBuffer)
+        .digest('hex');
+    if (!signature || signature.length !== digest.length) return false;
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
 
 export async function POST(req: Request) {
