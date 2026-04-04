@@ -23,6 +23,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
+    DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 
 import { Menu, ChevronDown } from "lucide-react";
@@ -54,7 +58,7 @@ export function Navbar() {
                     />
                 </Link>
 
-                {/* Desktop dropdowns */}
+                {/* Desktop nav */}
                 <div className='hidden md:flex items-center gap-3'>
                     {/* Explore dropdown */}
                     <DropdownMenu>
@@ -65,7 +69,6 @@ export function Navbar() {
                                 Explore <ChevronDown className='h-4 w-4' />
                             </Button>
                         </DropdownMenuTrigger>
-
                         <DropdownMenuContent
                             align='end'
                             className='w-56'>
@@ -83,9 +86,7 @@ export function Navbar() {
                                     Meet Your Educator
                                 </Link>
                             </DropdownMenuItem>
-
                             <DropdownMenuSeparator />
-
                             <DropdownMenuItem asChild>
                                 <Link href='/about'>About</Link>
                             </DropdownMenuItem>
@@ -110,7 +111,6 @@ export function Navbar() {
                                 Account <ChevronDown className='h-4 w-4' />
                             </Button>
                         </DropdownMenuTrigger>
-
                         <DropdownMenuContent
                             align='end'
                             className='w-56'>
@@ -122,37 +122,65 @@ export function Navbar() {
                                         </Link>
                                     </DropdownMenuItem>
 
-                                    {showAdmin ? (
-                                        <DropdownMenuItem asChild>
-                                            <Link href='/admin/courses'>
-                                                Admin
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    ) : null}
+                                    {showAdmin && (
+                                        <>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuSub>
+                                                <DropdownMenuSubTrigger>
+                                                    Admin
+                                                </DropdownMenuSubTrigger>
+                                                <DropdownMenuPortal>
+                                                    <DropdownMenuSubContent className='w-48'>
+                                                        <DropdownMenuItem
+                                                            asChild>
+                                                            <Link href='/admin'>
+                                                                Dashboard
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            asChild>
+                                                            <Link href='/admin/courses'>
+                                                                Courses
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            asChild>
+                                                            <Link href='/admin/products'>
+                                                                Products
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            asChild>
+                                                            <Link href='/admin/agents'>
+                                                                Agent pipeline
+                                                            </Link>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuSubContent>
+                                                </DropdownMenuPortal>
+                                            </DropdownMenuSub>
+                                        </>
+                                    )}
 
                                     <DropdownMenuSeparator />
-
                                     <DropdownMenuItem onClick={signOut}>
                                         Sign out
                                     </DropdownMenuItem>
                                 </>
                             ) : (
-                                <>
-                                    <DropdownMenuItem asChild>
-                                        <Link href='/signin'>Sign in</Link>
-                                    </DropdownMenuItem>
-                                </>
+                                <DropdownMenuItem asChild>
+                                    <Link href='/signin'>Sign in</Link>
+                                </DropdownMenuItem>
                             )}
                         </DropdownMenuContent>
                     </DropdownMenu>
 
-                    {/* Primary CTA */}
                     <Button asChild>
                         <Link href='/courses'>View courses</Link>
                     </Button>
                 </div>
 
-                {/* Mobile hamburger menu */}
+                {/* Mobile hamburger */}
                 <div className='flex items-center gap-3 md:hidden'>
                     <Sheet>
                         <SheetTrigger asChild>
@@ -163,14 +191,12 @@ export function Navbar() {
                                 <Menu className='h-5 w-5' />
                             </Button>
                         </SheetTrigger>
-
                         <SheetContent
                             side='right'
                             className='w-[320px] sm:w-[360px] font-bodoni'>
                             <SheetHeader>
                                 <SheetTitle>Menu</SheetTitle>
                             </SheetHeader>
-
                             <div className='mt-6 flex flex-col gap-2'>
                                 <SheetClose asChild>
                                     <Button
@@ -182,7 +208,6 @@ export function Navbar() {
                                         </Link>
                                     </Button>
                                 </SheetClose>
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
@@ -193,7 +218,6 @@ export function Navbar() {
                                         </Link>
                                     </Button>
                                 </SheetClose>
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
@@ -204,7 +228,6 @@ export function Navbar() {
                                         </Link>
                                     </Button>
                                 </SheetClose>
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
@@ -213,9 +236,7 @@ export function Navbar() {
                                         <Link href='/contact'>Contact Us</Link>
                                     </Button>
                                 </SheetClose>
-
                                 <div className='my-2 border-t' />
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
@@ -226,7 +247,6 @@ export function Navbar() {
                                         </Link>
                                     </Button>
                                 </SheetClose>
-
                                 {!loading && signedIn ? (
                                     <>
                                         <SheetClose asChild>
@@ -239,20 +259,55 @@ export function Navbar() {
                                                 </Link>
                                             </Button>
                                         </SheetClose>
-
-                                        {showAdmin ? (
-                                            <SheetClose asChild>
-                                                <Button
-                                                    variant='ghost'
-                                                    asChild
-                                                    className='justify-start'>
-                                                    <Link href='/admin/courses'>
-                                                        Admin
-                                                    </Link>
-                                                </Button>
-                                            </SheetClose>
-                                        ) : null}
-
+                                        {showAdmin && (
+                                            <>
+                                                <div className='my-2 border-t' />
+                                                <p className='px-3 text-xs text-muted-foreground font-medium uppercase tracking-wider'>
+                                                    Admin
+                                                </p>
+                                                <SheetClose asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        asChild
+                                                        className='justify-start'>
+                                                        <Link href='/admin'>
+                                                            Dashboard
+                                                        </Link>
+                                                    </Button>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        asChild
+                                                        className='justify-start'>
+                                                        <Link href='/admin/courses'>
+                                                            Courses
+                                                        </Link>
+                                                    </Button>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        asChild
+                                                        className='justify-start'>
+                                                        <Link href='/admin/products'>
+                                                            Products
+                                                        </Link>
+                                                    </Button>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        asChild
+                                                        className='justify-start'>
+                                                        <Link href='/admin/agents'>
+                                                            Agent pipeline
+                                                        </Link>
+                                                    </Button>
+                                                </SheetClose>
+                                            </>
+                                        )}
+                                        <div className='my-2 border-t' />
                                         <Button
                                             variant='ghost'
                                             className='justify-start'
@@ -272,9 +327,7 @@ export function Navbar() {
                                         </Button>
                                     </SheetClose>
                                 )}
-
                                 <div className='my-2 border-t' />
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
@@ -283,7 +336,6 @@ export function Navbar() {
                                         <Link href='/privacy'>Privacy</Link>
                                     </Button>
                                 </SheetClose>
-
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
