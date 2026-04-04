@@ -17,7 +17,12 @@ const LABELS: Record<string, string> = {
     library: "Library",
     admin: "Admin",
     signin: "Sign in",
+    agents: "Agent pipeline",
+    products: "Products",
 };
+
+// These segments link to their own index page even when last in the path
+const ALWAYS_LINKABLE = new Set(["admin", "courses", "products", "agents"]);
 
 function pretty(seg: string) {
     if (!seg) return "";
@@ -33,7 +38,6 @@ export function SiteBreadcrumbs({ className = "" }: { className?: string }) {
         .split("/")
         .filter(Boolean);
 
-    // Optional: hide on home page
     if (parts.length === 0) return null;
 
     return (
@@ -50,24 +54,21 @@ export function SiteBreadcrumbs({ className = "" }: { className?: string }) {
                         const href = "/" + parts.slice(0, idx + 1).join("/");
                         const isLast = idx === parts.length - 1;
                         const label = pretty(seg);
+                        const isLinkable = ALWAYS_LINKABLE.has(seg);
 
                         return (
                             <React.Fragment key={href}>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    {isLast ? (
+                                    {isLast && !isLinkable ? (
                                         <BreadcrumbPage className='capitalize underline'>
-                                            {label}
-                                        </BreadcrumbPage>
-                                    ) : seg === "admin" ? (
-                                        <BreadcrumbPage className='capitalize'>
                                             {label}
                                         </BreadcrumbPage>
                                     ) : (
                                         <BreadcrumbLink asChild>
                                             <Link
                                                 href={href}
-                                                className='capitalize'>
+                                                className={`capitalize${isLast ? " underline" : ""}`}>
                                                 {label}
                                             </Link>
                                         </BreadcrumbLink>
