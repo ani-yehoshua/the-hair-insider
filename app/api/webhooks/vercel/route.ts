@@ -1,7 +1,5 @@
-// Vercel deployment webhook
-// Triggered automatically on every successful Vercel deployment.
-
 import { runPipeline } from '@/agents/pipeline';
+import { waitUntil } from '@vercel/functions';
 import crypto from 'crypto';
 
 function verifySignature(
@@ -17,6 +15,8 @@ function verifySignature(
     if (!signature || signature.length !== digest.length) return false;
     return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
+
+export const maxDuration = 300; // 5 minutes
 
 export async function POST(req: Request) {
     const body = await req.text();
@@ -45,9 +45,8 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Invalid JSON' }, { status: 400 });
     }
 
-    // Only run on successful deployments
     if (payload.type !== 'deployment.succeeded') {
-        return Response.json({ skipped: true });
+        return Response.json({ skipped: true, type: payload.type });
     }
 
     const { deployment } = payload.payload;
@@ -55,12 +54,16 @@ export async function POST(req: Request) {
     const commitMessage =
         deployment.meta?.githubCommitMessage ?? 'No commit message';
 
-    // Fire pipeline in background — don't block the webhook response
-    runPipeline({
-        name: deployment.name,
-        content: deployUrl,
-        deployContext: `Commit: ${commitMessage}. Live URL: ${deployUrl}`,
-    }).catch(console.error);
+    console.log('[webhook] Kicking off pipeline for:', deployment.name);
+
+    // waitUntil keeps the function alive until the pipeline completes
+    waitUntil(
+        runPipeline({
+            name: deployment.name,
+            content: deployUrl,
+            deployContext: `Commit: ${commitMessage}. Live URL: ${deployUrl}`,
+        }).catch(err => console.error('[pipeline] Error:', err.message)),
+    );
 
     return Response.json({ received: true });
 }
