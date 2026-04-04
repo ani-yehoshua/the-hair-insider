@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
 import { useInView } from "react-intersection-observer";
 import { FadeIn } from "@/components/site/FadeIn";
 import { Overlay } from "@/components/site/Overlay";
@@ -88,17 +88,17 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function AgentsDashboard() {
     const { ready } = useAdminGuard();
-    const [runs, setRuns] = useState<Run[]>([]);
-    const [openId, setOpenId] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [approving, setApproving] = useState<string | null>(null);
+    const [runs, setRuns] = React.useState<Run[]>([]);
+    const [openId, setOpenId] = React.useState<string | null>(null);
+    const [loading, setLoading] = React.useState(true);
+    const [approving, setApproving] = React.useState<string | null>(null);
 
     const { ref: pageRef, inView: pageIn } = useInView({
         triggerOnce: true,
         threshold: 0.1,
     });
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!ready) return;
 
         async function load() {
