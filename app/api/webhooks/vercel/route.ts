@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const signature = req.headers.get('x-vercel-signature') ?? '';
     const secret = process.env.VERCEL_WEBHOOK_SECRET ?? '';
 
-    if (secret && !verifySignature(body, signature, secret)) {
+    if (secret && signature && !verifySignature(body, signature, secret)) {
         return Response.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
@@ -36,6 +36,7 @@ export async function POST(req: Request) {
 
     try {
         payload = JSON.parse(body);
+        console.log('[webhook] Received event:', payload.type);
     } catch {
         return Response.json({ error: 'Invalid JSON' }, { status: 400 });
     }
