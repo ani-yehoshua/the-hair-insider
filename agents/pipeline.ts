@@ -34,65 +34,75 @@ export async function runPipeline(input: PipelineInput): Promise<PipelineRun> {
 
     await logPipelineStart(run);
 
-    // Step 1: Orchestrator decides the plan
-    const { plan, result: orchResult } = await runOrchestrator(
-        `Task: Review and deploy "${input.name}". Content provided.`,
-    );
-    steps.push(orchResult);
-    await logAgentStep(runId, orchResult);
+    try {
+        // Step 1: Orchestrator decides the plan
+        const { plan, result: orchResult } = await runOrchestrator(
+            `Task: Review and deploy "${input.name}". Content provided.`,
+        );
+        steps.push(orchResult);
+        await logAgentStep(runId, orchResult);
 
-    // Step 2: Run agents in the order the Orchestrator decided
-    for (const agentName of plan) {
-        let result: AgentResult;
+        // Step 2: Run agents in the order the Orchestrator decided
+        for (const agentName of plan) {
+            let result: AgentResult;
 
-        if (agentName === 'aesthetic_qa') {
-            result = await runAestheticQA(input.content);
-        } else if (agentName === 'seo_content') {
-            result = await runSEOContent(input.content);
-        } else if (agentName === 'error_fixer') {
-            const lastFail = steps.filter(s => s.status === 'fail').pop();
-            result = await runErrorFixer(lastFail?.detail ?? 'Unknown error');
-        } else if (agentName === 'review_taste') {
-            const tasteResult = await runReviewTaste(input.content);
-            steps.push(tasteResult);
-            await logAgentStep(runId, tasteResult);
+            if (agentName === 'aesthetic_qa') {
+                result = await runAestheticQA(input.content);
+            } else if (agentName === 'seo_content') {
+                result = await runSEOContent(input.content);
+            } else if (agentName === 'error_fixer') {
+                const lastFail = steps.filter(s => s.status === 'fail').pop();
+                result = await runErrorFixer(
+                    lastFail?.detail ?? 'Unknown error',
+                );
+            } else if (agentName === 'review_taste') {
+                const tasteResult = await runReviewTaste(input.content);
+                steps.push(tasteResult);
+                await logAgentStep(runId, tasteResult);
 
-            if (!tasteResult.autoApprove) {
-                // Below threshold — pause and wait for Lauren
-                await updatePipelineStatus(runId, 'review');
-                return { ...run, status: 'review', steps };
-            }
-            continue;
-        } else if (agentName === 'deploy') {
-            result = await runDeploy(input.deployContext ?? input.name);
-            if (result.status === 'fail') {
-                // Deploy failed — run error fixer then retry
-                const fixResult = await runErrorFixer(result.detail);
-                steps.push(result);
-                steps.push(fixResult);
-                await logAgentStep(runId, result);
-                await logAgentStep(runId, fixResult);
-
-                if (fixResult.status === 'pass') {
-                    result = await runDeploy(input.deployContext ?? input.name);
-                } else {
-                    await updatePipelineStatus(runId, 'fail');
-                    return { ...run, status: 'fail', steps };
+                if (!tasteResult.autoApprove) {
+                    // Below threshold — pause and wait for Lauren
+                    await updatePipelineStatus(runId, 'review');
+                    return { ...run, status: 'review', steps };
                 }
+                continue;
+            } else if (agentName === 'deploy') {
+                result = await runDeploy(input.deployContext ?? input.name);
+                if (result.status === 'fail') {
+                    // Deploy failed — run error fixer then retry
+                    const fixResult = await runErrorFixer(result.detail);
+                    steps.push(result);
+                    steps.push(fixResult);
+                    await logAgentStep(runId, result);
+                    await logAgentStep(runId, fixResult);
+
+                    if (fixResult.status === 'pass') {
+                        result = await runDeploy(
+                            input.deployContext ?? input.name,
+                        );
+                    } else {
+                        await updatePipelineStatus(runId, 'fail');
+                        return { ...run, status: 'fail', steps };
+                    }
+                }
+            } else {
+                continue;
             }
-        } else {
-            continue;
+
+            steps.push(result);
+            await logAgentStep(runId, result);
+
+            if (result.status === 'fail' && agentName !== 'deploy') {
+                await updatePipelineStatus(runId, 'fail');
+                return { ...run, status: 'fail', steps };
+            }
         }
 
-        steps.push(result);
-        await logAgentStep(runId, result);
-
-        if (result.status === 'fail' && agentName !== 'deploy') {
-            await updatePipelineStatus(runId, 'fail');
-            return { ...run, status: 'fail', steps };
-        }
+        await updatePipelineStatus(runId, 'pass');
+        return { ...run, status: 'pass', steps };
+    } catch (err) {
+        console.error('[pipeline] Uncaught error, marking run as failed:', err);
+        await updatePipelineStatus(runId, 'fail').catch(() => {});
+        return { ...run, status: 'fail', steps };
     }
-
-    await updatePipelineStatus(runId, 'pass');
-    return { ...run, status: 'pass', steps };
 }
