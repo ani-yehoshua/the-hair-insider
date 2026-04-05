@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     const { deployment } = payload.payload;
-    const deployUrl = `https://${deployment.url}`;
+    const reviewUrl = 'https://www.the-hair-insider.com';
     const commitMessage =
         deployment.meta?.githubCommitMessage ?? 'No commit message';
 
@@ -60,8 +60,8 @@ export async function POST(req: Request) {
     waitUntil(
         runPipeline({
             name: deployment.name,
-            content: deployUrl,
-            deployContext: `Commit: ${commitMessage}. Live URL: ${deployUrl}`,
+            content: reviewUrl,
+            deployContext: `Commit: ${commitMessage}. Live URL: ${reviewUrl}`,
         }).catch(err => console.error('[pipeline] Error:', err.message)),
     );
 
