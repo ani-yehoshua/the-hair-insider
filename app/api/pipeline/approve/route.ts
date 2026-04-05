@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { runDeploy } from '@/agents/agents/deploy';
 import { logAgentStep, updatePipelineStatus } from '@/agents/lib/logger';
 
 export async function POST(req: Request) {
@@ -41,19 +40,18 @@ export async function POST(req: Request) {
         );
     }
 
-    await updatePipelineStatus(runId, 'running');
+    // The site is already live — Lauren is approving the quality review.
+    // Log the approval and mark as passed.
+    await logAgentStep(runId, {
+        agent: 'review_taste',
+        status: 'pass',
+        detail: 'Manually approved by Lauren.',
+        tokensIn: 0,
+        tokensOut: 0,
+        timestamp: new Date().toISOString(),
+    });
 
-    // Fire deploy in background so the response returns immediately
-    (async () => {
-        const deployResult = await runDeploy(
-            `Lauren approved run ${runId} — deploying ${run.name}`,
-        );
-        await logAgentStep(runId, deployResult);
-        await updatePipelineStatus(
-            runId,
-            deployResult.status === 'pass' ? 'pass' : 'fail',
-        );
-    })().catch(console.error);
+    await updatePipelineStatus(runId, 'pass');
 
     return Response.json({ ok: true, runId });
 }
