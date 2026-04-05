@@ -100,6 +100,7 @@ export default function AgentsDashboard() {
     const [feedbackOpen, setFeedbackOpen] = React.useState<string | null>(null);
     const [submitting, setSubmitting] = React.useState<string | null>(null);
 
+    const runRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
     const { ref: pageRef, inView: pageIn } = useInView({
         triggerOnce: true,
         threshold: 0.1,
@@ -281,67 +282,82 @@ export default function AgentsDashboard() {
                         <Card
                             key={run.run_id}
                             className='rounded-3xl mb-4 border-yellow-300 bg-yellow-300/50'>
-                            <CardContent className='flex items-center gap-4 flex-wrap'>
-                                <div className='flex-1 min-w-0'>
-                                    <p className='text-sm font-medium'>
-                                        Waiting for approval — {run.name}
-                                    </p>
-                                    <p className='text-xs mt-0.5'>
-                                        Agent #6 scored below auto-approve
-                                        threshold · {timeAgo(run.created_at)}
-                                    </p>
-                                </div>
-                                <div className='flex gap-2 flex-wrap'>
-                                    <Button
-                                        size='sm'
-                                        variant='secondary'
-                                        onClick={() =>
-                                            setOpenId(
-                                                openId === run.run_id
-                                                    ? null
-                                                    : run.run_id,
-                                            )
-                                        }>
-                                        View steps
-                                    </Button>
-                                    <Button
-                                        size='sm'
-                                        onClick={() =>
-                                            handleApprove(run.run_id)
-                                        }
-                                        disabled={approving === run.run_id}>
-                                        {approving === run.run_id
-                                            ? "Approving…"
-                                            : "Approve + deploy"}
-                                    </Button>
-                                    <Button
-                                        size='sm'
-                                        variant='destructive'
-                                        onClick={() =>
-                                            setFeedbackOpen(
-                                                feedbackOpen === run.run_id
-                                                    ? null
-                                                    : run.run_id,
-                                            )
-                                        }>
-                                        {feedbackOpen === run.run_id
-                                            ? "Cancel"
-                                            : "Decline + feedback"}
-                                    </Button>
+                            <CardContent className='pt-5 space-y-4'>
+                                <div className='flex items-start justify-between gap-4 flex-wrap'>
+                                    <div className='flex-1 min-w-0'>
+                                        <p className='text-sm font-medium'>
+                                            Waiting for approval — {run.name}
+                                        </p>
+                                        <p className='text-xs mt-0.5'>
+                                            Agent #6 scored below auto-approve
+                                            threshold ·{" "}
+                                            {timeAgo(run.created_at)}
+                                        </p>
+                                    </div>
+                                    <div
+                                        className={`flex gap-2 ${feedbackOpen === run.run_id ? "flex-col" : "flex-col sm:flex-row"}`}>
+                                        <Button
+                                            size='sm'
+                                            variant='secondary'
+                                            onClick={() => {
+                                                const targetId =
+                                                    openId === run.run_id
+                                                        ? null
+                                                        : run.run_id;
+                                                setOpenId(targetId);
+                                                if (targetId) {
+                                                    setTimeout(() => {
+                                                        runRefs.current[
+                                                            targetId
+                                                        ]?.scrollIntoView({
+                                                            behavior: "smooth",
+                                                            block: "start",
+                                                        });
+                                                    }, 50);
+                                                }
+                                            }}>
+                                            View steps
+                                        </Button>
+                                        <Button
+                                            size='sm'
+                                            onClick={() =>
+                                                handleApprove(run.run_id)
+                                            }
+                                            disabled={approving === run.run_id}>
+                                            {approving === run.run_id
+                                                ? "Approving…"
+                                                : "Approve + deploy"}
+                                        </Button>
+                                        <Button
+                                            size='sm'
+                                            variant='destructive'
+                                            onClick={() =>
+                                                setFeedbackOpen(
+                                                    feedbackOpen === run.run_id
+                                                        ? null
+                                                        : run.run_id,
+                                                )
+                                            }>
+                                            {feedbackOpen === run.run_id
+                                                ? "Cancel"
+                                                : "Decline + feedback"}
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 {/* Decline feedback form */}
                                 {feedbackOpen === run.run_id && (
-                                    <div className='mt-4 space-y-3 border-t pt-4'>
+                                    <div className='space-y-3 border-t pt-4'>
                                         <Label className='text-sm font-medium'>
                                             What did you want changed?
                                         </Label>
-                                        <p className='text-xs text-muted-foreground'>
+                                        <p className='text-xs'>
                                             Agent #6 will learn from this for
                                             future runs.
                                         </p>
                                         <Textarea
-                                            placeholder='e.g. The headline is too generic. I want something more specific about the silk press technique.'
+                                            className='w-full sm:min-h-[120px] text-sm sm:text-md'
+                                            placeholder='Enter feedback'
                                             value={
                                                 feedbackText[run.run_id] ?? ""
                                             }
@@ -376,7 +392,7 @@ export default function AgentsDashboard() {
                                             </Button>
                                             <Button
                                                 size='sm'
-                                                variant='outline'
+                                                variant='secondary'
                                                 disabled={
                                                     !feedbackText[
                                                         run.run_id
@@ -422,6 +438,10 @@ export default function AgentsDashboard() {
                             {runs.map(run => (
                                 <Card
                                     key={run.run_id}
+                                    ref={el => {
+                                        runRefs.current[run.run_id] =
+                                            el as HTMLDivElement | null;
+                                    }}
                                     className='rounded-3xl cursor-pointer'
                                     onClick={() =>
                                         setOpenId(
