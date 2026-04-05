@@ -326,7 +326,7 @@ export default function AgentsDashboard() {
                                             disabled={approving === run.run_id}>
                                             {approving === run.run_id
                                                 ? "Approving…"
-                                                : "Approve + deploy"}
+                                                : "Approve"}
                                         </Button>
                                         <Button
                                             size='sm'
@@ -340,7 +340,7 @@ export default function AgentsDashboard() {
                                             }>
                                             {feedbackOpen === run.run_id
                                                 ? "Cancel"
-                                                : "Decline + feedback"}
+                                                : "Decline w/ feedback"}
                                         </Button>
                                     </div>
                                 </div>
