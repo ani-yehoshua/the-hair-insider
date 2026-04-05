@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 type Step = {
     agent: string;
@@ -92,6 +94,11 @@ export default function AgentsDashboard() {
     const [openId, setOpenId] = React.useState<string | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [approving, setApproving] = React.useState<string | null>(null);
+    const [feedbackText, setFeedbackText] = React.useState<
+        Record<string, string>
+    >({});
+    const [feedbackOpen, setFeedbackOpen] = React.useState<string | null>(null);
+    const [submitting, setSubmitting] = React.useState<string | null>(null);
 
     const { ref: pageRef, inView: pageIn } = useInView({
         triggerOnce: true,
@@ -127,14 +134,41 @@ export default function AgentsDashboard() {
         };
     }, [ready]);
 
+    async function getToken() {
+        const { data } = await supabase.auth.getSession();
+        return data.session?.access_token ?? "";
+    }
+
     async function handleApprove(runId: string) {
         setApproving(runId);
+        const token = await getToken();
         await fetch("/api/pipeline/approve", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({ runId }),
         });
         setApproving(null);
+    }
+
+    async function handleFeedbackSubmit(runId: string, approved: boolean) {
+        const feedback = feedbackText[runId]?.trim();
+        if (!feedback) return;
+        setSubmitting(runId);
+        const token = await getToken();
+        await fetch("/api/pipeline/feedback", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ runId, feedback, approved }),
+        });
+        setFeedbackText(prev => ({ ...prev, [runId]: "" }));
+        setFeedbackOpen(null);
+        setSubmitting(null);
     }
 
     const todayRuns = runs.filter(
@@ -232,15 +266,11 @@ export default function AgentsDashboard() {
                                 key={m.label}
                                 className='rounded-3xl'>
                                 <CardContent className='pt-5'>
-                                    <p className='text-xs mb-1'>
-                                        {m.label}
-                                    </p>
+                                    <p className='text-xs mb-1'>{m.label}</p>
                                     <p className='text-2xl font-semibold'>
                                         {m.value}
                                     </p>
-                                    <p className='text-xs mt-1'>
-                                        {m.sub}
-                                    </p>
+                                    <p className='text-xs mt-1'>{m.sub}</p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -261,7 +291,19 @@ export default function AgentsDashboard() {
                                         threshold · {timeAgo(run.created_at)}
                                     </p>
                                 </div>
-                                <div className='flex gap-2'>
+                                <div className='flex gap-2 flex-wrap'>
+                                    <Button
+                                        size='sm'
+                                        variant='secondary'
+                                        onClick={() =>
+                                            setOpenId(
+                                                openId === run.run_id
+                                                    ? null
+                                                    : run.run_id,
+                                            )
+                                        }>
+                                        View steps
+                                    </Button>
                                     <Button
                                         size='sm'
                                         onClick={() =>
@@ -274,11 +316,84 @@ export default function AgentsDashboard() {
                                     </Button>
                                     <Button
                                         size='sm'
-                                        variant='secondary'
-                                        onClick={() => setOpenId(run.run_id)}>
-                                        Review
+                                        variant='destructive'
+                                        onClick={() =>
+                                            setFeedbackOpen(
+                                                feedbackOpen === run.run_id
+                                                    ? null
+                                                    : run.run_id,
+                                            )
+                                        }>
+                                        {feedbackOpen === run.run_id
+                                            ? "Cancel"
+                                            : "Decline + feedback"}
                                     </Button>
                                 </div>
+
+                                {/* Decline feedback form */}
+                                {feedbackOpen === run.run_id && (
+                                    <div className='mt-4 space-y-3 border-t pt-4'>
+                                        <Label className='text-sm font-medium'>
+                                            What did you want changed?
+                                        </Label>
+                                        <p className='text-xs text-muted-foreground'>
+                                            Agent #6 will learn from this for
+                                            future runs.
+                                        </p>
+                                        <Textarea
+                                            placeholder='e.g. The headline is too generic. I want something more specific about the silk press technique.'
+                                            value={
+                                                feedbackText[run.run_id] ?? ""
+                                            }
+                                            onChange={e =>
+                                                setFeedbackText(prev => ({
+                                                    ...prev,
+                                                    [run.run_id]:
+                                                        e.target.value,
+                                                }))
+                                            }
+                                            rows={3}
+                                        />
+                                        <div className='flex gap-2'>
+                                            <Button
+                                                size='sm'
+                                                variant='destructive'
+                                                disabled={
+                                                    !feedbackText[
+                                                        run.run_id
+                                                    ]?.trim() ||
+                                                    submitting === run.run_id
+                                                }
+                                                onClick={() =>
+                                                    handleFeedbackSubmit(
+                                                        run.run_id,
+                                                        false,
+                                                    )
+                                                }>
+                                                {submitting === run.run_id
+                                                    ? "Saving…"
+                                                    : "Decline + save feedback"}
+                                            </Button>
+                                            <Button
+                                                size='sm'
+                                                variant='outline'
+                                                disabled={
+                                                    !feedbackText[
+                                                        run.run_id
+                                                    ]?.trim() ||
+                                                    submitting === run.run_id
+                                                }
+                                                onClick={() =>
+                                                    handleFeedbackSubmit(
+                                                        run.run_id,
+                                                        true,
+                                                    )
+                                                }>
+                                                Approve with notes
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     ))}
@@ -289,9 +404,7 @@ export default function AgentsDashboard() {
                     </h2>
 
                     {loading ? (
-                        <p className='text-sm'>
-                            Loading…
-                        </p>
+                        <p className='text-sm'>Loading…</p>
                     ) : runs.length === 0 ? (
                         <Card className='rounded-3xl'>
                             <CardHeader>
@@ -337,6 +450,72 @@ export default function AgentsDashboard() {
                                     {openId === run.run_id && (
                                         <CardContent className='pt-0'>
                                             <Separator className='mb-4' />
+                                            {/* Feedback for completed runs */}
+                                            <div
+                                                className='mb-4'
+                                                onClick={e =>
+                                                    e.stopPropagation()
+                                                }>
+                                                <button
+                                                    className='text-xs text-muted-foreground underline underline-offset-2'
+                                                    onClick={() =>
+                                                        setFeedbackOpen(
+                                                            feedbackOpen ===
+                                                                run.run_id
+                                                                ? null
+                                                                : run.run_id,
+                                                        )
+                                                    }>
+                                                    {feedbackOpen === run.run_id
+                                                        ? "Cancel feedback"
+                                                        : "Leave feedback for Agent #6"}
+                                                </button>
+                                                {feedbackOpen ===
+                                                    run.run_id && (
+                                                    <div className='mt-3 space-y-2'>
+                                                        <Textarea
+                                                            placeholder='What could be improved? Agent #6 will learn from this.'
+                                                            value={
+                                                                feedbackText[
+                                                                    run.run_id
+                                                                ] ?? ""
+                                                            }
+                                                            onChange={e =>
+                                                                setFeedbackText(
+                                                                    prev => ({
+                                                                        ...prev,
+                                                                        [run.run_id]:
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                    }),
+                                                                )
+                                                            }
+                                                            rows={2}
+                                                        />
+                                                        <Button
+                                                            size='sm'
+                                                            disabled={
+                                                                !feedbackText[
+                                                                    run.run_id
+                                                                ]?.trim() ||
+                                                                submitting ===
+                                                                    run.run_id
+                                                            }
+                                                            onClick={() =>
+                                                                handleFeedbackSubmit(
+                                                                    run.run_id,
+                                                                    true,
+                                                                )
+                                                            }>
+                                                            {submitting ===
+                                                            run.run_id
+                                                                ? "Saving…"
+                                                                : "Save feedback"}
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </div>
                                             <div className='flex flex-col gap-3'>
                                                 {run.agent_run_steps
                                                     .sort(

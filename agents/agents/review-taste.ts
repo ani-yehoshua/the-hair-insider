@@ -26,6 +26,28 @@ async function getLaurenFeedbackHistory(): Promise<string> {
         .join('\n---\n');
 }
 
+async function fetchPageContent(url: string): Promise<string> {
+    try {
+        const res = await fetch(url, {
+            headers: { 'User-Agent': 'HairInsiderAgent/1.0' },
+            signal: AbortSignal.timeout(10000),
+        });
+        if (!res.ok)
+            return `Could not fetch page (status ${res.status}). URL: ${url}`;
+        const html = await res.text();
+        const clean = html
+            .replace(/<script[\s\S]*?<\/script>/gi, '')
+            .replace(/<style[\s\S]*?<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 8000);
+        return clean;
+    } catch (err) {
+        return `Could not fetch page: ${err instanceof Error ? err.message : String(err)}. URL: ${url}`;
+    }
+}
+
 const SYSTEM = (feedbackHistory: string) =>
     `You are the Review & Taste agent for The Hair Insider.
     You review content against Lauren's personal taste profile.
@@ -51,15 +73,20 @@ const SYSTEM = (feedbackHistory: string) =>
     }
 
     autoApprove: true if score >= ${AGENT_CONFIG.autoApproveThreshold} AND you are confident Lauren would approve.
-    verdict: PASS if score >= 75, FAIL if below.`;
+    verdict: PASS if score >= 75, FAIL if below.
+    
+    If you could not fetch the page content, score it 50 and set autoApprove to false with a note explaining why.`;
 
 export async function runReviewTaste(
     content: string,
 ): Promise<AgentResult & { autoApprove: boolean }> {
     const feedbackHistory = await getLaurenFeedbackHistory();
+    const isUrl =
+        content.startsWith('http://') || content.startsWith('https://');
+    const reviewContent = isUrl ? await fetchPageContent(content) : content;
     const { text, tokensIn, tokensOut } = await callClaude({
         system: SYSTEM(feedbackHistory),
-        prompt: `Review this content against Lauren's taste profile:\n\n${content}`,
+        prompt: `Review this content against Lauren's taste profile:\n\n${reviewContent}`,
     });
 
     const parsed = parseJSON<{
