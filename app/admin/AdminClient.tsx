@@ -23,12 +23,6 @@ const ADMIN_SECTIONS = [
         description: "Manage the ShopMy product catalog and links.",
         badge: null,
     },
-    {
-        title: "Agent pipeline",
-        href: "/admin/agents",
-        description: "Live ops dashboard — runs, scores, approvals, costs.",
-        badge: "New",
-    },
 ];
 
 export default function AdminClient() {

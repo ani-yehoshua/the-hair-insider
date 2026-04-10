@@ -17,12 +17,11 @@ const LABELS: Record<string, string> = {
     library: "Library",
     admin: "Admin",
     signin: "Sign in",
-    agents: "Agent pipeline",
     products: "Products",
 };
 
 // These segments link to their own index page even when last in the path
-const ALWAYS_LINKABLE = new Set(["admin", "courses", "products", "agents"]);
+const ALWAYS_LINKABLE = new Set(["admin", "courses", "products"]);
 
 function pretty(seg: string) {
     if (!seg) return "";

@@ -150,12 +150,6 @@ export function Navbar() {
                                                                 Products
                                                             </Link>
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            asChild>
-                                                            <Link href='/admin/agents'>
-                                                                Agent pipeline
-                                                            </Link>
-                                                        </DropdownMenuItem>
                                                     </DropdownMenuSubContent>
                                                 </DropdownMenuPortal>
                                             </DropdownMenuSub>
@@ -292,16 +286,6 @@ export function Navbar() {
                                                         className='justify-start'>
                                                         <Link href='/admin/products'>
                                                             Products
-                                                        </Link>
-                                                    </Button>
-                                                </SheetClose>
-                                                <SheetClose asChild>
-                                                    <Button
-                                                        variant='ghost'
-                                                        asChild
-                                                        className='justify-start'>
-                                                        <Link href='/admin/agents'>
-                                                            Agent pipeline
                                                         </Link>
                                                     </Button>
                                                 </SheetClose>
