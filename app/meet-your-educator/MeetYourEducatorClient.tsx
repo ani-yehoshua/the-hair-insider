@@ -33,15 +33,15 @@ export default function MeetYourEducatorClient() {
                         inView={heroIn}
                         delayMs={100}>
                         {/* Intro badges + heading — above the split on all sizes */}
-                        <div className='mb-10 space-y-4'>
+                        <div className='mb-10 space-y-4 bg-background/50 rounded-3xl p-6'>
                             <h1 className='text-4xl font-semibold tracking-tight sm:text-5xl'>
-                                Hi, I'm Lauren.
+                                Hi, I&apos;m Lauren.
                             </h1>
                             <p className='text-lg leading-8 max-w-2xl'>
                                 Licensed cosmetologist, 8 years behind the
                                 chair, and the founder of The Hair Insider — a
-                                space built to give you what your stylist wishes
-                                you already knew.
+                                space built to give you what your stylist knows
+                                but never had time to tell you.
                             </p>
                             <div className='flex flex-wrap gap-2'>
                                 <Badge variant='secondary'>
@@ -184,7 +184,7 @@ export default function MeetYourEducatorClient() {
                                         <Button
                                             asChild
                                             className='h-12 px-6'>
-                                            <Link href='/courses'>
+                                            <Link href='/#courses'>
                                                 Start Here
                                             </Link>
                                         </Button>

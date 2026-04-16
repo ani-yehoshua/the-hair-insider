@@ -53,7 +53,7 @@ export default function ContactClient() {
                                     <p className='mt-2 leading-6'>
                                         Prefer to browse first?{" "}
                                         <Link
-                                            href='/courses'
+                                            href='/#courses'
                                             className='font-medium text-foreground underline underline-offset-4'>
                                             View courses
                                         </Link>

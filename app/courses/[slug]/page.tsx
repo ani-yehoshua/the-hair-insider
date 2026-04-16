@@ -6,5 +6,5 @@ export default async function CourseSlugPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    redirect(`/courses#${slug}`);
+    redirect(`/#${slug}`);
 }

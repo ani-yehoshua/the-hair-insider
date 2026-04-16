@@ -68,7 +68,7 @@ export default function SuccessClient() {
                     <Button
                         asChild
                         variant='secondary'>
-                        <Link href='/courses'>Back to courses</Link>
+                        <Link href='/#courses'>Back to courses</Link>
                     </Button>
                 </div>
             </div>

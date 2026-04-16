@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, ctx: Ctx) {
     const { data, error } = await adminDb
         .from('courses')
         .select(
-            'id, title, slug, subtitle, description, cover_image_url, stripe_price_id, is_published',
+            'id, title, slug, subtitle, description, cover_image_url, stripe_price_id, overview_video_url, is_published',
         )
         .eq('id', id)
         .single();
@@ -51,6 +51,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
         description: body.description ?? undefined,
         cover_image_url: body.cover_image_url ?? undefined,
         stripe_price_id: body.stripe_price_id ?? undefined,
+        overview_video_url: body.overview_video_url ?? undefined,
         is_published: body.is_published ?? undefined,
     };
 
@@ -59,7 +60,7 @@ export async function PATCH(req: NextRequest, ctx: Ctx) {
         .update(patch)
         .eq('id', id)
         .select(
-            'id, title, slug, subtitle, description, cover_image_url, stripe_price_id, is_published',
+            'id, title, slug, subtitle, description, cover_image_url, stripe_price_id, overview_video_url, is_published',
         )
         .single();
 

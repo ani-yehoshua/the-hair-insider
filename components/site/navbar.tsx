@@ -74,17 +74,12 @@ export function Navbar() {
                             className='w-56'>
                             <DropdownMenuLabel>Explore THI</DropdownMenuLabel>
                             <DropdownMenuItem asChild>
-                                <Link href='/what-is-it'>What Is It?</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href='/inside-the-course'>
-                                    Inside The Course
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
                                 <Link href='/meet-your-educator'>
-                                    Meet Your Educator
+                                    Meet Lauren
                                 </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href='/faq'>FAQ</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
@@ -92,12 +87,6 @@ export function Navbar() {
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link href='/contact'>Contact Us</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href='/privacy'>Privacy Policy</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href='/terms'>Terms of Service</Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -170,7 +159,7 @@ export function Navbar() {
                     </DropdownMenu>
 
                     <Button asChild>
-                        <Link href='/courses'>View courses</Link>
+                        <Link href='/#courses'>View courses</Link>
                     </Button>
                 </div>
 
@@ -197,29 +186,17 @@ export function Navbar() {
                                         variant='ghost'
                                         asChild
                                         className='justify-start'>
-                                        <Link href='/what-is-it'>
-                                            What Is It?
-                                        </Link>
-                                    </Button>
-                                </SheetClose>
-                                <SheetClose asChild>
-                                    <Button
-                                        variant='ghost'
-                                        asChild
-                                        className='justify-start'>
-                                        <Link href='/inside-the-course'>
-                                            Inside The Course
-                                        </Link>
-                                    </Button>
-                                </SheetClose>
-                                <SheetClose asChild>
-                                    <Button
-                                        variant='ghost'
-                                        asChild
-                                        className='justify-start'>
                                         <Link href='/meet-your-educator'>
-                                            Meet Your Educator
+                                            Meet Lauren
                                         </Link>
+                                    </Button>
+                                </SheetClose>
+                                <SheetClose asChild>
+                                    <Button
+                                        variant='ghost'
+                                        asChild
+                                        className='justify-start'>
+                                        <Link href='/faq'>FAQ</Link>
                                     </Button>
                                 </SheetClose>
                                 <SheetClose asChild>
@@ -236,7 +213,7 @@ export function Navbar() {
                                         variant='ghost'
                                         asChild
                                         className='justify-start'>
-                                        <Link href='/courses'>
+                                        <Link href='/#courses'>
                                             View courses
                                         </Link>
                                     </Button>

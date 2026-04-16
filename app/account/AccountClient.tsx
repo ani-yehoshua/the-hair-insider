@@ -168,7 +168,7 @@ export default function AccountClient() {
             <Navbar />
 
             <main className='mx-auto max-w-6xl px-6 py-10'>
-                <div className='flex items-end justify-between gap-4'>
+                <div className='bg-background/50 rounded-3xl p-6 flex items-end justify-between gap-4'>
                     <div>
                         <h1 className='text-3xl font-semibold tracking-tight'>
                             Account

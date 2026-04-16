@@ -27,6 +27,7 @@ type Course = {
     description: string | null;
     cover_image_url: string | null;
     stripe_price_id: string | null;
+    overview_video_url: string | null;
     is_published: boolean;
 };
 
@@ -47,6 +48,7 @@ export default function EditCourseClient({ id }: { id: string }) {
     const [description, setDescription] = React.useState("");
     const [coverImageUrl, setCoverImageUrl] = React.useState("");
     const [stripePriceId, setStripePriceId] = React.useState("");
+    const [overviewVideoUrl, setOverviewVideoUrl] = React.useState("");
     const [isPublished, setIsPublished] = React.useState(false);
 
     React.useEffect(() => {
@@ -86,6 +88,7 @@ export default function EditCourseClient({ id }: { id: string }) {
             setDescription(c.description ?? "");
             setCoverImageUrl(c.cover_image_url ?? "");
             setStripePriceId(c.stripe_price_id ?? "");
+            setOverviewVideoUrl(c.overview_video_url ?? "");
             setIsPublished(Boolean(c.is_published));
 
             setLoading(false);
@@ -117,6 +120,7 @@ export default function EditCourseClient({ id }: { id: string }) {
                 description: description.trim() || null,
                 cover_image_url: coverImageUrl.trim() || null,
                 stripe_price_id: stripePriceId.trim() || null,
+                overview_video_url: overviewVideoUrl.trim() || null,
                 is_published: isPublished,
             }),
         });
@@ -305,6 +309,20 @@ export default function EditCourseClient({ id }: { id: string }) {
                                         onChange={e =>
                                             setStripePriceId(e.target.value)
                                         }
+                                    />
+                                </div>
+
+                                <div className='space-y-2'>
+                                    <Label htmlFor='overview-video'>
+                                        Overview Video URL
+                                    </Label>
+                                    <Input
+                                        id='overview-video'
+                                        value={overviewVideoUrl}
+                                        onChange={e =>
+                                            setOverviewVideoUrl(e.target.value)
+                                        }
+                                        placeholder='Paste vimeo.com/123 or player.vimeo.com/video/123'
                                     />
                                 </div>
                             </div>

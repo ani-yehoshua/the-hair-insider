@@ -191,7 +191,7 @@ export default function AdminProductsClient() {
                 <FadeIn
                     inView={pageIn}
                     delayMs={100}>
-                    <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
+                    <div className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between bg-background/50 rounded-3xl p-6'>
                         <div>
                             <div className='flex items-center gap-3'>
                                 <Badge variant='secondary'>Admin</Badge>

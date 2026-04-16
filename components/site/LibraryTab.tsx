@@ -60,7 +60,7 @@ export function LibraryTab() {
         <>
             <div className='flex items-end justify-between gap-6'>
                 <div>
-                    <h2 className='text-2xl font-semibold tracking-tight'>
+                    <h2 className='bg-background/50 rounded-3xl px-6 py-4 text-2xl font-semibold tracking-tight'>
                         My Courses
                     </h2>
                 </div>
@@ -82,7 +82,7 @@ export function LibraryTab() {
                                 <Button
                                     asChild
                                     variant='outline'>
-                                    <Link href='/courses'>Browse courses</Link>
+                                    <Link href='/#courses'>Browse courses</Link>
                                 </Button>
                             </div>
                         </CardContent>
@@ -98,7 +98,7 @@ export function LibraryTab() {
                             When you purchase a course, it will appear here.
                             <div className='mt-4'>
                                 <Button asChild>
-                                    <Link href='/courses'>Browse courses</Link>
+                                    <Link href='/#courses'>Browse courses</Link>
                                 </Button>
                             </div>
                         </CardContent>

@@ -44,21 +44,20 @@ export default function InsideTheCourseClient() {
                             </Badge>
 
                             <h1 className='text-4xl font-semibold tracking-tight sm:text-5xl'>
-                                Inside The Course
+                                What&apos;s waiting inside.
                             </h1>
 
                             <p className='max-w-3xl text-lg leading-8'>
                                 Your access begins the moment you enroll.
-                                Inside, you’ll find short, focused lessons and
-                                downloadable tools designed to make hair health
-                                feel simple, practical, and repeatable.
+                                Everything is organized, searchable, and yours
+                                to return to anytime &mdash; for life.
                             </p>
 
                             <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
                                 <Button
                                     asChild
                                     className='h-12 px-6'>
-                                    <Link href='/courses'>Browse Courses</Link>
+                                    <Link href='/#courses'>Browse Courses</Link>
                                 </Button>
                                 <Button
                                     asChild
@@ -66,6 +65,22 @@ export default function InsideTheCourseClient() {
                                     className='h-12 px-6'>
                                     <Link href='/what-is-it'>What Is It?</Link>
                                 </Button>
+                            </div>
+                        </div>
+
+                        {/* Lauren's intro video placeholder */}
+                        <div className='mt-8 rounded-3xl border bg-card overflow-hidden'>
+                            <div className='aspect-video flex items-center justify-center bg-muted'>
+                                <div className='text-center space-y-3 px-6'>
+                                    <p className='text-sm font-medium'>
+                                        A personal introduction from Lauren
+                                    </p>
+                                    <p className='text-xs text-muted-foreground max-w-sm mx-auto'>
+                                        Lauren will walk you through everything
+                                        inside the course &mdash; in her own
+                                        words. Video coming soon.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </FadeIn>
@@ -82,15 +97,14 @@ export default function InsideTheCourseClient() {
                             <div className='grid gap-10 md:grid-cols-2'>
                                 <div className='space-y-6 bg-background/35 rounded-3xl p-6'>
                                     <h2 className='text-2xl font-semibold tracking-tight sm:text-3xl'>
-                                        What You Get
+                                        What you get
                                     </h2>
 
                                     <p className='text-lg leading-8'>
-                                        This isn’t a random collection of tips.
-                                        It’s a structured library that helps you
-                                        understand cause and effect, so you can
-                                        make confident decisions and build a
-                                        routine that fits your life.
+                                        Not a collection of tips. A structured
+                                        library that teaches cause and effect
+                                        &mdash; so every routine decision you
+                                        make from here on is an informed one.
                                     </p>
 
                                     <ul className='space-y-4 text-sm'>
@@ -99,17 +113,19 @@ export default function InsideTheCourseClient() {
                                                 Short, focused lessons
                                             </p>
                                             <p>
-                                                Clear explanations that don’t
-                                                overcomplicate the science.
+                                                Clear explanations of the
+                                                mechanics &mdash; without the
+                                                fluff or the product push.
                                             </p>
                                         </li>
                                         <li>
                                             <p className='font-medium text-foreground'>
-                                                Downloadable guides
+                                                Downloadable workbook
                                             </p>
                                             <p>
-                                                Checklists and PDFs to help you
-                                                implement without guessing.
+                                                Checklists and PDFs that come
+                                                home with you &mdash; yours to
+                                                keep and reference forever.
                                             </p>
                                         </li>
                                         <li>
@@ -117,8 +133,9 @@ export default function InsideTheCourseClient() {
                                                 Lifetime access
                                             </p>
                                             <p>
-                                                Purchase once, return anytime,
-                                                and build consistency over time.
+                                                One purchase. No subscription.
+                                                Return anytime as your hair
+                                                changes.
                                             </p>
                                         </li>
                                     </ul>
@@ -127,13 +144,12 @@ export default function InsideTheCourseClient() {
 
                                     <div className='rounded-2xl bg-muted p-4'>
                                         <p className='text-xs font-medium'>
-                                            Our Promise
+                                            The point
                                         </p>
                                         <p className='mt-1 text-sm text-foreground'>
-                                            If you can wash your hair, you can
-                                            follow this. Practical routines,
-                                            realistic expectations, and real
-                                            education.
+                                            We get paid once because we want you
+                                            to be done needing to buy things.
+                                            That&apos;s the whole idea.
                                         </p>
                                     </div>
                                 </div>
@@ -141,20 +157,20 @@ export default function InsideTheCourseClient() {
                                 <div className='grid gap-4 sm:grid-cols-2'>
                                     {[
                                         {
-                                            title: "Private Library Access",
-                                            desc: "Unlock content instantly, organized by topic and goal.",
+                                            title: "Your private library",
+                                            desc: "Unlock everything instantly. Organized by topic so you can jump to exactly what you need.",
                                         },
                                         {
-                                            title: "Foundational Lessons",
-                                            desc: "Build understanding step by step, so changes actually stick.",
+                                            title: "The fundamentals",
+                                            desc: "The things your stylist learned in school that nobody ever passed on to you.",
                                         },
                                         {
-                                            title: "Implementation Tools",
-                                            desc: "Downloadable guides designed to make execution easy.",
+                                            title: "Done-for-you guides",
+                                            desc: "Downloadable workbook designed to make implementation easy.",
                                         },
                                         {
-                                            title: "Simple Routine Framework",
-                                            desc: "A repeatable approach you can adjust as your hair changes.",
+                                            title: "A routine framework",
+                                            desc: "Repeatable, adjustable, and simple enough that you'll actually stick with it.",
                                         },
                                     ].map(s => (
                                         <Card

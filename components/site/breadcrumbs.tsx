@@ -18,6 +18,7 @@ const LABELS: Record<string, string> = {
     admin: "Admin",
     signin: "Sign in",
     products: "Products",
+    faq: "FAQ",
 };
 
 // These segments link to their own index page even when last in the path

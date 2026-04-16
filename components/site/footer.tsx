@@ -6,7 +6,8 @@ const SITE_LINKS = [
     { href: "/what-is-it", label: "What Is It?" },
     { href: "/inside-the-course", label: "Inside The Course" },
     { href: "/meet-your-educator", label: "Meet Your Educator" },
-    { href: "/courses", label: "Courses" },
+    { href: "/#courses", label: "Courses" },
+    { href: "/faq", label: "FAQ" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact Us" },
 ];
@@ -26,7 +27,7 @@ const SOCIAL_LINKS = [
 export function Footer() {
     return (
         <footer
-            className='mt-16 text-secondary'
+            className='mt-16 text-foreground bg-background/50'
             id='site-footer'>
             <Separator />
 
