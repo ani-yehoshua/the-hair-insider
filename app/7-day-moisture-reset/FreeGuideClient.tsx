@@ -13,6 +13,23 @@ export default function FreeGuideClient() {
         boolean
     > | null>(null);
     const [authReady, setAuthReady] = useState(false);
+    const [showWelcome, setShowWelcome] = useState(false);
+
+    // Show welcome modal on first visit
+    useEffect(() => {
+        try {
+            if (!localStorage.getItem("hairinsider-guide-welcome-seen")) {
+                setShowWelcome(true);
+            }
+        } catch {}
+    }, []);
+
+    function dismissWelcome() {
+        try {
+            localStorage.setItem("hairinsider-guide-welcome-seen", "1");
+        } catch {}
+        setShowWelcome(false);
+    }
 
     // Load auth state and any cloud-saved progress before the main effect runs
     useEffect(() => {
@@ -2538,6 +2555,95 @@ export default function FreeGuideClient() {
                     </div>
                 </div>
             </div>
+
+            {showWelcome && (
+                <div
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        zIndex: 9999,
+                        background: "rgba(26,26,26,0.55)",
+                        backdropFilter: "blur(4px)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "24px",
+                    }}>
+                    <div
+                        style={{
+                            background: "#f3eee5",
+                            borderRadius: "20px",
+                            maxWidth: "440px",
+                            width: "100%",
+                            padding: "36px 32px",
+                            fontFamily: "'Inter', sans-serif",
+                            color: "#1a1a1a",
+                            boxShadow: "0 24px 64px -16px rgba(26,26,26,0.35)",
+                        }}>
+                        <p
+                            style={{
+                                fontFamily: "'Cormorant Garamond', serif",
+                                fontSize: "0.72rem",
+                                fontWeight: 600,
+                                letterSpacing: "0.22em",
+                                textTransform: "uppercase",
+                                color: "#8f9379",
+                                marginBottom: "12px",
+                            }}>
+                            Before you begin
+                        </p>
+                        <h2
+                            style={{
+                                fontFamily: "'Cormorant Garamond', serif",
+                                fontSize: "1.7rem",
+                                fontWeight: 400,
+                                lineHeight: 1.15,
+                                marginBottom: "16px",
+                            }}>
+                            This guide lives here
+                        </h2>
+                        <ul
+                            style={{
+                                fontSize: "0.875rem",
+                                lineHeight: 1.7,
+                                color: "#4a4a4a",
+                                paddingLeft: "1.2em",
+                                marginBottom: "24px",
+                            }}>
+                            <li>
+                                It&apos;s interactive — check off steps as you
+                                go
+                            </li>
+                            <li>There&apos;s no PDF or download version</li>
+                            <li>
+                                It only exists at this URL — bookmark it or save
+                                the link so you can follow along each day
+                            </li>
+                            <li>
+                                Sign in to save your progress across devices
+                            </li>
+                        </ul>
+                        <button
+                            onClick={dismissWelcome}
+                            style={{
+                                width: "100%",
+                                padding: "14px",
+                                background: "#1a1a1a",
+                                color: "#f3eee5",
+                                border: "none",
+                                borderRadius: "10px",
+                                fontFamily: "'Inter', sans-serif",
+                                fontSize: "0.82rem",
+                                fontWeight: 600,
+                                letterSpacing: "0.12em",
+                                textTransform: "uppercase",
+                                cursor: "pointer",
+                            }}>
+                            Got it — let&apos;s start
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
