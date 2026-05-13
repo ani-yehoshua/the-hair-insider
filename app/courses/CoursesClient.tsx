@@ -184,13 +184,13 @@ function CourseCard({
                                     <ul className='space-y-1.5 text-xs text-muted-foreground'>
                                         <li>High-end industry knowledge</li>
                                         <li>Clear routine guidance</li>
-                                        <li>Downloadable PDFs</li>
+                                        <li>Interactive free guide</li>
                                         <li>Lifetime access</li>
                                     </ul>
                                 </div>
                                 <div className='rounded-2xl bg-muted p-4 space-y-2'>
                                     <p className='text-xs font-medium'>
-                                        Who it's for
+                                        Who it&apos;s for
                                     </p>
                                     <ul className='space-y-1.5 text-xs text-muted-foreground'>
                                         <li>People tired of guessing</li>
@@ -210,7 +210,6 @@ function CourseCard({
 }
 
 export default function CoursesClient() {
-    const { signedIn, loading: authLoading } = useAuth();
     const [courses, setCourses] = React.useState<Course[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [ownedCourseIds, setOwnedCourseIds] = React.useState<Set<string>>(
