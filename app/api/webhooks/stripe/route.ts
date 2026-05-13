@@ -80,23 +80,45 @@ export async function POST(req: Request) {
             );
         }
 
-        const { error } = await admin.from('entitlements').upsert(
-            {
-                user_id,
-                course_id,
-                status: 'active',
-                stripe_customer_id:
-                    typeof session.customer === 'string'
-                        ? session.customer
-                        : null,
-                stripe_checkout_session_id: session.id,
-                stripe_payment_intent_id:
-                    typeof session.payment_intent === 'string'
-                        ? session.payment_intent
-                        : null,
-            },
-            { onConflict: 'user_id,course_id' },
-        );
+        const stripeCustomerId =
+            typeof session.customer === 'string' ? session.customer : null;
+        const stripePaymentIntentId =
+            typeof session.payment_intent === 'string'
+                ? session.payment_intent
+                : null;
+
+        // Resolve all course IDs to grant — for bundles, include component courses
+        const courseIdsToGrant = [course_id];
+
+        const { data: purchasedCourse } = await admin
+            .from('courses')
+            .select('slug')
+            .eq('id', course_id)
+            .maybeSingle();
+
+        if (purchasedCourse?.slug === 'hair-growth-bundle') {
+            const { data: components } = await admin
+                .from('courses')
+                .select('id')
+                .in('slug', [
+                    'hair-growth-foundations-mini-course',
+                    '21-day-workbook',
+                ]);
+            for (const c of components ?? []) courseIdsToGrant.push(c.id);
+        }
+
+        const entitlements = courseIdsToGrant.map(cid => ({
+            user_id,
+            course_id: cid,
+            status: 'active',
+            stripe_customer_id: stripeCustomerId,
+            stripe_checkout_session_id: session.id,
+            stripe_payment_intent_id: stripePaymentIntentId,
+        }));
+
+        const { error } = await admin
+            .from('entitlements')
+            .upsert(entitlements, { onConflict: 'user_id,course_id' });
 
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
