@@ -133,16 +133,26 @@ export default function AccountClient() {
             <Navbar />
 
             <main className='mx-auto max-w-6xl px-6 py-10'>
-                <div className='bg-background/50 rounded-3xl p-6 flex items-end justify-between gap-4'>
-                    <div>
-                        <h1 className='text-3xl font-semibold tracking-tight'>
-                            Account
-                        </h1>
-                        <p className='mt-1 text-sm'>{email || " "}</p>
+                <div className='bg-background/50 rounded-3xl p-6 flex items-center justify-between gap-4'>
+                    <div className='flex items-center gap-4'>
+                        <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-foreground text-background text-base font-semibold select-none'>
+                            {(displayName || email).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <h1 className='text-xl font-semibold tracking-tight'>
+                                {displayName
+                                    ? `Hi, ${displayName.split(" ")[0]}`
+                                    : "My account"}
+                            </h1>
+                            <p className='text-sm'>
+                                {email}
+                            </p>
+                        </div>
                     </div>
 
                     <Button
                         variant='secondary'
+                        size='sm'
                         onClick={onSignOut}>
                         Sign out
                     </Button>
@@ -222,8 +232,8 @@ export default function AccountClient() {
                                         Email address
                                     </CardTitle>
                                     <CardDescription>
-                                        You'll receive a confirmation link when
-                                        you change this.
+                                        You&apos;ll receive a confirmation link
+                                        when you change this.
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
