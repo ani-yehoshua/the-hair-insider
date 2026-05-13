@@ -4,30 +4,63 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
+type CourseRow = {
+    id: string;
+    slug: string;
+    title: string;
+    subtitle: string | null;
+};
 
 type EntitledCourseRow = {
     status: string;
-    courses: {
-        id: string;
-        slug: string;
-        title: string;
-        subtitle: string | null;
-        cover_image_url: string | null;
-    }[];
+    courses: CourseRow[];
 };
+
+type LibraryItem = {
+    id: string;
+    title: string;
+    subtitle: string;
+    badge: string;
+    href: string | null;
+    cta: string;
+    locked?: boolean;
+    comingSoon?: boolean;
+};
+
+const FREE_ITEMS: LibraryItem[] = [
+    {
+        id: "7-day-moisture-reset",
+        title: "7-Day Moisture Reset",
+        subtitle: "Daily check-ins, progress tracking, science-backed steps.",
+        badge: "Free guide",
+        href: "/7-day-moisture-reset",
+        cta: "Open guide →",
+    },
+];
+
+const WORKBOOK_ITEMS: LibraryItem[] = [
+    {
+        id: "21-day-workbook",
+        title: "Hair Growth Workbook",
+        subtitle: "A guided journal and helper companion to the mini course.",
+        badge: "Workbook",
+        href: "/workbook",
+        cta: "Open workbook →",
+    },
+];
 
 export function LibraryTab() {
     const router = useRouter();
     const [loading, setLoading] = React.useState(true);
-    const [items, setItems] = React.useState<EntitledCourseRow[]>([]);
-    const [err, setErr] = React.useState<string | null>(null);
+    const [entitledCourses, setEntitledCourses] = React.useState<CourseRow[]>(
+        [],
+    );
 
     React.useEffect(() => {
         const run = async () => {
-            setErr(null);
-
             const { data: sessionData } = await supabase.auth.getSession();
             if (!sessionData.session) {
                 router.replace(
@@ -36,136 +69,96 @@ export function LibraryTab() {
                 return;
             }
 
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from("entitlements")
                 .select(
                     "status, courses:course_id (id, slug, title, subtitle, cover_image_url)",
                 )
                 .eq("status", "active");
 
-            if (error) {
-                setErr(error.message);
-                setLoading(false);
-                return;
-            }
+            const courses = ((data ?? []) as unknown as EntitledCourseRow[])
+                .flatMap(row => row.courses ?? [])
+                .filter(Boolean);
 
-            setItems((data ?? []) as unknown as EntitledCourseRow[]);
+            setEntitledCourses(courses);
             setLoading(false);
         };
 
         run();
     }, [router]);
 
+    const courseItems: LibraryItem[] = entitledCourses
+        .filter(c => c.slug !== "21-day-workbook")
+        .map(c => ({
+            id: c.id,
+            title: c.title,
+            subtitle: c.subtitle ?? "",
+            badge: "Course",
+            href: `/library/${c.slug}`,
+            cta: "Open course →",
+        }));
+
+    const allItems = [...FREE_ITEMS, ...courseItems, ...WORKBOOK_ITEMS];
+
     return (
-        <div className='space-y-10'>
-            {/* Free guides */}
-            <section>
-                <h2 className='text-lg font-semibold tracking-tight mb-4'>
-                    Guides
-                </h2>
+        <div>
+            {loading ? (
+                <p className='text-sm'>Loading your library…</p>
+            ) : (
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-                    <Link href='/7-day-moisture-reset'>
-                        <Card className='rounded-3xl transition-shadow hover:shadow-md'>
-                            <CardHeader>
-                                <CardTitle className='text-base'>
-                                    7-Day Moisture Reset
-                                </CardTitle>
-                                <p className='text-sm text-muted-foreground'>
-                                    Free · Interactive guide
-                                </p>
-                            </CardHeader>
-                            <CardContent className='text-sm'>
-                                Open guide →
-                            </CardContent>
-                        </Card>
-                    </Link>
-
-                    <Card className='rounded-3xl opacity-50 cursor-not-allowed'>
-                        <CardHeader>
-                            <CardTitle className='text-base'>
-                                21-Day Routine Workbook
-                            </CardTitle>
-                            <p className='text-sm text-muted-foreground'>
-                                Coming soon
-                            </p>
-                        </CardHeader>
-                        <CardContent className='text-sm'>
-                            Available soon
-                        </CardContent>
-                    </Card>
+                    {allItems.map(item =>
+                        item.href ? (
+                            <Link
+                                key={item.id}
+                                href={item.href}>
+                                <Card className='rounded-3xl h-full transition-shadow hover:shadow-md'>
+                                    <CardHeader className='space-y-2'>
+                                        <Badge
+                                            variant='secondary'
+                                            className='w-fit text-xs'>
+                                            {item.badge}
+                                        </Badge>
+                                        <CardTitle className='text-base leading-snug'>
+                                            {item.title}
+                                        </CardTitle>
+                                        {item.subtitle && (
+                                            <p className='text-sm text-muted-foreground leading-snug'>
+                                                {item.subtitle}
+                                            </p>
+                                        )}
+                                    </CardHeader>
+                                    <CardContent className='text-sm font-medium'>
+                                        {item.cta}
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ) : (
+                            <Card
+                                key={item.id}
+                                className='rounded-3xl h-full opacity-50 cursor-not-allowed'>
+                                <CardHeader className='space-y-2'>
+                                    <Badge
+                                        variant='secondary'
+                                        className='w-fit text-xs'>
+                                        {item.badge}
+                                    </Badge>
+                                    <CardTitle className='text-base leading-snug'>
+                                        {item.title}
+                                    </CardTitle>
+                                    {item.subtitle && (
+                                        <p className='text-sm text-muted-foreground leading-snug'>
+                                            {item.subtitle}
+                                        </p>
+                                    )}
+                                </CardHeader>
+                                <CardContent className='text-sm'>
+                                    {item.cta}
+                                </CardContent>
+                            </Card>
+                        ),
+                    )}
                 </div>
-            </section>
-
-            {/* Purchased courses */}
-            <section>
-                <h2 className='text-lg font-semibold tracking-tight mb-4'>
-                    Courses
-                </h2>
-                {loading ? (
-                    <p className='text-sm'>Loading…</p>
-                ) : err ? (
-                    <Card className='rounded-3xl'>
-                        <CardHeader>
-                            <CardTitle className='text-base'>
-                                Couldn&apos;t load your purchases
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className='text-sm'>
-                            {err}
-                            <div className='mt-4'>
-                                <Button
-                                    asChild
-                                    variant='outline'>
-                                    <Link href='/#courses'>Browse courses</Link>
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ) : items.length === 0 ? (
-                    <Card className='rounded-3xl'>
-                        <CardHeader>
-                            <CardTitle className='text-base'>
-                                No purchases yet
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className='text-sm'>
-                            When you purchase a course, it will appear here.
-                            <div className='mt-4'>
-                                <Button asChild>
-                                    <Link href='/#courses'>Browse courses</Link>
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-                        {items
-                            .flatMap(row => row.courses ?? [])
-                            .filter(Boolean)
-                            .map(c => (
-                                <Link
-                                    key={c.id}
-                                    href={`/library/${c.slug}`}>
-                                    <Card className='rounded-3xl transition-shadow hover:shadow-md'>
-                                        <CardHeader>
-                                            <CardTitle className='text-lg'>
-                                                {c.title}
-                                            </CardTitle>
-                                            {c.subtitle ? (
-                                                <p className='text-sm'>
-                                                    {c.subtitle}
-                                                </p>
-                                            ) : null}
-                                        </CardHeader>
-                                        <CardContent className='text-sm'>
-                                            Open course →
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))}
-                    </div>
-                )}
-            </section>
+            )}
         </div>
     );
 }
