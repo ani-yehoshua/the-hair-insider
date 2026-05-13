@@ -57,7 +57,7 @@ export default function InsideTheCourseClient() {
                                 <Button
                                     asChild
                                     className='h-12 px-6'>
-                                    <Link href='/#courses'>Browse Courses</Link>
+                                    <Link href='/#courses'>Shop</Link>
                                 </Button>
                                 <Button
                                     asChild
@@ -120,12 +120,12 @@ export default function InsideTheCourseClient() {
                                         </li>
                                         <li>
                                             <p className='font-medium text-foreground'>
-                                                Downloadable workbook
+                                                Interactive workbook
                                             </p>
                                             <p>
-                                                Checklists and PDFs that come
-                                                home with you &mdash; yours to
-                                                keep and reference forever.
+                                                A guided journal built into the
+                                                site &mdash; yours to keep and
+                                                reference forever.
                                             </p>
                                         </li>
                                         <li>

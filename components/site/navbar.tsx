@@ -159,7 +159,7 @@ export function Navbar() {
                     </DropdownMenu>
 
                     <Button asChild>
-                        <Link href='/#courses'>View courses</Link>
+                        <Link href='/#courses'>Shop</Link>
                     </Button>
                 </div>
 
@@ -214,7 +214,7 @@ export function Navbar() {
                                         asChild
                                         className='justify-start'>
                                         <Link href='/#courses'>
-                                            View courses
+                                            Shop
                                         </Link>
                                     </Button>
                                 </SheetClose>

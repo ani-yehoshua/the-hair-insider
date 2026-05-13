@@ -6,7 +6,7 @@ const SITE_LINKS = [
     { href: "/what-is-it", label: "What Is It?" },
     { href: "/inside-the-course", label: "Inside The Course" },
     { href: "/meet-your-educator", label: "Meet Your Educator" },
-    { href: "/#courses", label: "Courses" },
+    { href: "/#courses", label: "Shop" },
     { href: "/faq", label: "FAQ" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact Us" },

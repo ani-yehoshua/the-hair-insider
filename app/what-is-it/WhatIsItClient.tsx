@@ -60,7 +60,7 @@ export default function WhatIsItClient() {
                                 <Button
                                     asChild
                                     className='h-12 px-6'>
-                                    <Link href='/#courses'>Browse Courses</Link>
+                                    <Link href='/#courses'>Shop</Link>
                                 </Button>
                             </div>
                         </div>

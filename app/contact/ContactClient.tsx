@@ -55,7 +55,7 @@ export default function ContactClient() {
                                         <Link
                                             href='/#courses'
                                             className='font-medium text-foreground underline underline-offset-4'>
-                                            View courses
+                                            Shop
                                         </Link>
                                         .
                                     </p>

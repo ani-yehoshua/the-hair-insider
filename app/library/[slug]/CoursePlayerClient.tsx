@@ -321,7 +321,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                         {err}
                         <div className='mt-4 flex gap-3'>
                             <Button asChild>
-                                <Link href='/#courses'>View courses</Link>
+                                <Link href='/#courses'>Shop</Link>
                             </Button>
                             <Button
                                 asChild
