@@ -57,23 +57,57 @@ export function LibraryTab() {
     }, [router]);
 
     return (
-        <>
-            <div className='flex items-end justify-between gap-6'>
-                <div>
-                    <h2 className='bg-background/50 rounded-3xl px-6 py-4 text-2xl font-semibold tracking-tight'>
-                        My Courses
-                    </h2>
-                </div>
-            </div>
+        <div className='space-y-10'>
+            {/* Free guides */}
+            <section>
+                <h2 className='text-lg font-semibold tracking-tight mb-4'>
+                    Guides
+                </h2>
+                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                    <Link href='/7-day-moisture-reset'>
+                        <Card className='rounded-3xl transition-shadow hover:shadow-md'>
+                            <CardHeader>
+                                <CardTitle className='text-base'>
+                                    7-Day Moisture Reset
+                                </CardTitle>
+                                <p className='text-sm text-muted-foreground'>
+                                    Free · Interactive guide
+                                </p>
+                            </CardHeader>
+                            <CardContent className='text-sm'>
+                                Open guide →
+                            </CardContent>
+                        </Card>
+                    </Link>
 
-            <div className='mt-6'>
+                    <Card className='rounded-3xl opacity-50 cursor-not-allowed'>
+                        <CardHeader>
+                            <CardTitle className='text-base'>
+                                21-Day Routine Workbook
+                            </CardTitle>
+                            <p className='text-sm text-muted-foreground'>
+                                Coming soon
+                            </p>
+                        </CardHeader>
+                        <CardContent className='text-sm'>
+                            Available soon
+                        </CardContent>
+                    </Card>
+                </div>
+            </section>
+
+            {/* Purchased courses */}
+            <section>
+                <h2 className='text-lg font-semibold tracking-tight mb-4'>
+                    Courses
+                </h2>
                 {loading ? (
                     <p className='text-sm'>Loading…</p>
                 ) : err ? (
                     <Card className='rounded-3xl'>
                         <CardHeader>
                             <CardTitle className='text-base'>
-                                Couldn’t load your library
+                                Couldn&apos;t load your purchases
                             </CardTitle>
                         </CardHeader>
                         <CardContent className='text-sm'>
@@ -91,7 +125,7 @@ export function LibraryTab() {
                     <Card className='rounded-3xl'>
                         <CardHeader>
                             <CardTitle className='text-base'>
-                                No access yet
+                                No purchases yet
                             </CardTitle>
                         </CardHeader>
                         <CardContent className='text-sm'>
@@ -131,7 +165,7 @@ export function LibraryTab() {
                             ))}
                     </div>
                 )}
-            </div>
-        </>
+            </section>
+        </div>
     );
 }

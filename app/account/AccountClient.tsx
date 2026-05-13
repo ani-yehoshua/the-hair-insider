@@ -34,11 +34,7 @@ export default function AccountClient() {
     const [displayName, setDisplayName] = React.useState("");
     const [email, setEmail] = React.useState("");
 
-    // forms
     const [newEmail, setNewEmail] = React.useState("");
-    const [pw1, setPw1] = React.useState("");
-    const [pw2, setPw2] = React.useState("");
-    const [showPw, setShowPw] = React.useState(false);
 
     const [status, setStatus] = React.useState<Status>("idle");
     const [message, setMessage] = React.useState("");
@@ -126,37 +122,6 @@ export default function AccountClient() {
         }
     }
 
-    async function onChangePassword(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
-        setStatus("saving");
-        setMessage("");
-
-        if (pw1.length < 8) {
-            setStatus("error");
-            setMessage("Password must be at least 8 characters.");
-            return;
-        }
-        if (pw1 !== pw2) {
-            setStatus("error");
-            setMessage("Passwords do not match.");
-            return;
-        }
-
-        try {
-            const { error } = await supabase.auth.updateUser({ password: pw1 });
-            if (error) throw error;
-
-            setPw1("");
-            setPw2("");
-
-            setStatus("success");
-            setMessage("Password updated.");
-        } catch (err: any) {
-            setStatus("error");
-            setMessage(err?.message ?? "Could not update password.");
-        }
-    }
-
     async function onSignOut() {
         await supabase.auth.signOut();
         router.replace("/");
@@ -188,13 +153,12 @@ export default function AccountClient() {
                         value={tab}
                         onValueChange={setTab}
                         className='w-full'>
-                        <TabsList className='grid w-full grid-cols-4'>
+                        <TabsList className='grid w-full grid-cols-3'>
                             <TabsTrigger value='library'>Library</TabsTrigger>
                             <TabsTrigger value='hair-profile'>
                                 Hair Profile
                             </TabsTrigger>
                             <TabsTrigger value='profile'>Profile</TabsTrigger>
-                            <TabsTrigger value='security'>Security</TabsTrigger>
                         </TabsList>
 
                         <TabsContent
@@ -211,23 +175,23 @@ export default function AccountClient() {
 
                         <TabsContent
                             value='profile'
-                            className='mt-6'>
+                            className='mt-6 space-y-6'>
                             <Card className='rounded-3xl'>
                                 <CardHeader>
                                     <CardTitle className='text-base'>
-                                        Profile
+                                        Display name
                                     </CardTitle>
                                     <CardDescription>
-                                        Basic account details.
+                                        How you appear across the site.
                                     </CardDescription>
                                 </CardHeader>
-                                <CardContent className='space-y-6'>
+                                <CardContent>
                                     <form
                                         onSubmit={onSaveDisplayName}
                                         className='space-y-4'>
                                         <div className='space-y-2 w-1/4'>
                                             <Label htmlFor='displayName'>
-                                                Display name
+                                                Name
                                             </Label>
                                             <Input
                                                 id='displayName'
@@ -241,7 +205,6 @@ export default function AccountClient() {
                                                 disabled={status === "saving"}
                                             />
                                         </div>
-
                                         <Button
                                             type='submit'
                                             disabled={status === "saving"}>
@@ -250,39 +213,17 @@ export default function AccountClient() {
                                                 : "Save"}
                                         </Button>
                                     </form>
-
-                                    {status !== "idle" ? (
-                                        <Alert
-                                            className={
-                                                status === "error"
-                                                    ? "bg-red-400"
-                                                    : "bg-green-400"
-                                            }>
-                                            <AlertTitle>
-                                                {status === "error"
-                                                    ? "Couldn’t save"
-                                                    : "Saved"}
-                                            </AlertTitle>
-                                            <AlertDescription className='text-foreground'>
-                                                {message}
-                                            </AlertDescription>
-                                        </Alert>
-                                    ) : null}
                                 </CardContent>
                             </Card>
-                        </TabsContent>
 
-                        <TabsContent
-                            value='security'
-                            className='mt-6 space-y-6'>
                             <Card className='rounded-3xl'>
                                 <CardHeader>
                                     <CardTitle className='text-base'>
-                                        Change email
+                                        Email address
                                     </CardTitle>
                                     <CardDescription>
-                                        You may be asked to confirm this change
-                                        via email.
+                                        You'll receive a confirmation link when
+                                        you change this.
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
@@ -314,81 +255,6 @@ export default function AccountClient() {
                                 </CardContent>
                             </Card>
 
-                            <Card className='rounded-3xl'>
-                                <CardHeader>
-                                    <CardTitle className='text-base'>
-                                        Change password
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Minimum 8 characters.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form
-                                        onSubmit={onChangePassword}
-                                        className='space-y-4'>
-                                        <div className='space-y-2 w-1/4'>
-                                            <Label htmlFor='pw1'>
-                                                New password
-                                            </Label>
-                                            <div className='relative'>
-                                                <Input
-                                                    id='pw1'
-                                                    type={
-                                                        showPw
-                                                            ? "text"
-                                                            : "password"
-                                                    }
-                                                    autoComplete='new-password'
-                                                    value={pw1}
-                                                    onChange={e =>
-                                                        setPw1(e.target.value)
-                                                    }
-                                                    disabled={
-                                                        status === "saving"
-                                                    }
-                                                    className='pr-20'
-                                                />
-                                                <button
-                                                    type='button'
-                                                    onClick={() =>
-                                                        setShowPw(v => !v)
-                                                    }
-                                                    className='absolute right-3 top-1/2 -translate-y-1/2 text-xs underline underline-offset-4'>
-                                                    {showPw ? "Hide" : "Show"}
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div className='space-y-2 w-1/4'>
-                                            <Label htmlFor='pw2'>
-                                                Confirm password
-                                            </Label>
-                                            <Input
-                                                id='pw2'
-                                                type={
-                                                    showPw ? "text" : "password"
-                                                }
-                                                autoComplete='new-password'
-                                                value={pw2}
-                                                onChange={e =>
-                                                    setPw2(e.target.value)
-                                                }
-                                                disabled={status === "saving"}
-                                            />
-                                        </div>
-
-                                        <Button
-                                            type='submit'
-                                            disabled={status === "saving"}>
-                                            {status === "saving"
-                                                ? "Saving…"
-                                                : "Update password"}
-                                        </Button>
-                                    </form>
-                                </CardContent>
-                            </Card>
-
                             {status !== "idle" ? (
                                 <Alert
                                     className={
@@ -398,8 +264,8 @@ export default function AccountClient() {
                                     }>
                                     <AlertTitle>
                                         {status === "error"
-                                            ? "Couldn’t update"
-                                            : "Success"}
+                                            ? "Couldn't save"
+                                            : "Saved"}
                                     </AlertTitle>
                                     <AlertDescription className='text-foreground'>
                                         {message}
