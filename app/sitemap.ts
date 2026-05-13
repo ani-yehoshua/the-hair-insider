@@ -12,5 +12,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${siteUrl}/contact`, lastModified: new Date() },
         { url: `${siteUrl}/privacy`, lastModified: new Date() },
         { url: `${siteUrl}/terms`, lastModified: new Date() },
+        { url: `${siteUrl}/7-day-moisture-reset`, lastModified: new Date() },
     ];
 }

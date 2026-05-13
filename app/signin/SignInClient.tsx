@@ -14,168 +14,72 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Overlay } from "@/components/site/Overlay";
 import { Navbar } from "@/components/site/navbar";
-import { Eye, EyeOff } from "lucide-react";
 
+type Step = "email" | "code";
 type Status = "idle" | "sending" | "success" | "error";
-type Mode = "signin" | "signup";
 
 function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
-function PasswordField({
-    id,
-    label,
-    value,
-    onChange,
-    disabled,
-    autoComplete,
-    placeholder,
-}: {
-    id: string;
-    label: string;
-    value: string;
-    onChange: (v: string) => void;
-    disabled?: boolean;
-    autoComplete?: string;
-    placeholder?: string;
-}) {
-    const [show, setShow] = React.useState(false);
-
-    return (
-        <div className='space-y-2'>
-            <Label htmlFor={id}>{label}</Label>
-            <div className='relative'>
-                <Input
-                    id={id}
-                    type={show ? "text" : "password"}
-                    autoComplete={autoComplete}
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={e => onChange(e.target.value)}
-                    disabled={disabled}
-                    className='pr-10'
-                />
-                <button
-                    type='button'
-                    aria-label={show ? "Hide password" : "Show password"}
-                    onClick={() => setShow(s => !s)}
-                    disabled={disabled}
-                    className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-50'>
-                    {show ? (
-                        <EyeOff className='h-4 w-4' />
-                    ) : (
-                        <Eye className='h-4 w-4' />
-                    )}
-                </button>
-            </div>
-        </div>
-    );
-}
-
 export default function SignInClient() {
-    const [mode, setMode] = React.useState<Mode>("signin");
+    const [step, setStep] = React.useState<Step>("email");
     const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [confirmPassword, setConfirmPassword] = React.useState("");
+    const [code, setCode] = React.useState("");
     const [status, setStatus] = React.useState<Status>("idle");
     const [message, setMessage] = React.useState("");
 
-    const params =
+    const destination =
         typeof window !== "undefined"
-            ? new URLSearchParams(window.location.search)
-            : null;
+            ? new URLSearchParams(window.location.search).get("next") || "/"
+            : "/";
 
-    const destination = params?.get("next") || "/";
-
-    const canSubmit = React.useMemo(() => {
-        if (status === "sending") return false;
-        if (!isValidEmail(email)) return false;
-        if (!password || password.length < 8) return false;
-        if (mode === "signup" && password !== confirmPassword) return false;
-        return true;
-    }, [status, email, password, confirmPassword, mode]);
-
-    async function onSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    async function sendCode(e: React.FormEvent) {
         e.preventDefault();
-        setMessage("");
-
         if (!isValidEmail(email)) {
             setStatus("error");
             setMessage("Please enter a valid email address.");
             return;
         }
-
-        if (password.length < 8) {
-            setStatus("error");
-            setMessage("Password must be at least 8 characters.");
-            return;
-        }
-
-        if (mode === "signup" && password !== confirmPassword) {
-            setStatus("error");
-            setMessage("Passwords do not match.");
-            return;
-        }
-
         setStatus("sending");
-
-        if (params?.get("next")) {
-            localStorage.setItem("postAuthRedirect", params.get("next")!);
+        setMessage("");
+        const { error } = await supabase.auth.signInWithOtp({
+            email: email.trim(),
+            options: { shouldCreateUser: true },
+        });
+        if (error) {
+            setStatus("error");
+            setMessage(error.message);
+            return;
         }
+        setStatus("idle");
+        setStep("code");
+    }
 
-        try {
-            // Sign in
-            if (mode === "signin") {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
-                });
-                if (error) throw error;
-
-                const token = data.session?.access_token;
-                if (token) {
-                    fetch("/api/stripe/ensure-customer", {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({}),
-                    }).catch(() => {});
-                }
-
-                setStatus("success");
-                setMessage("Signed in. Redirecting…");
-                window.location.href = destination;
-                return;
-            }
-
-            // Sign up
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
-                },
-            });
-            if (error) throw error;
-
-            // If email confirmations are ON, session will be null until they confirm
-            if (!data.session) {
-                setStatus("success");
-                setMessage(
-                    "Check your email to confirm your account, then sign in.",
-                );
-                setMode("signin");
-                return;
-            }
-
-            // If confirmations are OFF, they may be signed in immediately
-            const token = data.session.access_token;
+    async function verifyCode(e: React.FormEvent) {
+        e.preventDefault();
+        if (code.trim().length !== 6) {
+            setStatus("error");
+            setMessage("Please enter the 6-digit code from your email.");
+            return;
+        }
+        setStatus("sending");
+        setMessage("");
+        const { data, error } = await supabase.auth.verifyOtp({
+            email: email.trim(),
+            token: code.trim(),
+            type: "email",
+        });
+        if (error) {
+            setStatus("error");
+            setMessage("Code is invalid or expired — request a new one.");
+            return;
+        }
+        const token = data.session?.access_token;
+        if (token) {
             fetch("/api/stripe/ensure-customer", {
                 method: "POST",
                 headers: {
@@ -184,40 +88,25 @@ export default function SignInClient() {
                 },
                 body: JSON.stringify({}),
             }).catch(() => {});
-
-            setStatus("success");
-            setMessage("Account created. Redirecting…");
-            window.location.href = destination;
-        } catch (err: any) {
-            setStatus("error");
-            setMessage(err?.message ?? "Something went wrong.");
         }
+        setStatus("success");
+        setMessage("Signed in. Redirecting…");
+        window.location.href = destination;
     }
 
-    async function onForgotPassword() {
-        setMessage("");
+    async function resendCode() {
         setStatus("sending");
-
-        try {
-            if (!isValidEmail(email)) {
-                setStatus("error");
-                setMessage("Enter your email above first.");
-                return;
-            }
-
-            try {
-                localStorage.removeItem("postAuthRedirect");
-            } catch {}
-
-            await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            });
-
-            setStatus("success");
-            setMessage("Check your email for a password reset link.");
-        } catch (err: any) {
+        setMessage("");
+        const { error } = await supabase.auth.signInWithOtp({
+            email: email.trim(),
+            options: { shouldCreateUser: true },
+        });
+        if (error) {
             setStatus("error");
-            setMessage(err?.message ?? "Could not send reset email.");
+            setMessage(error.message);
+        } else {
+            setStatus("idle");
+            setMessage("New code sent — check your inbox.");
         }
     }
 
@@ -241,125 +130,121 @@ export default function SignInClient() {
                         <Card className='rounded-3xl'>
                             <CardHeader>
                                 <CardTitle className='text-2xl'>
-                                    {mode === "signin"
+                                    {step === "email"
                                         ? "Sign in"
-                                        : "Create account"}
+                                        : "Check your email"}
                                 </CardTitle>
                                 <CardDescription>
-                                    {mode === "signin"
-                                        ? "Sign in with your email and password."
-                                        : "Create your account to access your library."}
+                                    {step === "email"
+                                        ? "Enter your email and we'll send you a sign-in code. No password needed."
+                                        : `We sent a 6-digit code to ${email}. It expires in 15 minutes.`}
                                 </CardDescription>
                             </CardHeader>
 
                             <CardContent className='space-y-6'>
-                                <form
-                                    onSubmit={onSubmit}
-                                    className='space-y-4'>
-                                    <div className='space-y-2'>
-                                        <Label htmlFor='email'>Email</Label>
-                                        <Input
-                                            id='email'
-                                            type='email'
-                                            autoComplete='email'
-                                            placeholder='you@example.com'
-                                            value={email}
-                                            onChange={e =>
-                                                setEmail(e.target.value)
-                                            }
-                                            disabled={status === "sending"}
-                                        />
-                                    </div>
-
-                                    <PasswordField
-                                        id='password'
-                                        label={
-                                            mode === "signin"
-                                                ? "Password"
-                                                : "Create a password"
-                                        }
-                                        value={password}
-                                        onChange={setPassword}
-                                        disabled={status === "sending"}
-                                        autoComplete={
-                                            mode === "signin"
-                                                ? "current-password"
-                                                : "new-password"
-                                        }
-                                        placeholder='Minimum 8 characters'
-                                    />
-
-                                    {mode === "signup" && (
-                                        <PasswordField
-                                            id='confirmPassword'
-                                            label='Confirm password'
-                                            value={confirmPassword}
-                                            onChange={setConfirmPassword}
-                                            disabled={status === "sending"}
-                                            autoComplete='new-password'
-                                            placeholder='Re-enter password'
-                                        />
-                                    )}
-
-                                    <Button
-                                        type='submit'
-                                        className='w-full'
-                                        disabled={!canSubmit}>
-                                        {status === "sending"
-                                            ? "Loading…"
-                                            : mode === "signin"
-                                              ? "Sign in"
-                                              : "Create account"}
-                                    </Button>
-
-                                    <div className='flex items-center justify-between text-sm w-full'>
-                                        <button
-                                            type='button'
-                                            className='underline underline-offset-4'
-                                            onClick={() => {
-                                                setStatus("idle");
-                                                setMessage("");
-                                                setMode(
-                                                    mode === "signin"
-                                                        ? "signup"
-                                                        : "signin",
-                                                );
-                                            }}>
-                                            {mode === "signin"
-                                                ? "Create account"
-                                                : "Back to sign in"}
-                                        </button>
-
-                                        {mode === "signin" ? (
+                                {step === "email" ? (
+                                    <form
+                                        onSubmit={sendCode}
+                                        className='space-y-4'>
+                                        <div className='space-y-2'>
+                                            <Label htmlFor='email'>Email</Label>
+                                            <Input
+                                                id='email'
+                                                type='email'
+                                                autoComplete='email'
+                                                placeholder='you@example.com'
+                                                value={email}
+                                                onChange={e =>
+                                                    setEmail(e.target.value)
+                                                }
+                                                disabled={status === "sending"}
+                                            />
+                                        </div>
+                                        <Button
+                                            type='submit'
+                                            className='w-full'
+                                            disabled={
+                                                status === "sending" ||
+                                                !isValidEmail(email)
+                                            }>
+                                            {status === "sending"
+                                                ? "Sending…"
+                                                : "Send code"}
+                                        </Button>
+                                    </form>
+                                ) : (
+                                    <form
+                                        onSubmit={verifyCode}
+                                        className='space-y-4'>
+                                        <div className='space-y-2'>
+                                            <Label htmlFor='code'>
+                                                6-digit code
+                                            </Label>
+                                            <Input
+                                                id='code'
+                                                type='text'
+                                                inputMode='numeric'
+                                                autoComplete='one-time-code'
+                                                placeholder='123456'
+                                                maxLength={6}
+                                                value={code}
+                                                onChange={e =>
+                                                    setCode(
+                                                        e.target.value.replace(
+                                                            /\D/g,
+                                                            "",
+                                                        ),
+                                                    )
+                                                }
+                                                disabled={status === "sending"}
+                                                className='text-center tracking-[0.4em] text-lg'
+                                            />
+                                        </div>
+                                        <Button
+                                            type='submit'
+                                            className='w-full'
+                                            disabled={
+                                                status === "sending" ||
+                                                code.trim().length !== 6
+                                            }>
+                                            {status === "sending"
+                                                ? "Verifying…"
+                                                : "Sign in"}
+                                        </Button>
+                                        <div className='flex items-center justify-between text-sm'>
                                             <button
                                                 type='button'
                                                 className='underline underline-offset-4'
-                                                onClick={onForgotPassword}
-                                                disabled={status === "sending"}>
-                                                Forgot password
+                                                onClick={() => {
+                                                    setStep("email");
+                                                    setCode("");
+                                                    setStatus("idle");
+                                                    setMessage("");
+                                                }}>
+                                                Wrong email?
                                             </button>
-                                        ) : (
-                                            <span className='text-muted-foreground'>
-                                                Already have an account?
-                                            </span>
-                                        )}
-                                    </div>
-                                </form>
-
-                                {status === "success" && (
-                                    <Alert className='bg-green-400'>
-                                        <AlertTitle>Success</AlertTitle>
-                                        <AlertDescription className='text-foreground'>
-                                            {message}
-                                        </AlertDescription>
-                                    </Alert>
+                                            <button
+                                                type='button'
+                                                className='underline underline-offset-4'
+                                                onClick={resendCode}
+                                                disabled={
+                                                    status === "sending"
+                                                }>
+                                                Resend code
+                                            </button>
+                                        </div>
+                                    </form>
                                 )}
 
-                                {status === "error" && (
-                                    <Alert className='bg-red-400'>
-                                        <AlertTitle>
-                                            Something went wrong
-                                        </AlertTitle>
+                                {message && (
+                                    <Alert
+                                        className={
+                                            status === "error"
+                                                ? "bg-red-400"
+                                                : status === "success"
+                                                  ? "bg-green-400"
+                                                  : ""
+                                        }>
                                         <AlertDescription className='text-foreground'>
                                             {message}
                                         </AlertDescription>

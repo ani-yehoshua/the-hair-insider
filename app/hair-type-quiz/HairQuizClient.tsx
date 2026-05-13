@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { FadeIn } from "@/components/site/FadeIn";
 import { supabase } from "@/lib/supabase/client";
-import { useAuth } from "@/lib/auth/useAuth";
 import { QUIZ_QUESTIONS } from "@/lib/quiz/questions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,6 @@ type Answers = Record<string, string | string[]>;
 
 export default function HairQuizClient() {
     const router = useRouter();
-    const { signedIn, loading: authLoading } = useAuth();
 
     const [step, setStep] = React.useState(0);
     const [answers, setAnswers] = React.useState<Answers>({});
@@ -36,12 +34,6 @@ export default function HairQuizClient() {
     const current = QUIZ_QUESTIONS[step];
     const progress = Math.round((step / total) * 100);
 
-    // Auth guard
-    React.useEffect(() => {
-        if (!authLoading && !signedIn) {
-            router.replace(`/signin?next=/hair-type-quiz`);
-        }
-    }, [authLoading, signedIn, router]);
 
     function getAnswer(questionId: string): string | string[] {
         return (
@@ -104,11 +96,19 @@ export default function HairQuizClient() {
         setErr(null);
         setSubmitting(true);
 
-        try {
-            const { data: sessionData } = await supabase.auth.getSession();
-            const token = sessionData.session?.access_token;
-            if (!token) throw new Error("Not authenticated.");
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
 
+        if (!token) {
+            // Not signed in — save answers and send to sign-in
+            try {
+                sessionStorage.setItem("pendingQuizAnswers", JSON.stringify(answers));
+            } catch {}
+            window.location.href = "/signin?next=/hair-type-quiz/results";
+            return;
+        }
+
+        try {
             const res = await fetch("/api/hair-profile/submit", {
                 method: "POST",
                 headers: {
@@ -132,8 +132,6 @@ export default function HairQuizClient() {
         triggerOnce: true,
         threshold: 0.1,
     });
-
-    if (authLoading || !signedIn) return null;
 
     const isLast = step === total - 1;
 

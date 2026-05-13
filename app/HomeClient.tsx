@@ -420,11 +420,9 @@ export default function HomeClient() {
                                                 asChild
                                                 variant='secondary'
                                                 className='h-12 px-6'>
-                                                <a
-                                                    href='https://vbbazoujjawlegemwyrd.supabase.co/storage/v1/object/public/hair-insider-bucket/Files/The%20Ultimate%20Haircare%20Checklist.pdf'
-                                                    download>
-                                                    Download the Free Checklist
-                                                </a>
+                                                <Link href='/7-day-moisture-reset'>
+                                                    Get the Free Guide
+                                                </Link>
                                             </Button>
                                         </div>
                                     </div>

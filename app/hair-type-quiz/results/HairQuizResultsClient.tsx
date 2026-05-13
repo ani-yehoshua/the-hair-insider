@@ -44,12 +44,6 @@ export default function HairQuizResultsClient() {
     const [err, setErr] = React.useState<string | null>(null);
 
     React.useEffect(() => {
-        if (!authLoading && !signedIn) {
-            router.replace("/signin?next=/hair-type-quiz/results");
-        }
-    }, [authLoading, signedIn, router]);
-
-    React.useEffect(() => {
         if (authLoading || !signedIn) return;
 
         const load = async () => {
@@ -57,6 +51,22 @@ export default function HairQuizResultsClient() {
             const { data: sessionData } = await supabase.auth.getSession();
             const token = sessionData.session?.access_token;
             if (!token) return;
+
+            // Submit any pending answers saved before sign-in
+            try {
+                const pending = sessionStorage.getItem("pendingQuizAnswers");
+                if (pending) {
+                    sessionStorage.removeItem("pendingQuizAnswers");
+                    await fetch("/api/hair-profile/submit", {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ answers: JSON.parse(pending) }),
+                    });
+                }
+            } catch {}
 
             const res = await fetch("/api/hair-profile", {
                 headers: { Authorization: `Bearer ${token}` },
@@ -99,7 +109,32 @@ export default function HairQuizResultsClient() {
         threshold: 0.1,
     });
 
-    if (authLoading || !signedIn) return null;
+    if (authLoading) return null;
+
+    if (!signedIn) {
+        return (
+            <div className='relative min-h-[100dvh] text-foreground'>
+                <Overlay />
+                <Navbar />
+                <main className='mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center gap-6'>
+                    <h1 className='text-2xl font-semibold tracking-tight'>
+                        Your results are ready
+                    </h1>
+                    <p className='text-sm text-muted-foreground'>
+                        Sign in to see your personalized hair profile and product recommendations.
+                    </p>
+                    <Button asChild>
+                        <Link href='/signin?next=/hair-type-quiz/results'>
+                            Sign in to view results
+                        </Link>
+                    </Button>
+                    <Button asChild variant='secondary'>
+                        <Link href='/hair-type-quiz'>Retake the quiz</Link>
+                    </Button>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className='relative min-h-[100dvh] text-foreground'>
