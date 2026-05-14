@@ -8,13 +8,11 @@ export async function GET(req: Request) {
     if (code) {
         const supabase = await createSupabaseServerClient();
         const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-        if (error) {
-            console.error('Code exchange failed:', error.message);
-            return NextResponse.redirect(
-                new URL('/signin?error=confirm', url.origin),
-            );
-        }
+        // A failed exchange here is expected on cross-device confirmation (PKCE
+        // verifier lives on the initiating browser, not the confirming device).
+        // Supabase already confirmed the email before this redirect, so we can
+        // proceed regardless.
+        if (error) console.error('Code exchange failed:', error.message);
     }
 
     return NextResponse.redirect(new URL('/auth/confirmed', url.origin));
