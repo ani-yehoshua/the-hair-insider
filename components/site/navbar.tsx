@@ -43,6 +43,15 @@ export function Navbar() {
         router.push("/");
     }
 
+    function goToShop() {
+        const el = document.getElementById("shop");
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+        } else {
+            router.push("/#shop");
+        }
+    }
+
     return (
         <header
             className='top-0 z-50 border-b bg-background'
@@ -158,9 +167,7 @@ export function Navbar() {
                         </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <Button asChild>
-                        <Link href='/#courses'>Shop</Link>
-                    </Button>
+                    <Button onClick={goToShop}>Shop</Button>
                 </div>
 
                 {/* Mobile hamburger */}
@@ -211,11 +218,9 @@ export function Navbar() {
                                 <SheetClose asChild>
                                     <Button
                                         variant='ghost'
-                                        asChild
-                                        className='justify-start'>
-                                        <Link href='/#courses'>
-                                            Shop
-                                        </Link>
+                                        className='justify-start'
+                                        onClick={goToShop}>
+                                        Shop
                                     </Button>
                                 </SheetClose>
                                 {!loading && signedIn ? (
