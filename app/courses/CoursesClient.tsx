@@ -7,7 +7,6 @@ import { useInView } from "react-intersection-observer";
 import { FadeIn } from "@/components/site/FadeIn";
 import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
-import { useAuth } from "@/lib/auth/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

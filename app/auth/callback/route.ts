@@ -17,5 +17,5 @@ export async function GET(req: Request) {
         }
     }
 
-    return NextResponse.redirect(new URL('/auth/callback/finalize', url.origin));
+    return NextResponse.redirect(new URL('/auth/confirmed', url.origin));
 }

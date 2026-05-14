@@ -334,7 +334,7 @@ function WorkbookCard({
                     type='button'
                     onClick={() => setOpen(v => !v)}
                     className='flex w-full items-center justify-between text-sm font-medium'>
-                    Workbook details
+                    Product details
                     {open ? (
                         <ChevronUp className='h-4 w-4' />
                     ) : (

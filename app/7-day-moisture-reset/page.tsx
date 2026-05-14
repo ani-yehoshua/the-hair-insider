@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import FreeGuideClient from "./FreeGuideClient";
 
 export const metadata: Metadata = {
@@ -39,6 +41,11 @@ export const metadata: Metadata = {
     },
 };
 
-export default function FreeGuidePage() {
+export default async function FreeGuidePage() {
+    const supabase = await createSupabaseServerClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect("/signin?next=/7-day-moisture-reset");
     return <FreeGuideClient />;
 }

@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import HairQuizClient from "./HairQuizClient";
 
 export const metadata: Metadata = {
@@ -8,6 +10,11 @@ export const metadata: Metadata = {
     robots: { index: false, follow: false },
 };
 
-export default function HairQuizPage() {
+export default async function HairQuizPage() {
+    const supabase = await createSupabaseServerClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect("/signin?next=/hair-type-quiz");
     return <HairQuizClient />;
 }

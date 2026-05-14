@@ -21,6 +21,32 @@ import { Navbar } from "@/components/site/navbar";
 type Step = "email" | "code";
 type Status = "idle" | "sending" | "success" | "error";
 
+type SignInContext = { eyebrow: string; reason: string };
+
+function getContext(next: string): SignInContext | null {
+    if (next.startsWith("/7-day-moisture-reset"))
+        return {
+            eyebrow: "Free guide",
+            reason: "Create an account to save your progress. This will let you pick back up from any device, anytime.",
+        };
+    if (next.startsWith("/workbook"))
+        return {
+            eyebrow: "Hair Growth Workbook",
+            reason: "Sign in so your workbook entries are saved to your account and always there when you need them.",
+        };
+    if (next.startsWith("/hair-type-quiz"))
+        return {
+            eyebrow: "Hair Type Quiz",
+            reason: "Create an account to save your hair profile and come back to your results anytime.",
+        };
+    if (next.startsWith("/courses") || next.includes("checkout"))
+        return {
+            eyebrow: "Almost there",
+            reason: "You'll need an account so we know exactly who to grant access to — it only takes a second.",
+        };
+    return null;
+}
+
 function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
@@ -37,6 +63,8 @@ export default function SignInClient() {
             ? new URLSearchParams(window.location.search).get("next") || "/"
             : "/";
 
+    const context = getContext(destination);
+
     async function sendCode(e: React.FormEvent) {
         e.preventDefault();
         if (!isValidEmail(email)) {
@@ -48,7 +76,10 @@ export default function SignInClient() {
         setMessage("");
         const { error } = await supabase.auth.signInWithOtp({
             email: email.trim(),
-            options: { shouldCreateUser: true },
+            options: {
+                shouldCreateUser: true,
+                emailRedirectTo: `${window.location.origin}/auth/callback`,
+            },
         });
         if (error) {
             setStatus("error");
@@ -89,6 +120,11 @@ export default function SignInClient() {
                 body: JSON.stringify({}),
             }).catch(() => {});
         }
+        fetch("/api/mailchimp/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email.trim() }),
+        }).catch(() => {});
         setStatus("success");
         setMessage("Signed in. Redirecting…");
         window.location.href = destination;
@@ -99,7 +135,10 @@ export default function SignInClient() {
         setMessage("");
         const { error } = await supabase.auth.signInWithOtp({
             email: email.trim(),
-            options: { shouldCreateUser: true },
+            options: {
+                shouldCreateUser: true,
+                emailRedirectTo: `${window.location.origin}/auth/callback`,
+            },
         });
         if (error) {
             setStatus("error");
@@ -128,6 +167,18 @@ export default function SignInClient() {
                     delayMs={100}>
                     <div className='w-[350px] max-w-md'>
                         <Card className='rounded-3xl'>
+                            {context && step === "email" && (
+                                <div className='px-6 pt-6 pb-0'>
+                                    <div className='rounded-2xl bg-muted px-4 py-3 space-y-1'>
+                                        <p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+                                            {context.eyebrow}
+                                        </p>
+                                        <p className='text-sm leading-6'>
+                                            {context.reason}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                             <CardHeader>
                                 <CardTitle className='text-2xl'>
                                     {step === "email"
@@ -227,12 +278,28 @@ export default function SignInClient() {
                                                 type='button'
                                                 className='underline underline-offset-4'
                                                 onClick={resendCode}
-                                                disabled={
-                                                    status === "sending"
-                                                }>
+                                                disabled={status === "sending"}>
                                                 Resend code
                                             </button>
                                         </div>
+                                        <p className='text-xs text-muted-foreground leading-5 border-t pt-3'>
+                                            New here? You may have received a
+                                            confirmation link instead of a code.
+                                            Click it to verify your email (on
+                                            any device), then{" "}
+                                            <button
+                                                type='button'
+                                                className='underline underline-offset-2'
+                                                onClick={() => {
+                                                    setStep("email");
+                                                    setCode("");
+                                                    setStatus("idle");
+                                                    setMessage("");
+                                                }}>
+                                                come back and sign in
+                                            </button>
+                                            .
+                                        </p>
                                     </form>
                                 )}
 
