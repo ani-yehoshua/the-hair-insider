@@ -51,6 +51,8 @@ function CourseCard({
     buying,
     buyError,
     onBuy,
+    splitImages,
+    savingsBadge,
 }: {
     course: Course;
     owned: boolean;
@@ -59,6 +61,8 @@ function CourseCard({
     buying: boolean;
     buyError: string | null;
     onBuy: (slug: string) => void;
+    splitImages?: [string | null, string | null];
+    savingsBadge?: string;
 }) {
     const [open, setOpen] = React.useState(false);
 
@@ -66,7 +70,36 @@ function CourseCard({
         <Card
             id={course.slug}
             className='rounded-3xl overflow-hidden p-0'>
-            {course.cover_image_url ? (
+            {splitImages ? (
+                <div className='relative aspect-[16/10] w-full flex overflow-hidden'>
+                    <div className='relative w-1/2 h-full'>
+                        {splitImages[0] ? (
+                            <Image
+                                src={splitImages[0]}
+                                alt='Mini course cover'
+                                fill
+                                className='object-cover'
+                                priority
+                            />
+                        ) : (
+                            <div className='w-full h-full bg-muted' />
+                        )}
+                    </div>
+                    <div className='relative w-1/2 h-full'>
+                        {splitImages[1] ? (
+                            <Image
+                                src={splitImages[1]}
+                                alt='Workbook cover'
+                                fill
+                                className='object-cover'
+                                priority
+                            />
+                        ) : (
+                            <div className='w-full h-full bg-muted/60' />
+                        )}
+                    </div>
+                </div>
+            ) : course.cover_image_url ? (
                 <div className='relative aspect-[16/10] w-full'>
                     <Image
                         src={course.cover_image_url}
@@ -106,9 +139,16 @@ function CourseCard({
                 )}
 
                 {course.stripe_price_id && !owned && (
-                    <p className='text-3xl font-semibold tracking-tight'>
-                        {priceText ?? "—"}
-                    </p>
+                    <div className='flex items-center gap-3'>
+                        <p className='text-3xl font-semibold tracking-tight'>
+                            {priceText ?? "—"}
+                        </p>
+                        {savingsBadge && (
+                            <span className='rounded-full bg-rose-500 text-white text-xs font-semibold px-3 py-1'>
+                                {savingsBadge}
+                            </span>
+                        )}
+                    </div>
                 )}
 
                 {owned && (
@@ -146,7 +186,7 @@ function CourseCard({
                     type='button'
                     onClick={() => setOpen(v => !v)}
                     className='flex w-full items-center justify-between text-sm font-medium'>
-                    Course details
+                    Product details
                     {open ? (
                         <ChevronUp className='h-4 w-4' />
                     ) : (
@@ -162,7 +202,7 @@ function CourseCard({
                             : "grid-rows-[0fr] opacity-0",
                     ].join(" ")}>
                     <div className='overflow-hidden'>
-                        <div className='space-y-4 pt-1 pb-1'>
+                        <div className='space-y-4 py-1'>
                             {course.overview_video_url && (
                                 <div className='rounded-2xl overflow-hidden aspect-video'>
                                     <iframe
@@ -189,7 +229,7 @@ function CourseCard({
                                     <ul className='space-y-1.5 text-xs'>
                                         <li>High-end industry knowledge</li>
                                         <li>Clear routine guidance</li>
-                                        <li>Downloadable PDFs</li>
+                                        <li>Interactive free guide</li>
                                         <li>Lifetime access</li>
                                     </ul>
                                 </div>
@@ -206,6 +246,120 @@ function CourseCard({
                                     </ul>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+function WorkbookCard({
+    course,
+    owned,
+    priceText,
+    buying,
+    buyError,
+    onBuy,
+}: {
+    course: Course;
+    owned: boolean;
+    priceText: string | null;
+    buying: boolean;
+    buyError: string | null;
+    onBuy: (slug: string) => void;
+}) {
+    const [open, setOpen] = React.useState(false);
+
+    return (
+        <Card className='rounded-3xl overflow-hidden p-0'>
+            {course.cover_image_url ? (
+                <div className='relative aspect-[16/10] w-full'>
+                    <Image
+                        src={course.cover_image_url}
+                        alt={`${course.title} cover`}
+                        fill
+                        className='object-cover'
+                        priority
+                    />
+                </div>
+            ) : (
+                <div className='flex aspect-[16/10] items-center justify-center bg-muted'>
+                    <p className='text-sm'>Cover image</p>
+                </div>
+            )}
+            <CardContent className='px-5 pb-3 space-y-4'>
+                <div className='flex items-start justify-between gap-3'>
+                    <div className='space-y-1'>
+                        <h3 className='text-lg font-semibold leading-snug'>
+                            {course.title}
+                        </h3>
+                        {course.subtitle && (
+                            <p className='text-sm'>{course.subtitle}</p>
+                        )}
+                    </div>
+                    {owned && (
+                        <Badge className='shrink-0 bg-neutral-500'>Owned</Badge>
+                    )}
+                </div>
+
+                {course.stripe_price_id && !owned && (
+                    <p className='text-3xl font-semibold tracking-tight'>
+                        {priceText ?? "—"}
+                    </p>
+                )}
+
+                {owned ? (
+                    <Button
+                        asChild
+                        className='w-full h-11'>
+                        <Link href='/workbook'>Open workbook →</Link>
+                    </Button>
+                ) : (
+                    <Button
+                        className='w-full h-11'
+                        onClick={() => onBuy(course.slug)}
+                        disabled={buying || !course.stripe_price_id}>
+                        {buying ? "Redirecting…" : "Get the workbook"}
+                    </Button>
+                )}
+
+                {buyError && (
+                    <p className='text-sm text-destructive'>{buyError}</p>
+                )}
+
+                <Separator />
+
+                <button
+                    type='button'
+                    onClick={() => setOpen(v => !v)}
+                    className='flex w-full items-center justify-between text-sm font-medium'>
+                    Workbook details
+                    {open ? (
+                        <ChevronUp className='h-4 w-4' />
+                    ) : (
+                        <ChevronDown className='h-4 w-4' />
+                    )}
+                </button>
+
+                <div
+                    className={[
+                        "grid transition-all duration-300 ease-in-out",
+                        open
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0",
+                    ].join(" ")}>
+                    <div className='overflow-hidden'>
+                        <div className='space-y-4 py-1'>
+                            {course.description && (
+                                <p className='text-sm leading-7'>
+                                    {course.description}
+                                </p>
+                            )}
+                            <p className='text-xs'>
+                                Already own the mini course? Add the workbook to
+                                your toolkit — sold separately.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -331,7 +485,7 @@ export default function HomeClient() {
         triggerOnce: true,
         threshold: 0.1,
     });
-    const { ref: coursesRef, inView: coursesIn } = useInView({
+    const { ref: shopRef, inView: shopIn } = useInView({
         triggerOnce: true,
         threshold: 0.05,
     });
@@ -412,16 +566,14 @@ export default function HomeClient() {
                                             <Button
                                                 asChild
                                                 className='h-12 px-6'>
-                                                <Link href='/#courses'>
-                                                    Browse Courses
-                                                </Link>
+                                                <Link href='/#shop'>Shop</Link>
                                             </Button>
                                             <Button
                                                 asChild
                                                 variant='secondary'
                                                 className='h-12 px-6'>
                                                 <Link href='/7-day-moisture-reset'>
-                                                    Get the Free Guide
+                                                    Start the free guide
                                                 </Link>
                                             </Button>
                                         </div>
@@ -573,202 +725,147 @@ export default function HomeClient() {
                         </div>
                     </section>
 
-                    {/* Courses */}
+                    {/* Products */}
                     <section
-                        ref={coursesRef}
-                        id='courses'
+                        ref={shopRef}
+                        id='shop'
                         className='min-h-[100dvh] flex flex-col justify-center border-t'>
                         <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
                             <FadeIn
-                                inView={coursesIn}
+                                inView={shopIn}
                                 delayMs={150}>
-                                {/* Single-card: two-column layout */}
-                                {!coursesLoading && courses.length === 1 && (
-                                    <div className='grid gap-10 md:grid-cols-2 md:items-start'>
-                                        {/* Left: section info + trust details */}
-                                        <div className='space-y-8'>
+                                {(() => {
+                                    const bundleCourse = courses.find(
+                                        c => c.slug === "hair-growth-bundle",
+                                    );
+                                    const workbookCourse = courses.find(
+                                        c => c.slug === "hair-growth-workbook",
+                                    );
+
+                                    if (coursesLoading || !bundleCourse) {
+                                        return (
+                                            <Card className='rounded-3xl'>
+                                                <CardContent className='pt-6 text-sm'>
+                                                    {coursesLoading
+                                                        ? "Loading…"
+                                                        : "Nothing available yet."}
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    }
+
+                                    const miniCourse = courses.find(
+                                        c =>
+                                            c.slug ===
+                                            "hair-growth-foundations-mini-course",
+                                    );
+
+                                    return (
+                                        <div className='space-y-10'>
+                                            {/* Header */}
                                             <div className='space-y-3 bg-background/50 rounded-3xl p-6'>
-                                                <p className='text-sm font-semibold uppercase tracking-widest'>
-                                                    Course library
-                                                </p>
                                                 <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
-                                                    Everything starts here.
+                                                    Learn it. Then live it.
                                                 </h2>
-                                                <p className='text-lg'>
-                                                    One purchase unlocks your
-                                                    full library — instantly,
-                                                    forever. Work through it at
-                                                    your own pace.
+                                                <p className='text-lg max-w-2xl'>
+                                                    The mini course teaches you
+                                                    the science behind your
+                                                    hair. The workbook puts it
+                                                    into practice — daily guided
+                                                    journaling, habit tracking,
+                                                    and progress reviews. Get
+                                                    both together at a discount.
                                                 </p>
                                             </div>
 
-                                            <div className='grid grid-cols-2 gap-3'>
-                                                {[
-                                                    {
-                                                        label: "Access",
-                                                        value: "Instant",
-                                                    },
-                                                    {
-                                                        label: "Subscription",
-                                                        value: "None — ever",
-                                                    },
-                                                    {
-                                                        label: "Guarantee",
-                                                        value: "7-day refund",
-                                                    },
-                                                    {
-                                                        label: "Guides",
-                                                        value: "Yours to keep",
-                                                    },
-                                                ].map(item => (
-                                                    <div
-                                                        key={item.label}
-                                                        className='rounded-2xl bg-background/50 p-4'>
-                                                        <p className='text-xs font-medium'>
-                                                            {item.label}
-                                                        </p>
-                                                        <p className='mt-1 text-sm font-semibold'>
-                                                            {item.value}
-                                                        </p>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <div className='rounded-2xl bg-background/50 p-6 space-y-3'>
-                                                <p className='text-xs font-semibold uppercase tracking-widest'>
-                                                    What you&apos;re getting
-                                                </p>
-                                                <ul className='space-y-2 text-sm'>
-                                                    {[
-                                                        "Short, focused lessons — product education, no fluff",
-                                                        "Downloadable workbook to keep forever",
-                                                        "A routine framework you can actually maintain",
-                                                        "The fundamentals your stylist never had time to explain",
-                                                    ].map(item => (
-                                                        <li
-                                                            key={item}
-                                                            className='flex items-start gap-2'>
-                                                            <span className='mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground' />
-                                                            <span>{item}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                        {/* Right: course card */}
-                                        <CourseCard
-                                            course={courses[0]}
-                                            owned={ownedCourseIds.has(
-                                                courses[0].id,
-                                            )}
-                                            priceText={
-                                                prices[courses[0].id] ?? null
-                                            }
-                                            stats={stats[courses[0].id] ?? null}
-                                            buying={buying === courses[0].slug}
-                                            buyError={
-                                                buyErrors[courses[0].id] ?? null
-                                            }
-                                            onBuy={onBuy}
-                                        />
-                                    </div>
-                                )}
-
-                                {/* Loading / empty / multi-card: grid layout */}
-                                {(coursesLoading ||
-                                    courses.length === 0 ||
-                                    courses.length > 1) && (
-                                    <>
-                                        <div className='mb-10 space-y-3 bg-background/50 rounded-3xl p-6'>
-                                            <p className='text-sm font-semibold uppercase tracking-widest'>
-                                                Course library
-                                            </p>
-                                            <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
-                                                Everything starts here.
-                                            </h2>
-                                            <p className='text-lg max-w-xl'>
-                                                One purchase unlocks your full
-                                                library — instantly, forever.
-                                                Work through it at your own
-                                                pace.
-                                            </p>
-                                        </div>
-
-                                        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                                            {coursesLoading ? (
-                                                <Card className='rounded-3xl'>
-                                                    <CardContent className='pt-6 text-sm'>
-                                                        Loading courses&hellip;
-                                                    </CardContent>
-                                                </Card>
-                                            ) : courses.length === 0 ? (
-                                                <Card className='rounded-3xl'>
-                                                    <CardContent className='pt-6 text-sm'>
-                                                        No courses available
-                                                        yet.
-                                                    </CardContent>
-                                                </Card>
-                                            ) : (
-                                                courses.map(c => (
+                                            {/* Cards row */}
+                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
+                                                <CourseCard
+                                                    course={bundleCourse}
+                                                    owned={ownedCourseIds.has(
+                                                        bundleCourse.id,
+                                                    )}
+                                                    priceText={
+                                                        prices[
+                                                            bundleCourse.id
+                                                        ] ?? null
+                                                    }
+                                                    stats={null}
+                                                    buying={
+                                                        buying ===
+                                                        bundleCourse.slug
+                                                    }
+                                                    buyError={
+                                                        buyErrors[
+                                                            bundleCourse.id
+                                                        ] ?? null
+                                                    }
+                                                    onBuy={onBuy}
+                                                    splitImages={[
+                                                        miniCourse?.cover_image_url ??
+                                                            null,
+                                                        workbookCourse?.cover_image_url ??
+                                                            null,
+                                                    ]}
+                                                    savingsBadge='Save 10%'
+                                                />
+                                                {miniCourse && (
                                                     <CourseCard
-                                                        key={c.id}
-                                                        course={c}
+                                                        course={miniCourse}
                                                         owned={ownedCourseIds.has(
-                                                            c.id,
+                                                            miniCourse.id,
                                                         )}
                                                         priceText={
-                                                            prices[c.id] ?? null
+                                                            prices[
+                                                                miniCourse.id
+                                                            ] ?? null
                                                         }
                                                         stats={
-                                                            stats[c.id] ?? null
+                                                            stats[
+                                                                miniCourse.id
+                                                            ] ?? null
                                                         }
                                                         buying={
-                                                            buying === c.slug
+                                                            buying ===
+                                                            miniCourse.slug
                                                         }
                                                         buyError={
-                                                            buyErrors[c.id] ??
-                                                            null
+                                                            buyErrors[
+                                                                miniCourse.id
+                                                            ] ?? null
                                                         }
                                                         onBuy={onBuy}
                                                     />
-                                                ))
-                                            )}
+                                                )}
+                                                {workbookCourse && (
+                                                    <WorkbookCard
+                                                        course={workbookCourse}
+                                                        owned={ownedCourseIds.has(
+                                                            workbookCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                workbookCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        buying={
+                                                            buying ===
+                                                            workbookCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                workbookCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
-
-                                        <div className='mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3'>
-                                            {[
-                                                {
-                                                    label: "Access",
-                                                    value: "Instant",
-                                                },
-                                                {
-                                                    label: "Subscription",
-                                                    value: "None — ever",
-                                                },
-                                                {
-                                                    label: "Guarantee",
-                                                    value: "7-day refund",
-                                                },
-                                                {
-                                                    label: "Guides",
-                                                    value: "Yours to keep",
-                                                },
-                                            ].map(item => (
-                                                <div
-                                                    key={item.label}
-                                                    className='rounded-3xl bg-background/50 p-4'>
-                                                    <p className='text-xs font-medium'>
-                                                        {item.label}
-                                                    </p>
-                                                    <p className='mt-1 text-sm font-semibold'>
-                                                        {item.value}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </>
-                                )}
+                                    );
+                                })()}
                             </FadeIn>
                         </div>
                     </section>
