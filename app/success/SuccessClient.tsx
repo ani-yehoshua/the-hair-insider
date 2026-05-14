@@ -63,12 +63,14 @@ export default function SuccessClient() {
 
                 <div className='mt-8 flex gap-3'>
                     <Button asChild>
-                        <Link href='/account?tab=library'>Go to your library</Link>
+                        <Link href='/account?tab=library'>
+                            Go to your library
+                        </Link>
                     </Button>
                     <Button
                         asChild
                         variant='secondary'>
-                        <Link href='/#courses'>Shop</Link>
+                        <Link href='/#shop'>Shop</Link>
                     </Button>
                 </div>
             </div>

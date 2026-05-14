@@ -184,9 +184,7 @@ export default function MeetYourEducatorClient() {
                                         <Button
                                             asChild
                                             className='h-12 px-6'>
-                                            <Link href='/#courses'>
-                                                Shop
-                                            </Link>
+                                            <Link href='/#shop'>Shop</Link>
                                         </Button>
                                     </div>
                                 </div>
