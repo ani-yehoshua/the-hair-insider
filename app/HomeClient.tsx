@@ -382,6 +382,20 @@ export default function HomeClient() {
     );
 
     React.useEffect(() => {
+        function handleShopClick(e: MouseEvent) {
+            const anchor = (e.target as HTMLElement).closest<HTMLAnchorElement>(
+                'a[href="#shop"], a[href="/#shop"]',
+            );
+            if (!anchor) return;
+            e.preventDefault();
+            history.replaceState(null, "", "/");
+            window.location.hash = "shop";
+        }
+        document.addEventListener("click", handleShopClick);
+        return () => document.removeEventListener("click", handleShopClick);
+    }, []);
+
+    React.useEffect(() => {
         const run = async () => {
             setCoursesLoading(true);
 
