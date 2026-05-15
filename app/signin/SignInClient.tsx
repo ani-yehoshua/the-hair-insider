@@ -124,7 +124,7 @@ export default function SignInClient() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: email.trim() }),
-        }).catch(() => {});
+        }).catch(e => console.error("Mailchimp subscribe error:", e));
         setStatus("success");
         setMessage("Signed in. Redirecting…");
         window.location.href = destination;
