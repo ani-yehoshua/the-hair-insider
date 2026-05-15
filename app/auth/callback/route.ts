@@ -13,12 +13,14 @@ async function subscribeToMailchimp(email: string) {
         .update(email.trim().toLowerCase())
         .digest('hex');
 
+    const basicAuth = Buffer.from(`anystring:${apiKey}`).toString('base64');
+
     const res = await fetch(
         `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`,
         {
             method: 'PUT',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Basic ${basicAuth}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -31,7 +33,7 @@ async function subscribeToMailchimp(email: string) {
 
     if (!res.ok) {
         const text = await res.text();
-        console.error('Mailchimp subscribe failed in callback:', text);
+        console.error(`Mailchimp subscribe failed in callback (${res.status}):`, text);
     }
 }
 

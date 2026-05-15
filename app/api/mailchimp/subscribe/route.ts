@@ -13,18 +13,25 @@ export async function POST(req: Request) {
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID!;
     const prefix = process.env.MAILCHIMP_SERVER_PREFIX!;
 
+    if (!apiKey || !audienceId || !prefix) {
+        console.error('Mailchimp env vars missing:', { apiKey: !!apiKey, audienceId: !!audienceId, prefix: !!prefix });
+        return NextResponse.json({ ok: true });
+    }
+
     const emailHash = crypto
         .createHash('md5')
         .update(email.trim().toLowerCase())
         .digest('hex');
 
-    // PUT upserts: creates new members as subscribed, leaves existing members' status unchanged
+    // Mailchimp requires Basic auth for API key authentication (not Bearer)
+    const basicAuth = Buffer.from(`anystring:${apiKey}`).toString('base64');
+
     const res = await fetch(
         `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`,
         {
             method: 'PUT',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Basic ${basicAuth}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -37,7 +44,7 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
         const text = await res.text();
-        console.error('Mailchimp subscribe failed:', text);
+        console.error(`Mailchimp subscribe failed (${res.status}):`, text);
         // Compliance errors (e.g. member previously unsubscribed) are expected — don't 500
     }
 
