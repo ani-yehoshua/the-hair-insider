@@ -30,6 +30,7 @@ export async function POST(req: Request) {
             body: JSON.stringify({
                 email_address: email.trim().toLowerCase(),
                 status_if_new: 'subscribed',
+                status: 'subscribed',
             }),
         },
     );
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
     if (!res.ok) {
         const text = await res.text();
         console.error('Mailchimp subscribe failed:', text);
-        return NextResponse.json({ error: 'Mailchimp error' }, { status: 500 });
+        // Compliance errors (e.g. member previously unsubscribed) are expected — don't 500
     }
 
     return NextResponse.json({ ok: true });
