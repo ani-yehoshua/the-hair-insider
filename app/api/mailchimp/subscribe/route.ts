@@ -44,8 +44,10 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
         const text = await res.text();
-        console.error(`Mailchimp subscribe failed (${res.status}):`, text);
-        // Compliance errors (e.g. member previously unsubscribed) are expected — don't 500
+        const json = (() => { try { return JSON.parse(text); } catch { return null; } })();
+        console.error('MC_STATUS:', res.status);
+        console.error('MC_TITLE:', json?.title ?? 'unknown');
+        console.error('MC_DETAIL:', json?.detail ?? text.slice(0, 200));
     }
 
     return NextResponse.json({ ok: true });
