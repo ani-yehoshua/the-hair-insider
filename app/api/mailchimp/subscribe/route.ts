@@ -14,7 +14,11 @@ export async function POST(req: Request) {
     const prefix = process.env.MAILCHIMP_SERVER_PREFIX!;
 
     if (!apiKey || !audienceId || !prefix) {
-        console.error('Mailchimp env vars missing:', { apiKey: !!apiKey, audienceId: !!audienceId, prefix: !!prefix });
+        console.error('Mailchimp env vars missing:', {
+            apiKey: !!apiKey,
+            audienceId: !!audienceId,
+            prefix: !!prefix,
+        });
         return NextResponse.json({ ok: true });
     }
 
@@ -43,7 +47,13 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
         const text = await res.text();
-        const json = (() => { try { return JSON.parse(text); } catch { return null; } })();
+        const json = (() => {
+            try {
+                return JSON.parse(text);
+            } catch {
+                return null;
+            }
+        })();
         console.error('MC_STATUS:', res.status);
         console.error('MC_TITLE:', json?.title ?? 'unknown');
         console.error('MC_DETAIL:', json?.detail ?? text.slice(0, 200));
