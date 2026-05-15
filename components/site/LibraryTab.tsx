@@ -67,7 +67,7 @@ function LibraryCardView({
                 </div>
             ) : (
                 <div className='flex aspect-[16/10] items-center justify-center bg-muted shrink-0'>
-                    <p className='text-sm text-muted-foreground'>Cover image</p>
+                    <p className='text-sm'>Cover image</p>
                 </div>
             )}
 
@@ -82,12 +82,10 @@ function LibraryCardView({
                         {card.title}
                     </h3>
                     {card.subtitle && (
-                        <p className='text-sm text-muted-foreground leading-snug'>
-                            {card.subtitle}
-                        </p>
+                        <p className='text-sm leading-snug'>{card.subtitle}</p>
                     )}
                     {stats && (
-                        <div className='flex items-center gap-4 text-xs text-muted-foreground pt-1'>
+                        <div className='flex items-center gap-4 text-xs pt-1'>
                             <span>{stats.lessonsCount} lessons</span>
                             <span>·</span>
                             <span>{formatDuration(stats.durationSeconds)}</span>
@@ -155,7 +153,7 @@ export function LibraryTab() {
                     subtitle:
                         "Daily check-ins, progress tracking, science-backed steps.",
                     badge: "Free guide",
-                    coverImage: "/braided_pony_double_bow.jpeg",
+                    coverImage: "/free_guide_cover.png",
                     href: "/7-day-moisture-reset",
                     cta: "Continue guide →",
                 });
@@ -217,7 +215,7 @@ export function LibraryTab() {
             {loading ? (
                 <p className='text-sm'>Loading your library…</p>
             ) : cards.length === 0 ? (
-                <p className='text-sm text-muted-foreground'>
+                <p className='text-sm'>
                     Nothing here yet —{" "}
                     <Link
                         href='/7-day-moisture-reset'
