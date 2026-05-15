@@ -43,7 +43,7 @@ const FREE_ITEMS: LibraryItem[] = [
 
 const WORKBOOK_ITEMS: LibraryItem[] = [
     {
-        id: "21-day-workbook",
+        id: "hair-growth-workbook",
         title: "Hair Growth Workbook",
         subtitle: "A guided journal and helper companion to the mini course.",
         badge: "Workbook",
@@ -88,7 +88,7 @@ export function LibraryTab() {
     }, [router]);
 
     const courseItems: LibraryItem[] = entitledCourses
-        .filter(c => c.slug !== "21-day-workbook")
+        .filter(c => c.slug !== "hair-growth-workbook")
         .map(c => ({
             id: c.id,
             title: c.title,
@@ -98,7 +98,14 @@ export function LibraryTab() {
             cta: "Open course →",
         }));
 
-    const allItems = [...FREE_ITEMS, ...courseItems, ...WORKBOOK_ITEMS];
+    const ownsWorkbook = entitledCourses.some(
+        c => c.slug === "hair-growth-workbook",
+    );
+    const allItems = [
+        ...FREE_ITEMS,
+        ...courseItems,
+        ...(ownsWorkbook ? WORKBOOK_ITEMS : []),
+    ];
 
     return (
         <div>
