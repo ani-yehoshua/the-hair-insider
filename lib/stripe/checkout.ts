@@ -22,6 +22,12 @@ export async function startCheckout(courseSlug: string) {
 
     const json = (await res.json()) as { url?: string; error?: string };
 
+    if (res.status === 401) {
+        const next = encodeURIComponent(`/courses#${courseSlug}`);
+        window.location.href = `/signin?next=${next}`;
+        return;
+    }
+
     if (!res.ok || !json.url) {
         throw new Error(json.error || 'Checkout failed.');
     }
