@@ -4,7 +4,15 @@ import * as React from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 import { Overlay } from "@/components/site/Overlay";
+import { Navbar } from "@/components/site/navbar";
 import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 export default function EmailConfirmedPage() {
     React.useEffect(() => {
@@ -31,24 +39,34 @@ export default function EmailConfirmedPage() {
     return (
         <div className='relative min-h-[100dvh] text-foreground'>
             <Overlay />
+            <Navbar />
 
-            <div className='mx-auto max-w-md px-6 py-20 text-center'>
-                <h1 className='text-3xl font-semibold tracking-tight'>
-                    You&apos;re confirmed.
-                </h1>
-                <p className='mt-3 leading-7'>
-                    Your email has been verified. You can close this tab and go
-                    back to finish signing in on your original device.
-                </p>
-                <p className='mt-2 text-sm text-muted-foreground'>
-                    On the same device? Sign in below.
-                </p>
-                <div className='mt-8'>
-                    <Button asChild>
-                        <Link href='/signin'>Sign in</Link>
-                    </Button>
+            <main className='mx-auto flex max-w-6xl flex-col items-center px-6 py-14 sm:py-20'>
+                <div className='w-[350px] max-w-md'>
+                    <Card className='rounded-3xl'>
+                        <CardHeader>
+                            <CardTitle className='text-2xl'>
+                                You&apos;re confirmed.
+                            </CardTitle>
+                            <CardDescription>
+                                Your email has been verified. You can close this
+                                tab and go back to finish signing in on your
+                                original device.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className='space-y-4'>
+                            <p className='text-sm'>
+                                On the same device? Sign in below.
+                            </p>
+                            <Button
+                                asChild
+                                className='w-full'>
+                                <Link href='/signin'>Sign in</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
