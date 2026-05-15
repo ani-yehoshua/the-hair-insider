@@ -37,7 +37,6 @@ export async function POST(req: Request) {
             body: JSON.stringify({
                 email_address: email.trim().toLowerCase(),
                 status_if_new: 'subscribed',
-                status: 'subscribed',
             }),
         },
     );

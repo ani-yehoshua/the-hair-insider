@@ -26,7 +26,6 @@ async function subscribeToMailchimp(email: string) {
             body: JSON.stringify({
                 email_address: email.trim().toLowerCase(),
                 status_if_new: 'subscribed',
-                status: 'subscribed',
             }),
         },
     );
