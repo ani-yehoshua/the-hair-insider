@@ -196,14 +196,12 @@ export function LibraryTab() {
 
             // Fetch stats for courses only
             for (const c of entitledCourses.filter(
-                c =>
-                    c.slug !== "hair-growth-workbook",
+                c => c.slug !== "hair-growth-workbook",
             )) {
                 fetch(`/api/courses/${encodeURIComponent(c.slug)}/stats`)
                     .then(r => (r.ok ? r.json() : null))
                     .then(json => {
-                        if (json)
-                            setStats(prev => ({ ...prev, [c.id]: json }));
+                        if (json) setStats(prev => ({ ...prev, [c.id]: json }));
                     })
                     .catch(() => {});
             }
