@@ -59,14 +59,12 @@ export default function RootLayout({
             `}
             suppressHydrationWarning>
             <head>
-                {/* Mailchimp popup form — disabled; sign-in flow handles audience membership
                 <script
                     id='mcjs'
                     dangerouslySetInnerHTML={{
                         __html: `!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/115024abbbe42dfa2d699bd2f/fc03026f639a875a05b88dc5c.js");`,
                     }}
                 />
-                */}
             </head>
             <body
                 className={`
