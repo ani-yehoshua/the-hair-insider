@@ -2559,7 +2559,7 @@ export default function FreeGuideClient() {
                                             </li>
                                         </ul>
                                         <div className='offer-price-row'>
-                                            <span className='price'>$247</span>
+                                            <span className='price'>$229</span>
                                             <span className='savings-badge'>
                                                 Save 10%
                                             </span>
