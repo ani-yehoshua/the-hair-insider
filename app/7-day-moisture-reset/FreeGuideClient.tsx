@@ -1088,13 +1088,16 @@ export default function FreeGuideClient() {
                             font-size: 0.82rem;
                             margin-bottom: 20px;
                         }
-                        #guide-root .offer-btn-full{
-                            display: block;
-                            width: 100%;
+                        #guide-root .offer-btn-row{
+                            display: flex;
+                            gap: 10px;
+                        }
+                        #guide-root .offer-btn-row .btn{
+                            flex: 1;
                             text-align: center;
                             border-radius: 9999px;
-                            padding: 13px 24px;
-                            font-size: 0.85rem;
+                            padding: 13px 16px;
+                            font-size: 0.82rem;
                         }
                         #guide-root .offer-error{
                             color: #dc2626;
@@ -2568,14 +2571,21 @@ export default function FreeGuideClient() {
                                             One-time · Lifetime access · 7-day
                                             money-back guarantee
                                         </div>
-                                        <button
-                                            onClick={handleBundleCheckout}
-                                            disabled={buying}
-                                            className='btn btn-filled offer-btn-full'>
-                                            {buying
-                                                ? "Redirecting…"
-                                                : "Buy Now"}
-                                        </button>
+                                        <div className='offer-btn-row'>
+                                            <button
+                                                onClick={handleBundleCheckout}
+                                                disabled={buying}
+                                                className='btn btn-filled'>
+                                                {buying
+                                                    ? "Redirecting…"
+                                                    : "Buy Now"}
+                                            </button>
+                                            <a
+                                                href='/#shop'
+                                                className='btn'>
+                                                See other options
+                                            </a>
+                                        </div>
                                         {buyError && (
                                             <p className='offer-error'>
                                                 {buyError}
