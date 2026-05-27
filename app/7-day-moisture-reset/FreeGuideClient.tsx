@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
+import { startCheckout } from "@/lib/stripe/checkout";
 
 const GUIDE_SLUG = "7-day-moisture-reset";
 
@@ -14,6 +15,21 @@ export default function FreeGuideClient() {
     > | null>(null);
     const [authReady, setAuthReady] = useState(false);
     const [showWelcome, setShowWelcome] = useState(false);
+    const [buying, setBuying] = useState(false);
+    const [buyError, setBuyError] = useState<string | null>(null);
+
+    async function handleBundleCheckout() {
+        setBuying(true);
+        setBuyError(null);
+        try {
+            await startCheckout("hair-growth-bundle");
+        } catch (e) {
+            setBuyError(
+                e instanceof Error ? e.message : "Something went wrong.",
+            );
+            setBuying(false);
+        }
+    }
 
     // Show welcome modal on first visit
     useEffect(() => {
@@ -1007,21 +1023,34 @@ export default function FreeGuideClient() {
 
                         #guide-root .offer-card{
                             background: #f3eee5;
-                            padding: 36px 32px;
+                            padding: 0;
                             margin-top: 24px;
-                            border: 1px solid rgba(26,26,26,0.1);
-                            box-shadow: 0 30px 60px -40px rgba(0,0,0,0.25);
+                            border: 1px solid rgba(26,26,26,0.08);
+                            border-radius: 24px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                        }
+                        #guide-root .offer-card-body{
+                            padding: 28px 28px 24px;
                         }
                         #guide-root .offer-card h3{
-                            font-size: 2rem;
-                            margin-bottom: 8px;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            letter-spacing: -0.02em;
+                            line-height: 1.3;
+                            margin-bottom: 4px;
                         }
-                        #guide-root .offer-card .lead{ font-style: italic; color: #4a4a4a; margin: 8px 0 22px; }
-                        #guide-root .offer-list{ list-style: none; margin-bottom: 28px; }
+                        #guide-root .offer-card .lead{
+                            font-style: normal;
+                            color: #4a4a4a;
+                            font-size: 0.95rem;
+                            margin: 4px 0 20px;
+                        }
+                        #guide-root .offer-list{ list-style: none; margin-bottom: 24px; }
                         #guide-root .offer-list li{
-                            padding: 8px 0;
-                            display: flex; gap: 14px; align-items: start;
-                            font-size: 1.02rem; line-height: 1.5;
+                            padding: 6px 0;
+                            display: flex; gap: 12px; align-items: start;
+                            font-size: 0.92rem; line-height: 1.5;
                         }
                         #guide-root .offer-list li::before{
                             content: '✓';
@@ -1031,25 +1060,55 @@ export default function FreeGuideClient() {
                             flex-shrink: 0;
                             margin-top: 2px;
                         }
+                        #guide-root .offer-price-row{
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            margin-bottom: 4px;
+                        }
                         #guide-root .price{
-                            font-family: 'Cormorant Garamond', serif;
-                            font-size: 3.4rem;
-                            font-weight: 500;
+                            font-family: 'Inter', sans-serif;
+                            font-size: 2rem;
+                            font-weight: 600;
+                            letter-spacing: -0.03em;
                             line-height: 1;
-                            margin-bottom: 6px;
                             display: block;
                         }
+                        #guide-root .savings-badge{
+                            background: #e11d48;
+                            color: #fff;
+                            font-family: 'Inter', sans-serif;
+                            font-size: 0.72rem;
+                            font-weight: 600;
+                            border-radius: 9999px;
+                            padding: 4px 12px;
+                        }
                         #guide-root .price-meta{
-                            font-style: italic;
-                            color: #4a4a4a;
-                            font-size: 0.95rem;
-                            margin-bottom: 24px;
+                            color: #6b6b6b;
+                            font-size: 0.82rem;
+                            margin-bottom: 20px;
+                        }
+                        #guide-root .offer-btn-full{
+                            display: block;
+                            width: 100%;
+                            text-align: center;
+                            border-radius: 9999px;
+                            padding: 13px 24px;
+                            font-size: 0.85rem;
+                        }
+                        #guide-root .offer-error{
+                            color: #dc2626;
+                            font-size: 0.85rem;
+                            margin-top: 10px;
+                            text-align: center;
+                        }
+                        #guide-root .offer-separator{
+                            border: none;
+                            border-top: 1px solid rgba(26,26,26,0.1);
+                            margin: 0;
                         }
                         #guide-root .bonus-card{
-                            background: #d4dde3;
-                            border-left: 3px solid #1a1a1a;
-                            padding: 18px 22px;
-                            margin-top: 22px;
+                            padding: 18px 28px;
                         }
                         #guide-root .bonus-card h5{
                             font-family: 'Inter', sans-serif;
@@ -1059,7 +1118,7 @@ export default function FreeGuideClient() {
                             font-weight: 600;
                             margin-bottom: 6px;
                         }
-                        #guide-root .bonus-card p{ font-size: 0.98rem; }
+                        #guide-root .bonus-card p{ font-size: 0.9rem; color: #4a4a4a; }
 
                         /* ---------- Footer ---------- */
                         #guide-root footer{
@@ -1157,7 +1216,7 @@ export default function FreeGuideClient() {
                             #guide-root .day-head{ padding: 18px 18px; gap: 12px; }
                             #guide-root .day-body-inner{ padding: 4px 18px 22px; }
                             #guide-root .day-num{ font-size: 2rem; width: 38px; }
-                            #guide-root .offer-card{ padding: 28px 22px; }
+                            #guide-root .offer-card-body{ padding: 22px 20px 20px; }
                             #guide-root .pagemark{ margin-bottom: 28px; }
                         }
                     `,
@@ -2466,44 +2525,64 @@ export default function FreeGuideClient() {
                                 </p>
 
                                 <div className='offer-card'>
-                                    <h3>How To Grow Your Hair</h3>
-                                    <p className='lead'>
-                                        If this week changed how your ends feel,
-                                        build the full 21-day routine with
-                                        context to make it permanent.
-                                    </p>
-                                    <ul className='offer-list'>
-                                        <li>
-                                            Step-by-step moisture rhythm built
-                                            for your hair
-                                        </li>
-                                        <li>
-                                            Product dosages matched to your hair
-                                            density
-                                        </li>
-                                        <li>
-                                            Protective-style maintenance that
-                                            preserves length
-                                        </li>
-                                        <li>
-                                            Full troubleshooting flow for any
-                                            setback
-                                        </li>
-                                    </ul>
-                                    <span className='price'>$197</span>
-                                    <div className='price-meta'>
-                                        One-time · Lifetime access · 7-day
-                                        money-back guarantee
+                                    <div className='offer-card-body'>
+                                        <h3>
+                                            How To Grow Your Hair + Digital
+                                            Workbook
+                                        </h3>
+                                        <p className='lead'>
+                                            The full 21-day routine — every
+                                            lesson, the digital workbook, and
+                                            lifetime access. Sold together at a
+                                            discount.
+                                        </p>
+                                        <ul className='offer-list'>
+                                            <li>
+                                                Step-by-step moisture rhythm
+                                                built for your hair
+                                            </li>
+                                            <li>
+                                                Product dosages matched to your
+                                                hair density
+                                            </li>
+                                            <li>
+                                                Protective-style maintenance
+                                                that preserves length
+                                            </li>
+                                            <li>
+                                                Digital workbook with daily
+                                                journaling and habit tracking
+                                            </li>
+                                            <li>
+                                                Full troubleshooting flow for
+                                                any setback
+                                            </li>
+                                        </ul>
+                                        <div className='offer-price-row'>
+                                            <span className='price'>$247</span>
+                                            <span className='savings-badge'>
+                                                Save 10%
+                                            </span>
+                                        </div>
+                                        <div className='price-meta'>
+                                            One-time · Lifetime access · 7-day
+                                            money-back guarantee
+                                        </div>
+                                        <button
+                                            onClick={handleBundleCheckout}
+                                            disabled={buying}
+                                            className='btn btn-filled offer-btn-full'>
+                                            {buying
+                                                ? "Redirecting…"
+                                                : "Buy Now"}
+                                        </button>
+                                        {buyError && (
+                                            <p className='offer-error'>
+                                                {buyError}
+                                            </p>
+                                        )}
                                     </div>
-                                    <a
-                                        href='#'
-                                        className='btn btn-filled'
-                                        style={{
-                                            width: "100%",
-                                            textAlign: "center",
-                                        }}>
-                                        Get the 21-day routine
-                                    </a>
+                                    <hr className='offer-separator' />
                                     <div className='bonus-card'>
                                         <h5>Limited bonus</h5>
                                         <p>
