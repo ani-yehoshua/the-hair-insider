@@ -63,10 +63,10 @@ export default function WorkbookUpgradePage() {
                             Hair Growth Workbook
                         </CardTitle>
                         <CardDescription className='text-base leading-relaxed'>
-                            A guided journal and companion to the mini course.
-                            SMART goals, habit tracking, daily check-ins, and
-                            weekly reviews to lock in your hair routine — for
-                            good.
+                            A digital guided journal and companion to the mini
+                            course. SMART goals, habit tracking, daily
+                            check-ins, and weekly reviews to lock in your hair
+                            routine — for good.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
@@ -87,7 +87,7 @@ export default function WorkbookUpgradePage() {
                             onClick={onBuy}
                             disabled={loading}
                             className='w-full sm:w-auto'>
-                            {loading ? "Redirecting…" : "Get the Workbook"}
+                            {loading ? "Redirecting…" : "Get the Digital Workbook"}
                         </Button>
                     </CardContent>
                 </Card>

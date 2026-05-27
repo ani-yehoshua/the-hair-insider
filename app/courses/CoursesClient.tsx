@@ -183,7 +183,7 @@ function CourseCard({
                                     <ul className='space-y-1.5 text-xs text-muted-foreground'>
                                         <li>High-end industry knowledge</li>
                                         <li>Clear routine guidance</li>
-                                        <li>Interactive free guide</li>
+                                        <li>Interactive digital guide</li>
                                         <li>Lifetime access</li>
                                     </ul>
                                 </div>

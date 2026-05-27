@@ -120,12 +120,12 @@ export default function InsideTheCourseClient() {
                                         </li>
                                         <li>
                                             <p className='font-medium text-foreground'>
-                                                Interactive workbook
+                                                Interactive digital workbook
                                             </p>
                                             <p>
-                                                A guided journal built into the
-                                                site &mdash; yours to keep and
-                                                reference forever.
+                                                A digital guided journal built
+                                                into the site &mdash; yours to
+                                                keep and reference forever.
                                             </p>
                                         </li>
                                         <li>
@@ -166,7 +166,7 @@ export default function InsideTheCourseClient() {
                                         },
                                         {
                                             title: "Done-for-you guides",
-                                            desc: "Downloadable workbook designed to make implementation easy.",
+                                            desc: "Downloadable digital workbook designed to make implementation easy.",
                                         },
                                         {
                                             title: "A routine framework",

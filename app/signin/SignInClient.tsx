@@ -32,7 +32,7 @@ function getContext(next: string): SignInContext | null {
     if (next.startsWith("/workbook"))
         return {
             eyebrow: "Hair Growth Workbook",
-            reason: "Sign in so your workbook entries are saved to your account and always there when you need them.",
+            reason: "Sign in so your digital workbook entries are saved to your account and always there when you need them.",
         };
     if (next.startsWith("/hair-type-quiz"))
         return {

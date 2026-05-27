@@ -152,7 +152,7 @@ export function LibraryTab() {
                     title: "7-Day Moisture Reset",
                     subtitle:
                         "Daily check-ins, progress tracking, science-backed steps.",
-                    badge: "Free guide",
+                    badge: "Free digital guide",
                     coverImage: "/free_guide_cover.png",
                     href: "/7-day-moisture-reset",
                     cta: "Continue guide →",
@@ -183,10 +183,10 @@ export function LibraryTab() {
                     slug: workbook.slug,
                     title: workbook.title,
                     subtitle: workbook.subtitle,
-                    badge: "Workbook",
+                    badge: "Digital workbook",
                     coverImage: workbook.cover_image_url,
                     href: "/workbook",
-                    cta: "Open workbook →",
+                    cta: "Open digital workbook →",
                 });
             }
 
@@ -220,7 +220,7 @@ export function LibraryTab() {
                     <Link
                         href='/7-day-moisture-reset'
                         className='underline underline-offset-4'>
-                        start the free guide
+                        start the free digital guide
                     </Link>{" "}
                     or{" "}
                     <Link

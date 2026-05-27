@@ -229,7 +229,7 @@ function CourseCard({
                                     <ul className='space-y-1.5 text-xs'>
                                         <li>High-end industry knowledge</li>
                                         <li>Clear routine guidance</li>
-                                        <li>Interactive free guide</li>
+                                        <li>Interactive digital guide</li>
                                         <li>Lifetime access</li>
                                     </ul>
                                 </div>
@@ -313,14 +313,14 @@ function WorkbookCard({
                     <Button
                         asChild
                         className='w-full h-11'>
-                        <Link href='/workbook'>Open workbook →</Link>
+                        <Link href='/workbook'>Open digital workbook →</Link>
                     </Button>
                 ) : (
                     <Button
                         className='w-full h-11'
                         onClick={() => onBuy(course.slug)}
                         disabled={buying || !course.stripe_price_id}>
-                        {buying ? "Redirecting…" : "Get the workbook"}
+                        {buying ? "Redirecting…" : "Get the digital workbook"}
                     </Button>
                 )}
 
@@ -357,7 +357,7 @@ function WorkbookCard({
                                 </p>
                             )}
                             <p className='text-xs'>
-                                Already own the mini course? Add the workbook to
+                                Already own the mini course? Add the digital workbook to
                                 your toolkit — sold separately.
                             </p>
                         </div>
@@ -587,7 +587,7 @@ export default function HomeClient() {
                                                 variant='secondary'
                                                 className='h-12 px-6'>
                                                 <Link href='/7-day-moisture-reset'>
-                                                    Start the free guide
+                                                    Start the free digital guide
                                                 </Link>
                                             </Button>
                                         </div>
@@ -784,11 +784,12 @@ export default function HomeClient() {
                                                 <p className='text-lg max-w-2xl'>
                                                     The mini course teaches you
                                                     the science behind your
-                                                    hair. The workbook puts it
-                                                    into practice — daily guided
-                                                    journaling, habit tracking,
-                                                    and progress reviews. Get
-                                                    both together at a discount.
+                                                    hair. The digital workbook
+                                                    puts it into practice —
+                                                    daily guided journaling,
+                                                    habit tracking, and progress
+                                                    reviews. Get both together
+                                                    at a discount.
                                                 </p>
                                             </div>
 
