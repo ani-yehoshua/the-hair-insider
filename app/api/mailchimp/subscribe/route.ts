@@ -30,34 +30,30 @@ export async function POST(req: Request) {
     // Mailchimp requires Basic auth for API key authentication (not Bearer)
     const basicAuth = Buffer.from(`anystring:${apiKey}`).toString('base64');
 
-    const res = await fetch(
-        `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`,
-        {
-            method: 'PUT',
-            headers: {
-                Authorization: `Basic ${basicAuth}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email_address: email.trim().toLowerCase(),
-                status_if_new: 'subscribed',
-            }),
-        },
-    );
+    const normalized = email.trim().toLowerCase();
+    const baseUrl = `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`;
+    const headers = { Authorization: `Basic ${basicAuth}`, 'Content-Type': 'application/json' };
+
+    const res = await fetch(baseUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ email_address: normalized, status_if_new: 'subscribed' }),
+    });
 
     if (!res.ok) {
         const text = await res.text();
-        const json = (() => {
-            try {
-                return JSON.parse(text);
-            } catch {
-                return null;
-            }
-        })();
+        const json = (() => { try { return JSON.parse(text); } catch { return null; } })();
         console.error('MC_STATUS:', res.status);
         console.error('MC_TITLE:', json?.title ?? 'unknown');
         console.error('MC_DETAIL:', json?.detail ?? text.slice(0, 200));
+        return NextResponse.json({ ok: true });
     }
+
+    await fetch(`${baseUrl}/tags`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ tags: [{ name: 'lead-magnet', status: 'active' }] }),
+    });
 
     return NextResponse.json({ ok: true });
 }

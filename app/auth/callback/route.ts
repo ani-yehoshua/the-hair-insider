@@ -8,32 +8,29 @@ async function subscribeToMailchimp(email: string) {
     const prefix = process.env.MAILCHIMP_SERVER_PREFIX;
     if (!apiKey || !audienceId || !prefix) return;
 
-    const emailHash = crypto
-        .createHash('md5')
-        .update(email.trim().toLowerCase())
-        .digest('hex');
-
+    const normalized = email.trim().toLowerCase();
+    const emailHash = crypto.createHash('md5').update(normalized).digest('hex');
     const basicAuth = Buffer.from(`anystring:${apiKey}`).toString('base64');
+    const baseUrl = `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`;
+    const headers = { Authorization: `Basic ${basicAuth}`, 'Content-Type': 'application/json' };
 
-    const res = await fetch(
-        `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}`,
-        {
-            method: 'PUT',
-            headers: {
-                Authorization: `Basic ${basicAuth}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email_address: email.trim().toLowerCase(),
-                status_if_new: 'subscribed',
-            }),
-        },
-    );
+    const res = await fetch(baseUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ email_address: normalized, status_if_new: 'subscribed' }),
+    });
 
     if (!res.ok) {
         const text = await res.text();
         console.error(`Mailchimp subscribe failed in callback (${res.status}):`, text);
+        return;
     }
+
+    await fetch(`${baseUrl}/tags`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ tags: [{ name: 'lead-magnet', status: 'active' }] }),
+    });
 }
 
 export async function GET(req: Request) {
