@@ -32,6 +32,7 @@ type ProductRow = {
     lesson_id?: string | null;
     title: string;
     url: string;
+    image_url?: string | null;
     sort_order?: number | null;
 };
 
@@ -183,6 +184,21 @@ export default function ProductsClient({ id }: { id: string }) {
         );
     }
 
+    async function fetchOgImage(idx: number, url: string) {
+        if (!url.trim()) return;
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (!token) return;
+        try {
+            const res = await fetch(
+                `/api/admin/og-image?url=${encodeURIComponent(url.trim())}`,
+                { headers: { Authorization: `Bearer ${token}` } },
+            );
+            const json = await res.json();
+            if (json.imageUrl) updateRow(idx, { image_url: json.imageUrl });
+        } catch {}
+    }
+
     async function onSave() {
         setErr(null);
         setOk(null);
@@ -198,6 +214,7 @@ export default function ProductsClient({ id }: { id: string }) {
                 .map(p => ({
                     title: p.title.trim(),
                     url: p.url.trim(),
+                    image_url: p.image_url ?? null,
                     sort_order: p.sort_order ?? null,
                 }))
                 .filter(p => p.title && p.url)
@@ -386,9 +403,28 @@ export default function ProductsClient({ id }: { id: string }) {
                                                             url: e.target.value,
                                                         })
                                                     }
+                                                    onBlur={e =>
+                                                        fetchOgImage(
+                                                            idx,
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder='https://shopmy.us/collections/...'
                                                 />
                                             </div>
+
+                                            {p.image_url && (
+                                                <div className='space-y-1'>
+                                                    <Label className='text-xs text-muted-foreground'>
+                                                        Image preview
+                                                    </Label>
+                                                    <img
+                                                        src={p.image_url}
+                                                        alt={p.title}
+                                                        className='h-20 w-20 rounded-lg object-cover border'
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
 

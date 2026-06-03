@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 type ProductInput = {
     title?: unknown;
     url?: unknown;
+    image_url?: unknown;
     lesson_id?: unknown;
     sort_order?: unknown;
 };
@@ -15,6 +16,7 @@ type ProductRow = {
     lesson_id: string | null;
     title: string;
     url: string;
+    image_url: string | null;
     sort_order: number | null;
 };
 
@@ -106,7 +108,7 @@ export async function GET(
 
     let q = admin
         .from('course_products')
-        .select('id, course_id, lesson_id, title, url, sort_order')
+        .select('id, course_id, lesson_id, title, url, image_url, sort_order')
         .eq('course_id', courseId)
         .order('sort_order', { ascending: true });
 
@@ -182,6 +184,7 @@ export async function POST(
             lesson_id: scopeLessonId, // force scope on save
             title: String(p.title ?? '').trim(),
             url: String(p.url ?? '').trim(),
+            image_url: p.image_url ? String(p.image_url).trim() : null,
             sort_order: p.sort_order == null ? null : Number(p.sort_order),
         }))
         .filter(p => p.title.length > 0 && p.url.length > 0)
@@ -207,7 +210,7 @@ export async function POST(
     const { data, error } = await admin
         .from('course_products')
         .insert(payload)
-        .select('id, course_id, lesson_id, title, url, sort_order');
+        .select('id, course_id, lesson_id, title, url, image_url, sort_order');
 
     if (error)
         return NextResponse.json({ error: error.message }, { status: 500 });
