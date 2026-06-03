@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const { data, error } = await admin
         .from('product_catalog')
         .select(
-            'id, title, merchant, shopmy_url, destination_url, collection_name, collection_url, is_complete',
+            'id, title, merchant, shopmy_url, destination_url, collection_name, collection_url, image_url, is_complete',
         )
         .order('is_complete', { ascending: true })
         .order('title', { ascending: true });

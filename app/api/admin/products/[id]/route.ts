@@ -17,7 +17,7 @@ export async function PATCH(
     const { id } = await params;
     const body = await req.json();
 
-    const allowed = ['title', 'merchant', 'destination_url'];
+    const allowed = ['title', 'merchant', 'destination_url', 'image_url'];
     const patch: Record<string, string> = {};
     for (const key of allowed) {
         if (body[key] !== undefined) {
@@ -40,7 +40,7 @@ export async function PATCH(
         .update(patch)
         .eq('id', id)
         .select(
-            'id, title, merchant, shopmy_url, destination_url, collection_name, collection_url, is_complete',
+            'id, title, merchant, shopmy_url, destination_url, collection_name, collection_url, image_url, is_complete',
         )
         .single();
 

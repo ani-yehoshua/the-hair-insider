@@ -23,6 +23,7 @@ type Product = {
     destination_url: string;
     collection_name: string | null;
     collection_url: string | null;
+    image_url: string | null;
     is_complete: boolean;
 };
 
@@ -47,6 +48,41 @@ export default function AdminProductsClient() {
         loadProducts();
     }, [ready]);
 
+    async function fetchMissingImages(list: Product[]) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        if (!token) return;
+
+        const missing = list.filter(p => !p.image_url && p.shopmy_url);
+        for (const product of missing) {
+            try {
+                const res = await fetch(
+                    `/api/admin/og-image?url=${encodeURIComponent(product.shopmy_url)}`,
+                    { headers: { Authorization: `Bearer ${token}` } },
+                );
+                const json = await res.json();
+                if (!json.imageUrl) continue;
+
+                await fetch(`/api/admin/products/${product.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ image_url: json.imageUrl }),
+                });
+
+                setProducts(prev =>
+                    prev.map(p =>
+                        p.id === product.id
+                            ? { ...p, image_url: json.imageUrl }
+                            : p,
+                    ),
+                );
+            } catch {}
+        }
+    }
+
     async function loadProducts() {
         setLoading(true);
         const { data: sessionData } = await supabase.auth.getSession();
@@ -67,6 +103,7 @@ export default function AdminProductsClient() {
                 return a.is_complete ? 1 : -1;
             });
             setProducts(sorted);
+            fetchMissingImages(sorted);
         }
         setLoading(false);
     }
@@ -269,7 +306,16 @@ export default function AdminProductsClient() {
                                         className={`rounded-2xl ${!product.is_complete ? "border-destructive bg-destructive/35" : ""}`}>
                                         <CardContent className='pt-4'>
                                             <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
-                                                <div className='flex items-center gap-2 shrink-0'>
+                                                <div className='flex items-center gap-3 shrink-0'>
+                                                    {product.image_url ? (
+                                                        <img
+                                                            src={product.image_url}
+                                                            alt={product.title}
+                                                            className='h-12 w-12 rounded-lg object-cover border shrink-0'
+                                                        />
+                                                    ) : (
+                                                        <div className='h-12 w-12 rounded-lg bg-muted shrink-0' />
+                                                    )}
                                                     {product.is_complete ? (
                                                         <CheckCircle2 className='h-4 w-4 text-foreground shrink-0' />
                                                     ) : (
