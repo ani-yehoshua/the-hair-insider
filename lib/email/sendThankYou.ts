@@ -2,8 +2,6 @@ import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 const SLUG_TO_TEMPLATE: Record<string, string> = {
     'hair-growth-bundle': 'bundle.html',
     'hair-growth-foundations-mini-course': 'mini-course.html',
@@ -49,6 +47,7 @@ export async function sendThankYouEmail({
 
     const subject = SLUG_TO_SUBJECT[courseSlug];
 
+    const resend = new Resend(process.env.RESEND_API_KEY!);
     const { error } = await resend.emails.send({
         from: process.env.CONTACT_FROM_EMAIL ?? 'Lauren <hello@the-hair-insider.com>',
         replyTo: process.env.RESEND_REPLY_TO ?? 'lauren@the-hair-insider.com',
