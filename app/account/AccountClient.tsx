@@ -163,11 +163,8 @@ export default function AccountClient() {
                         value={tab}
                         onValueChange={setTab}
                         className='w-full'>
-                        <TabsList className='grid w-full grid-cols-3'>
+                        <TabsList className='grid w-full grid-cols-2'>
                             <TabsTrigger value='library'>Library</TabsTrigger>
-                            <TabsTrigger value='hair-profile'>
-                                Hair Profile
-                            </TabsTrigger>
                             <TabsTrigger value='profile'>Profile</TabsTrigger>
                         </TabsList>
 

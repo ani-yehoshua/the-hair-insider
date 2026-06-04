@@ -46,6 +46,7 @@ type ProductLink = {
     id: string;
     title: string;
     url: string;
+    image_url: string | null;
     lesson_id: string | null;
     sort_order: number | null;
 };
@@ -228,7 +229,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
             const [prodRes, resRes] = await Promise.all([
                 supabase
                     .from("course_products")
-                    .select("id, title, url, lesson_id, sort_order")
+                    .select("id, title, url, image_url, lesson_id, sort_order")
                     .eq("course_id", course.id)
                     .order("sort_order", { ascending: true }),
                 supabase
@@ -547,7 +548,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                                                     this course.
                                                 </p>
                                             ) : (
-                                                <div className='space-y-2'>
+                                                <div className='space-y-3'>
                                                     {(activeLessonId
                                                         ? visibleProducts
                                                         : products
@@ -557,12 +558,23 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                                                             href={p.url}
                                                             target='_blank'
                                                             rel='noreferrer'
-                                                            className='flex items-center justify-between rounded-2xl border px-4 py-3 text-sm hover:bg-muted/40'>
-                                                            <span className='font-medium text-foreground'>
-                                                                {p.title}
-                                                            </span>
-                                                            <span className='text-muted-foreground'>
-                                                                Open →
+                                                            className='flex items-center gap-3 rounded-2xl border p-3 hover:bg-muted/40 transition-colors'>
+                                                            {p.image_url ? (
+                                                                <img
+                                                                    src={p.image_url}
+                                                                    alt={p.title}
+                                                                    className='h-14 w-14 rounded-xl object-cover shrink-0'
+                                                                />
+                                                            ) : (
+                                                                <div className='h-14 w-14 rounded-xl bg-muted shrink-0' />
+                                                            )}
+                                                            <div className='flex-1 min-w-0'>
+                                                                <p className='text-sm font-medium text-foreground truncate'>
+                                                                    {p.title}
+                                                                </p>
+                                                            </div>
+                                                            <span className='text-xs text-muted-foreground shrink-0'>
+                                                                See Product →
                                                             </span>
                                                         </a>
                                                     ))}

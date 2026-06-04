@@ -11,10 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default async function HairQuizResultsPage() {
-    const supabase = await createSupabaseServerClient();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) redirect("/signin?next=/hair-type-quiz/results");
-    return <HairQuizResultsClient />;
+    redirect("/");
 }

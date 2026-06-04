@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { sendThankYouEmail } from '@/lib/email/sendThankYou';
 
 export const runtime = 'nodejs';
 
@@ -22,12 +23,14 @@ async function addMailchimpTag(email: string) {
         .update(email.toLowerCase())
         .digest('hex');
 
+    const basicAuth = Buffer.from(`anystring:${apiKey}`).toString('base64');
+
     const res = await fetch(
         `https://${prefix}.api.mailchimp.com/3.0/lists/${audienceId}/members/${emailHash}/tags`,
         {
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Basic ${basicAuth}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -124,15 +127,26 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        // Tag in Mailchimp — non-blocking, don't fail the webhook if this errors
+        // Non-blocking side effects — don't fail the webhook if these error
         try {
             const { data: userData } =
                 await admin.auth.admin.getUserById(user_id);
-            if (userData.user?.email) {
-                await addMailchimpTag(userData.user.email);
+            const email = userData.user?.email;
+            const firstName =
+                userData.user?.user_metadata?.full_name?.split(' ')[0] ?? '';
+
+            if (email) {
+                await Promise.all([
+                    addMailchimpTag(email),
+                    sendThankYouEmail({
+                        email,
+                        firstName,
+                        courseSlug: purchasedCourse?.slug ?? '',
+                    }),
+                ]);
             }
         } catch (e) {
-            console.error('Mailchimp tagging error:', e);
+            console.error('Post-purchase side effect error:', e);
         }
 
         return NextResponse.json({ received: true });

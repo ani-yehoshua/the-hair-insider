@@ -41,6 +41,8 @@ export default function AdminProductsClient() {
     const [err, setErr] = React.useState<string | null>(null);
     const [ok, setOk] = React.useState<string | null>(null);
     const [edits, setEdits] = React.useState<Record<string, EditState>>({});
+    const [imageEditing, setImageEditing] = React.useState<string | null>(null);
+    const [imageInput, setImageInput] = React.useState("");
     const fileRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
@@ -207,6 +209,34 @@ export default function AdminProductsClient() {
         }));
     }
 
+    async function saveImageUrl(productId: string, url: string) {
+        const trimmed = url.trim();
+        setImageEditing(null);
+        setImageInput("");
+        if (!trimmed) return;
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        if (!token) return;
+
+        const res = await fetch(`/api/admin/products/${productId}`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image_url: trimmed }),
+        });
+
+        if (res.ok) {
+            setProducts(prev =>
+                prev.map(p =>
+                    p.id === productId ? { ...p, image_url: trimmed } : p,
+                ),
+            );
+        }
+    }
+
     const incompleteCount = products.filter(p => !p.is_complete).length;
 
     const { ref: pageRef, inView: pageIn } = useInView({
@@ -307,14 +337,35 @@ export default function AdminProductsClient() {
                                         <CardContent className='pt-4'>
                                             <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
                                                 <div className='flex items-center gap-3 shrink-0'>
-                                                    {product.image_url ? (
+                                                    {imageEditing === product.id ? (
+                                                        <input
+                                                            autoFocus
+                                                            type='text'
+                                                            placeholder='Paste image URL…'
+                                                            value={imageInput}
+                                                            onChange={e => setImageInput(e.target.value)}
+                                                            onBlur={() => saveImageUrl(product.id, imageInput)}
+                                                            onKeyDown={e => {
+                                                                if (e.key === "Enter") saveImageUrl(product.id, imageInput);
+                                                                if (e.key === "Escape") { setImageEditing(null); setImageInput(""); }
+                                                            }}
+                                                            className='h-8 w-48 rounded-lg border bg-background px-2 text-xs'
+                                                        />
+                                                    ) : product.image_url ? (
                                                         <img
                                                             src={product.image_url}
                                                             alt={product.title}
-                                                            className='h-12 w-12 rounded-lg object-cover border shrink-0'
+                                                            title='Click to change image'
+                                                            onClick={() => { setImageEditing(product.id); setImageInput(product.image_url ?? ""); }}
+                                                            className='h-12 w-12 rounded-lg object-cover border shrink-0 cursor-pointer hover:opacity-70 transition-opacity'
                                                         />
                                                     ) : (
-                                                        <div className='h-12 w-12 rounded-lg bg-muted shrink-0' />
+                                                        <div
+                                                            title='Click to add image'
+                                                            onClick={() => { setImageEditing(product.id); setImageInput(""); }}
+                                                            className='h-12 w-12 rounded-lg bg-muted shrink-0 cursor-pointer hover:bg-muted/60 transition-colors flex items-center justify-center text-muted-foreground text-xs'>
+                                                            +
+                                                        </div>
                                                     )}
                                                     {product.is_complete ? (
                                                         <CheckCircle2 className='h-4 w-4 text-foreground shrink-0' />

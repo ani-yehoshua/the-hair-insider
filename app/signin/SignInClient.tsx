@@ -34,11 +34,6 @@ function getContext(next: string): SignInContext | null {
             eyebrow: "Hair Growth Workbook",
             reason: "Sign in so your digital workbook entries are saved to your account and always there when you need them.",
         };
-    if (next.startsWith("/hair-type-quiz"))
-        return {
-            eyebrow: "Hair Type Quiz",
-            reason: "Create an account to save your hair profile and come back to your results anytime.",
-        };
     if (next.startsWith("/courses") || next.includes("checkout"))
         return {
             eyebrow: "Almost there",
