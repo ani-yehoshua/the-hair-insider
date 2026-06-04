@@ -51,7 +51,7 @@ export async function sendThankYouEmail({
 
     const { error } = await resend.emails.send({
         from: process.env.CONTACT_FROM_EMAIL ?? 'Lauren <hello@the-hair-insider.com>',
-        reply_to: process.env.RESEND_REPLY_TO ?? 'lauren@the-hair-insider.com',
+        replyTo: process.env.RESEND_REPLY_TO ?? 'lauren@the-hair-insider.com',
         to: email,
         subject,
         html,
