@@ -95,7 +95,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                   r => !r.lesson_id || r.lesson_id === activeLessonId,
               );
 
-        return sortResourcesFilesFirst(base);
+        return base;
     }, [resources, activeLessonId]);
 
     React.useEffect(() => {
