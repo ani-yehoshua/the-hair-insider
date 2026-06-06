@@ -38,7 +38,7 @@ export default function WorkbookUpgradePage() {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ courseSlug: "21-day-workbook" }),
+                body: JSON.stringify({ courseSlug: "hair-growth-workbook" }),
             });
 
             const json = await res.json();

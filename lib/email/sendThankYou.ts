@@ -5,13 +5,13 @@ import path from 'path';
 const SLUG_TO_TEMPLATE: Record<string, string> = {
     'hair-growth-bundle': 'bundle.html',
     'hair-growth-foundations-mini-course': 'mini-course.html',
-    '21-day-workbook': 'workbook.html',
+    'hair-growth-workbook': 'workbook.html',
 };
 
 const SLUG_TO_SUBJECT: Record<string, string> = {
     'hair-growth-bundle': "You're in — start here first",
     'hair-growth-foundations-mini-course': "You're in — here's where to start",
-    '21-day-workbook': 'Your digital workbook is ready — start here',
+    'hair-growth-workbook': 'Your digital workbook is ready — start here',
 };
 
 export async function sendThankYouEmail({
@@ -49,8 +49,10 @@ export async function sendThankYouEmail({
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const { error } = await resend.emails.send({
-        from: process.env.CONTACT_FROM_EMAIL ?? 'Lauren <hello@the-hair-insider.com>',
-        replyTo: process.env.RESEND_REPLY_TO ?? 'lauren@the-hair-insider.com',
+        from:
+            process.env.CONTACT_FROM_EMAIL ??
+            'The Hair Insider <hello@the-hair-insider.com>',
+        replyTo: process.env.RESEND_REPLY_TO ?? 'thehairinsidersociety@gmail.com',
         to: email,
         subject,
         html,

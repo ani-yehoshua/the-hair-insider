@@ -13,7 +13,13 @@ const admin = createClient(
     process.env.SUPABASE_SECRET_KEY!,
 );
 
-async function addMailchimpTag(email: string) {
+const SLUG_TO_MAILCHIMP_TAG: Record<string, string> = {
+    'hair-growth-foundations-mini-course': 'growth-mini-course-purchased',
+    'hair-growth-bundle': 'growth-bundle-purchased',
+    'hair-growth-workbook': 'growth-workbook-purchased',
+};
+
+async function addMailchimpTag(email: string, tag: string) {
     const apiKey = process.env.MAILCHIMP_API_KEY!;
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID!;
     const prefix = process.env.MAILCHIMP_SERVER_PREFIX!;
@@ -34,7 +40,7 @@ async function addMailchimpTag(email: string) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                tags: [{ name: 'course-purchased', status: 'active' }],
+                tags: [{ name: tag, status: 'active' }],
             }),
         },
     );
@@ -105,7 +111,7 @@ export async function POST(req: Request) {
                 .select('id')
                 .in('slug', [
                     'hair-growth-foundations-mini-course',
-                    '21-day-workbook',
+                    'hair-growth-workbook',
                 ]);
             for (const c of components ?? []) courseIdsToGrant.push(c.id);
         }
@@ -135,13 +141,18 @@ export async function POST(req: Request) {
             const firstName =
                 userData.user?.user_metadata?.full_name?.split(' ')[0] ?? '';
 
+            const slug = purchasedCourse?.slug ?? '';
+            const mailchimpTag = SLUG_TO_MAILCHIMP_TAG[slug];
+
             if (email) {
                 await Promise.all([
-                    addMailchimpTag(email),
+                    ...(mailchimpTag
+                        ? [addMailchimpTag(email, mailchimpTag)]
+                        : []),
                     sendThankYouEmail({
                         email,
                         firstName,
-                        courseSlug: purchasedCourse?.slug ?? '',
+                        courseSlug: slug,
                     }),
                 ]);
             }

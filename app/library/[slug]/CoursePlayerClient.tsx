@@ -54,29 +54,10 @@ type ProductLink = {
 type ResourceLink = {
     id: string;
     title: string;
-    url: string | null; // cited link
-    storage_path: string | null; // pdf in bucket
+    url: string | null;
     lesson_id: string | null;
     sort_order: number | null;
 };
-
-function sortResourcesFilesFirst(list: ResourceLink[]) {
-    return [...list].sort((a, b) => {
-        const aIsFile = !!a.storage_path;
-        const bIsFile = !!b.storage_path;
-
-        // Files first
-        if (aIsFile !== bIsFile) return aIsFile ? -1 : 1;
-
-        // Then by explicit sort_order if present
-        const ao = a.sort_order ?? 999999;
-        const bo = b.sort_order ?? 999999;
-        if (ao !== bo) return ao - bo;
-
-        // Stable tie-breaker
-        return a.title.localeCompare(b.title);
-    });
-}
 
 export default function CoursePlayerClient({ slug }: { slug: string }) {
     const router = useRouter();
@@ -235,7 +216,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                 supabase
                     .from("course_resources")
                     .select(
-                        "id, title, url, storage_path, lesson_id, sort_order",
+                        "id, title, url, lesson_id, sort_order",
                     )
                     .eq("course_id", course.id)
                     .order("sort_order", { ascending: true }),
@@ -272,18 +253,7 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
         return url;
     }
 
-    async function resolveStorageUrl(
-        storagePath: string,
-    ): Promise<string | null> {
-        const BUCKET = "hair-insider-bucket";
-
-        const { data } = supabase.storage
-            .from(BUCKET)
-            .getPublicUrl(storagePath);
-        return data?.publicUrl ?? null;
-    }
-
-    const { ref: pageRef, inView: pageIn } = useInView({
+const { ref: pageRef, inView: pageIn } = useInView({
         triggerOnce: true,
         threshold: 0.2,
     });
@@ -604,20 +574,12 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
                                                 <div className='space-y-2'>
                                                     {(activeLessonId
                                                         ? visibleResources
-                                                        : sortResourcesFilesFirst(
-                                                              resources,
-                                                          )
+                                                        : resources
                                                     ).map(r => (
                                                         <ResourceRow
                                                             key={r.id}
                                                             title={r.title}
                                                             url={r.url}
-                                                            storagePath={
-                                                                r.storage_path
-                                                            }
-                                                            onResolveStorageUrl={
-                                                                resolveStorageUrl
-                                                            }
                                                         />
                                                     ))}
                                                 </div>
@@ -641,27 +603,10 @@ export default function CoursePlayerClient({ slug }: { slug: string }) {
 function ResourceRow({
     title,
     url,
-    storagePath,
-    onResolveStorageUrl,
 }: {
     title: string;
     url: string | null;
-    storagePath: string | null;
-    onResolveStorageUrl: (path: string) => Promise<string | null>;
 }) {
-    const [downloading, setDownloading] = React.useState(false);
-
-    async function onDownload() {
-        if (!storagePath) return;
-        setDownloading(true);
-        try {
-            const resolved = await onResolveStorageUrl(storagePath);
-            if (resolved) window.open(resolved, "_blank", "noreferrer");
-        } finally {
-            setDownloading(false);
-        }
-    }
-
     return (
         <div className='flex items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-sm'>
             <div className='w-56 sm:w-full'>
@@ -673,7 +618,7 @@ function ResourceRow({
                 ) : null}
             </div>
 
-            <div className='shrink-0 flex gap-2'>
+            <div className='shrink-0'>
                 {url ? (
                     <Button
                         asChild
@@ -685,16 +630,6 @@ function ResourceRow({
                             rel='noreferrer'>
                             Open
                         </a>
-                    </Button>
-                ) : null}
-
-                {storagePath ? (
-                    <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={onDownload}
-                        disabled={downloading}>
-                        {downloading ? "Loading…" : "Download"}
                     </Button>
                 ) : null}
             </div>

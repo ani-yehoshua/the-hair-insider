@@ -24,7 +24,7 @@ export default async function WorkbookPage() {
     const { data: course } = await supabase
         .from("courses")
         .select("id")
-        .eq("slug", "21-day-workbook")
+        .eq("slug", "hair-growth-workbook")
         .eq("is_published", true)
         .maybeSingle();
 
