@@ -80,13 +80,28 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
 
         const course_id = session.metadata?.course_id;
-        const user_id = session.metadata?.user_id;
+        let user_id = session.metadata?.user_id;
 
-        if (!course_id || !user_id) {
+        if (!course_id) {
             return NextResponse.json(
-                { error: 'Missing metadata' },
+                { error: 'Missing course_id metadata' },
                 { status: 400 },
             );
+        }
+
+        // Payment Link purchases won't have user_id — look up by email
+        if (!user_id) {
+            const email = session.customer_details?.email;
+            if (email) {
+                const { data: rows } = await admin.rpc('get_user_id_by_email', { p_email: email });
+                if (rows?.[0]?.id) user_id = rows[0].id;
+            }
+        }
+
+        if (!user_id) {
+            // No matching account — can't grant entitlement yet
+            console.warn('Stripe webhook: no user_id resolved for session', session.id);
+            return NextResponse.json({ received: true });
         }
 
         const stripeCustomerId =
