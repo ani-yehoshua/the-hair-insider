@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { TikTokIcon, YouTubeIcon, InstagramIcon } from "@/components/site/SocialIcons";
 
 const SITE_LINKS = [
     { href: "/what-is-it", label: "What Is It?" },
@@ -17,11 +18,11 @@ const LEGAL_LINKS = [
     { href: "/terms", label: "Terms" },
 ];
 
-// Update these when ready
 const SOCIAL_LINKS = [
-    { href: "https://instagram.com/thehairinsider", label: "Instagram" },
-    { href: "https://www.youtube.com/@TheHairInsider", label: "YouTube" },
-    { href: "https://tiktok.com/@thehairinsider", label: "TikTok" },
+    { href: "https://instagram.com/thehairinsider", label: "Instagram", Icon: InstagramIcon },
+    { href: "https://www.youtube.com/@TheHairInsider", label: "YouTube", Icon: YouTubeIcon },
+    { href: "https://www.tiktok.com/@lifewith.laurenj", label: "@lifewith.laurenj", Icon: TikTokIcon },
+    { href: "https://www.tiktok.com/@thehairinsider", label: "@thehairinsider", Icon: TikTokIcon },
 ];
 
 export function Footer() {
@@ -84,7 +85,8 @@ export function Footer() {
                                             href={s.href}
                                             target='_blank'
                                             rel='noreferrer'
-                                            className='hover:text-foreground transition-colors'>
+                                            className='inline-flex items-center gap-1.5 hover:text-foreground transition-colors'>
+                                            <s.Icon className='h-3.5 w-3.5 shrink-0' />
                                             {s.label}
                                         </a>
                                     </li>

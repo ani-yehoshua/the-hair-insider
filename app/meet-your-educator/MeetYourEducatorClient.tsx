@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Overlay } from "@/components/site/Overlay";
 import { SiteBreadcrumbs } from "@/components/site/breadcrumbs";
+import { TikTokIcon } from "@/components/site/SocialIcons";
 
 export default function MeetYourEducatorClient() {
     const { ref: heroRef, inView: heroIn } = useInView({
@@ -186,6 +187,22 @@ export default function MeetYourEducatorClient() {
                                             className='h-12 px-6'>
                                             <Link href='/#shop'>Shop</Link>
                                         </Button>
+                                        <a
+                                            href='https://www.tiktok.com/@lifewith.laurenj'
+                                            target='_blank'
+                                            rel='noreferrer'
+                                            className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                            <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                            @lifewith.laurenj
+                                        </a>
+                                        <a
+                                            href='https://www.tiktok.com/@thehairinsider'
+                                            target='_blank'
+                                            rel='noreferrer'
+                                            className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                            <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                            @thehairinsider
+                                        </a>
                                     </div>
                                 </div>
                             </div>

@@ -17,6 +17,7 @@ import { OrgJsonLd } from "@/components/seo/OrgJsonLd";
 import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { TikTokIcon } from "@/components/site/SocialIcons";
 
 type Course = {
     id: string;
@@ -357,8 +358,8 @@ function WorkbookCard({
                                 </p>
                             )}
                             <p className='text-xs'>
-                                Already own the mini course? Add the digital workbook to
-                                your toolkit — sold separately.
+                                Already own the mini course? Add the digital
+                                workbook to your toolkit — sold separately.
                             </p>
                         </div>
                     </div>
@@ -791,6 +792,17 @@ export default function HomeClient() {
                                                     reviews. Get both together
                                                     at a discount.
                                                 </p>
+                                                <p className='text-sm'>
+                                                    Not sure yet?{" "}
+                                                    <a
+                                                        href='https://www.tiktok.com/@lifewith.laurenj'
+                                                        target='_blank'
+                                                        rel='noreferrer'
+                                                        className='underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                                        See Lauren&apos;s
+                                                        content on TikTok →
+                                                    </a>
+                                                </p>
                                             </div>
 
                                             {/* Cards row */}
@@ -979,7 +991,7 @@ export default function HomeClient() {
                                             />
                                         </div>
 
-                                        <div className='p-6 space-y-1'>
+                                        <div className='p-6 space-y-2'>
                                             <p className='text-sm font-semibold'>
                                                 Lauren Jackson
                                             </p>
@@ -987,6 +999,24 @@ export default function HomeClient() {
                                                 Founder &amp; Educator, The Hair
                                                 Insider
                                             </p>
+                                            <div className='flex flex-wrap gap-3 pt-1'>
+                                                <a
+                                                    href='https://www.tiktok.com/@lifewith.laurenj'
+                                                    target='_blank'
+                                                    rel='noreferrer'
+                                                    className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                                    <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                                    @lifewith.laurenj
+                                                </a>
+                                                <a
+                                                    href='https://www.tiktok.com/@thehairinsider'
+                                                    target='_blank'
+                                                    rel='noreferrer'
+                                                    className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                                    <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                                    @thehairinsider
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
