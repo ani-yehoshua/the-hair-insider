@@ -1968,7 +1968,7 @@ export function initGrowthEdit(): () => void {
         function foundationCard() {
             const f = FOUNDATION,
                 r = f.refillProduct;
-            return `<div class="foundation reveal">
+            return `<div class="foundation reveal" id="cat-foundation">
       <div class="foundation-badge">Foundation · Step 0</div>
       <div class="foundation-intro">
         <div class="pick-brand">${esc(f.brand)}</div>
@@ -1996,7 +1996,7 @@ export function initGrowthEdit(): () => void {
         </div>
       </div>`
                     : '';
-            return `<div class="cat reveal">
+            return `<div class="cat reveal" id="cat-${esc(slot.cat)}">
       <div class="cat-head">
         <span class="cat-step serif">${c.step}</span>
         <div class="cat-titles">
@@ -2141,6 +2141,8 @@ export function initGrowthEdit(): () => void {
         }
 
         /* ---------- GLOBAL CLICKS ---------- */
+        const SS_SCROLL_TARGET = 'tgi_scroll_target';
+
         document.addEventListener('click', e => {
             const sv = e.target.closest('[data-save]');
             if (sv) {
@@ -2148,7 +2150,34 @@ export function initGrowthEdit(): () => void {
                 toggleSave(sv.dataset.save);
                 return;
             }
+
+            const shopLink = e.target.closest('.shop-btn, .li-shop');
+            if (shopLink) {
+                const section = shopLink.closest('[id^="cat-"]');
+                if (section) {
+                    try {
+                        sessionStorage.setItem(SS_SCROLL_TARGET, section.id);
+                    } catch (err) {}
+                }
+            }
         });
+
+        function restoreScrollPosition() {
+            let targetId;
+            try {
+                targetId = sessionStorage.getItem(SS_SCROLL_TARGET);
+            } catch (err) {
+                return;
+            }
+            if (!targetId) return;
+            const el = document.getElementById(targetId);
+            if (el) {
+                el.scrollIntoView({ block: 'start' });
+            }
+            try {
+                sessionStorage.removeItem(SS_SCROLL_TARGET);
+            } catch (err) {}
+        }
 
         /* ---------- INIT ---------- */
         function init() {
@@ -2170,6 +2199,7 @@ export function initGrowthEdit(): () => void {
             renderDrawer();
             updateCount();
             observeReveals(document);
+            setTimeout(restoreScrollPosition, 60);
 
             const gb = $('#generate-btn');
             if (gb) gb.addEventListener('click', runGenerate);
