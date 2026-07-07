@@ -542,6 +542,7 @@ export default function HomeClient() {
                     <div className='mx-auto max-w-6xl px-6 pt-4'>
                         <CountdownCouponBanner
                             code={PRODUCT_PROMO_CODES["hair-growth-edit"]}
+                            productName='The Growth Edit'
                         />
                     </div>
                 )}

@@ -37,12 +37,18 @@ function formatRemaining(msLeft: number): string {
  * expiration are read live from Stripe, so the banner always matches
  * whatever's configured there. Renders nothing if the code is missing,
  * inactive, expired, or has no expiration set.
+ *
+ * Pass `productName` when the banner isn't shown right next to the
+ * product it applies to (e.g. a site-wide top strip) so it's clear
+ * what the discount is for.
  */
 export function CountdownCouponBanner({
     code,
+    productName,
     className = "",
 }: {
     code: string;
+    productName?: string;
     className?: string;
 }) {
     const [promo, setPromo] = React.useState<PromoInfo | null>(null);
@@ -83,7 +89,10 @@ export function CountdownCouponBanner({
     return (
         <div
             className={`rounded-2xl bg-red-600/80 text-white px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium ${className}`}>
-            <span>{formatDiscount(promo)}</span>
+            <span>
+                {formatDiscount(promo)}
+                {productName && ` ${productName}`}
+            </span>
             <span className='opacity-70'>·</span>
             <span>
                 Ends in{" "}
