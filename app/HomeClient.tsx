@@ -18,6 +18,8 @@ import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { TikTokIcon } from "@/components/site/SocialIcons";
+import { CountdownCouponBanner } from "@/components/site/CountdownCouponBanner";
+import { PRODUCT_PROMO_CODES } from "@/lib/promoConfig";
 
 type Course = {
     id: string;
@@ -266,6 +268,7 @@ function WorkbookCard({
     ownedCta = "Open digital workbook →",
     buyCta = "Get the digital workbook",
     detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
+    promoCode,
 }: {
     course: Course;
     owned: boolean;
@@ -277,6 +280,7 @@ function WorkbookCard({
     ownedCta?: string;
     buyCta?: string;
     detailNote?: string;
+    promoCode?: string;
 }) {
     const [open, setOpen] = React.useState(false);
 
@@ -311,6 +315,13 @@ function WorkbookCard({
                         <Badge className='shrink-0 bg-neutral-500'>Owned</Badge>
                     )}
                 </div>
+
+                {promoCode && !owned && (
+                    <CountdownCouponBanner
+                        code={promoCode}
+                        className='text-xs px-3 py-2'
+                    />
+                )}
 
                 {course.stripe_price_id && !owned && (
                     <p className='text-3xl font-semibold tracking-tight'>
@@ -527,6 +538,13 @@ export default function HomeClient() {
             <div className='relative min-h-[100dvh] text-foreground'>
                 <Overlay />
                 <Navbar />
+                {PRODUCT_PROMO_CODES["hair-growth-edit"] && (
+                    <div className='mx-auto max-w-6xl px-6 pt-4'>
+                        <CountdownCouponBanner
+                            code={PRODUCT_PROMO_CODES["hair-growth-edit"]}
+                        />
+                    </div>
+                )}
                 <SiteBreadcrumbs />
 
                 <main>
@@ -932,6 +950,11 @@ export default function HomeClient() {
                                                         ownedCta='Open The Growth Edit →'
                                                         buyCta='Get The Growth Edit'
                                                         detailNote='Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.'
+                                                        promoCode={
+                                                            PRODUCT_PROMO_CODES[
+                                                                "hair-growth-edit"
+                                                            ]
+                                                        }
                                                     />
                                                 )}
                                             </div>

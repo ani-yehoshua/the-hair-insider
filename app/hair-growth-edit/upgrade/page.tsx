@@ -4,6 +4,8 @@ import * as React from "react";
 import { Overlay } from "@/components/site/Overlay";
 import { Navbar } from "@/components/site/navbar";
 import { Button } from "@/components/ui/button";
+import { CountdownCouponBanner } from "@/components/site/CountdownCouponBanner";
+import { PRODUCT_PROMO_CODES } from "@/lib/promoConfig";
 import {
     Card,
     CardContent,
@@ -14,6 +16,8 @@ import {
 
 const GROWTH_EDIT_PAYMENT_LINK =
     "https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802";
+
+const GROWTH_EDIT_PROMO_CODE = PRODUCT_PROMO_CODES["hair-growth-edit"];
 
 export default function GrowthEditUpgradePage() {
     const [loading, setLoading] = React.useState(false);
@@ -42,6 +46,12 @@ export default function GrowthEditUpgradePage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>
+                        {GROWTH_EDIT_PROMO_CODE && (
+                            <CountdownCouponBanner
+                                code={GROWTH_EDIT_PROMO_CODE}
+                            />
+                        )}
+
                         <ul className='space-y-2 text-sm text-muted-foreground'>
                             <li>
                                 ✓ Texture, density &amp; curl pattern finder
