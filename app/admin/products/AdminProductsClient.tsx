@@ -136,7 +136,7 @@ export default function AdminProductsClient() {
             if (!res.ok) throw new Error(json.error || "Seed failed.");
 
             setOk(
-                `Imported ${json.upserted} products (${json.skipped} skipped — missing ShopMy URL).`,
+                `Imported ${json.upserted} products (${json.skipped} skipped: missing ShopMy URL).`,
             );
             await loadProducts();
         } catch (e) {

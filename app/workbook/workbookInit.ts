@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* Workbook interactive logic — runs client-side only, called from useEffect */
+/* Workbook interactive logic; runs client-side only, called from useEffect */
 
 export function initWorkbook(): () => void {
     const KEY = 'hairinsider-workbook-v1';
@@ -871,7 +871,7 @@ export function initWorkbook(): () => void {
         [25, 50, 75, 100].forEach(t => {
             if (overall >= t && !m['p' + t]) {
                 m['p' + t] = true;
-                toast('You hit ' + t + '% — keep going.');
+                toast('You hit ' + t + '%, keep going.');
             }
         });
         if (visits.streak === 3 && !m.s3) {

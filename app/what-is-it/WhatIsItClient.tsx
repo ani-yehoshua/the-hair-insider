@@ -118,7 +118,7 @@ export default function WhatIsItClient() {
                                     {[
                                         {
                                             title: "The why first",
-                                            desc: "Understand what's happening before you change anything — so every decision is an informed one, not a guess.",
+                                            desc: "Understand what's happening before you change anything, so every decision is an informed one, not a guess.",
                                         },
                                         {
                                             title: "Fewer products, better results",
@@ -126,7 +126,7 @@ export default function WhatIsItClient() {
                                         },
                                         {
                                             title: "Troubleshoot like a stylist",
-                                            desc: "Learn what dryness, breakage, frizz, and shedding actually signal — and what to change first.",
+                                            desc: "Learn what dryness, breakage, frizz, and shedding actually signal, and what to change first.",
                                         },
                                         {
                                             title: "Built for real life",

@@ -110,7 +110,7 @@ function CourseCard({
                 {/* Price */}
                 {course.stripe_price_id && !owned && (
                     <p className='text-3xl font-semibold tracking-tight'>
-                        {priceText ?? "—"}
+                        {priceText ?? "$–"}
                     </p>
                 )}
 

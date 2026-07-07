@@ -55,7 +55,7 @@ export async function POST(req: Request) {
 
         const resend = new Resend(apiKey);
 
-        const subject = `[THI] ${parsed.topic} — ${parsed.email}`;
+        const subject = `[THI] ${parsed.topic} from ${parsed.email}`;
 
         const html = `<!DOCTYPE html>
             <html lang="en">
@@ -114,7 +114,7 @@ export async function POST(req: Request) {
                         <tr>
                         <td style="padding-bottom: 18px;">
                             <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #343430;">
-                            <strong>Name:</strong> ${escapeHtml(parsed.name || '—')}<br/>
+                            <strong>Name:</strong> ${escapeHtml(parsed.name || 'Not provided')}<br/>
                             <strong>Email:</strong> ${escapeHtml(parsed.email)}<br/>
                             <strong>Topic:</strong> ${escapeHtml(parsed.topic || 'General')}
                             </p>

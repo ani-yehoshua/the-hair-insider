@@ -329,7 +329,7 @@ const HTML = `
     <header class="hero">
     <div class="hero-mark">The Hair Insider · Companion Journal</div>
     <h1>The Ultimate Hair Growth Workbook</h1>
-    <p class="hero-sub">A companion journal for the woman growing her hair — and herself.</p>
+    <p class="hero-sub">A companion journal for the woman growing her hair, and herself.</p>
     <div class="cover-frame"><img src="/workbook-cover.jpg" alt="Fishtail braid with sheer ribbons" /></div>
     <div class="hero-rhythm"><span>Reset</span><span>Restore</span><span>Repeat</span></div>
     <div class="hero-author">Written by</div>
@@ -346,14 +346,14 @@ const HTML = `
         <span class="page-mark">Page 02 · Welcome</span>
         <div class="divider"></div>
         <h2 class="serif" style="font-style:italic">Welcome, beautiful.</h2>
-        <p class="quote" style="margin-bottom:32px">"Growth isn't just about your hair — it's about how you show up for yourself every day."</p>
-        <p>This workbook is your private space to slow down, reset, and track the small actions that change everything. There are no perfect entries here — just honest ones. Fill it in as often as feels good. Come back to it when you forget why you started.</p>
+        <p class="quote" style="margin-bottom:32px">"Growth isn't just about your hair. It's about how you show up for yourself every day."</p>
+        <p>This workbook is your private space to slow down, reset, and track the small actions that change everything. There are no perfect entries here, just honest ones. Fill it in as often as feels good. Come back to it when you forget why you started.</p>
         <h4 style="margin-top:36px">How to use this workbook</h4>
         <p>Move through the sections in order, or jump to whatever you need today using <em>Contents</em> at the top right. Your answers save automatically on this device. The dashboard above tracks your overall progress, your day streak, and how often you return. Aim for rhythm, not perfection.</p>
         <h4 style="margin-top:36px">What's inside</h4>
         <ol style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;line-height:2;padding-left:1.4em;margin-top:0">
         <li>The 3-Step Process</li>
-        <li>The Essentials — tools, products &amp; non-negotiable habits</li>
+        <li>The Essentials: tools, products &amp; non-negotiable habits</li>
         <li>Know Your Hair</li>
         <li>Haircare Rituals &amp; Intentions (daily)</li>
         <li>The Hair-Care Self Ritual Checklist</li>
@@ -375,12 +375,12 @@ const HTML = `
         <span class="page-mark">Page 03 · The Method</span>
         <div class="section-head">
         <div class="section-head-row"><h2 class="serif">The 3-Step Process</h2></div>
-        <p class="section-sub">Healthy hair isn't accidental — it's the result of a rhythm you return to. Every section in this workbook ladders back to one of these three.</p>
+        <p class="section-sub">Healthy hair isn't accidental. It's the result of a rhythm you return to. Every section in this workbook ladders back to one of these three.</p>
         </div>
         <div class="steps">
         <div class="step"><div class="step-num">01</div><h3>Reset the Scalp</h3><p>Clarify build-up, balance oil, and create the healthy environment new strands need to grow.</p></div>
         <div class="step"><div class="step-num">02</div><h3>Restore the Strands</h3><p>Rebuild moisture and protein so the length you already have stays soft, strong, and on your head.</p></div>
-        <div class="step"><div class="step-num">03</div><h3>Repeat with Rhythm</h3><p>Turn it into a weekly cadence you actually keep — because consistency is the only thing that compounds.</p></div>
+        <div class="step"><div class="step-num">03</div><h3>Repeat with Rhythm</h3><p>Turn it into a weekly cadence you actually keep, because consistency is the only thing that compounds.</p></div>
         </div>
         <div class="note-strip" style="margin-top:36px">
         <div class="note-strip-label">Remember</div>
@@ -473,7 +473,7 @@ const HTML = `
             <h2 class="serif">Haircare Rituals &amp; Intentions</h2>
             <div class="sec-chip" id="dailyChip"><span id="dailyChipCount">0</span> entries</div>
         </div>
-        <p class="section-sub">A short daily check-in. Saved by date — come back tomorrow to add another. The more days you log, the stronger your streak.</p>
+        <p class="section-sub">A short daily check-in. Saved by date, come back tomorrow to add another. The more days you log, the stronger your streak.</p>
         </div>
         <div class="card">
         <div class="journal-head">
@@ -486,7 +486,7 @@ const HTML = `
         <div class="fld"><span class="fld-label">My routine for today</span><textarea data-journal="routine" rows="3" placeholder="What will you actually do? E.g. detangle, deep condition, air dry"></textarea></div>
         <div class="two-col">
             <div class="fld"><span class="fld-label">Today's top goal</span><input type="text" data-journal="topGoal" placeholder="One thing for your hair today" /></div>
-            <div class="fld"><span class="fld-label">Today's focus</span><input type="text" data-journal="focus" placeholder="One word — patience, gentleness, rhythm…" /></div>
+            <div class="fld"><span class="fld-label">Today's focus</span><input type="text" data-journal="focus" placeholder="One word: patience, gentleness, rhythm…" /></div>
         </div>
         <div class="fld">
             <span class="fld-label">Schedule</span>
@@ -570,7 +570,7 @@ const HTML = `
         </div>
         <div class="note-strip" style="margin-top:24px">
         <div class="note-strip-label">Stylist's tip</div>
-        <p>The most important step is the one you'll actually repeat. Pick the three rituals you can do tonight and tomorrow morning — and build from there.</p>
+        <p>The most important step is the one you'll actually repeat. Pick the three rituals you can do tonight and tomorrow morning, and build from there.</p>
         </div>
     </div>
     </section>
@@ -638,7 +638,7 @@ const HTML = `
             <h2 class="serif">SMART Hair Goals</h2>
             <div class="sec-chip"><span id="smartChipPct">0%</span><div class="sec-chip-track"><div class="sec-chip-fill" data-sec-chip="smart"></div></div></div>
         </div>
-        <p class="section-sub">A vague wish slips away. A specific goal — written down — gets done. Fill each prompt with your hair growth goal for the next 12 weeks.</p>
+        <p class="section-sub">A vague wish slips away. A specific goal, written down, gets done. Fill each prompt with your hair growth goal for the next 12 weeks.</p>
         </div>
         <div class="card">
         <div class="smart-row"><div class="smart-letter">S</div><div class="smart-content"><div class="smart-title">Specific</div><div class="smart-example">e.g. "Grow my hair to mid-back" not "have longer hair"</div><textarea data-smart="specific" rows="2" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;background:var(--cream)" placeholder="My specific goal is…"></textarea></div></div>
@@ -658,11 +658,11 @@ const HTML = `
             <h2 class="serif">The Action Priority Matrix</h2>
             <div class="sec-chip" id="matrixChip"><span id="matrixCount">0</span> items</div>
         </div>
-        <p class="section-sub">Sort every action by effort and impact. Drop items in <em>Quick Wins</em> first — they're how momentum starts.</p>
+        <p class="section-sub">Sort every action by effort and impact. Drop items in <em>Quick Wins</em> first. They're how momentum starts.</p>
         </div>
         <div class="matrix-wrap">
         <div class="matrix-add">
-            <input type="text" id="matrixInput" placeholder="Add an action — e.g. switch to silk pillowcase" />
+            <input type="text" id="matrixInput" placeholder="Add an action, e.g. switch to silk pillowcase" />
             <button id="matrixAdd">Add</button>
         </div>
         <div class="matrix-grid" id="matrixGrid">
@@ -676,7 +676,7 @@ const HTML = `
             <div class="matrix-cell" data-cell="fillIns" data-impact="low" data-effort="low"><div class="matrix-cell-title">Fill-Ins</div><div class="matrix-cell-hint">Low effort · Low impact</div></div>
             <div class="matrix-cell" data-cell="thankless" data-impact="low" data-effort="high"><div class="matrix-cell-title">Thankless Tasks</div><div class="matrix-cell-hint">High effort · Low impact</div></div>
         </div>
-        <p class="fld-hint" style="margin-top:14px;text-align:center">Drag items between quadrants — or tap an item and a quadrant to move it.</p>
+        <p class="fld-hint" style="margin-top:14px;text-align:center">Drag items between quadrants, or tap an item and a quadrant to move it.</p>
         </div>
     </div>
     </section>
@@ -689,7 +689,7 @@ const HTML = `
             <h2 class="serif">The Wheel of Alignment</h2>
             <div class="sec-chip"><span id="wheelChipPct">0%</span><div class="sec-chip-track"><div class="sec-chip-fill" data-sec-chip="wheel"></div></div></div>
         </div>
-        <p class="section-sub">Rate each area 1–10. The shape that appears is your <em>real</em> rhythm — and the dips are where new growth wants to come in.</p>
+        <p class="section-sub">Rate each area 1–10. The shape that appears is your <em>real</em> rhythm, and the dips are where new growth wants to come in.</p>
         </div>
         <div class="card">
         <div class="wheel-wrap">
@@ -715,7 +715,7 @@ const HTML = `
         </div>
         <div class="card">
         <div class="tracker-head">
-            <div class="week-nav"><button id="habitPrev">←</button><span id="habitWeekLabel">Week of —</span><button id="habitNext">→</button></div>
+            <div class="week-nav"><button id="habitPrev">←</button><span id="habitWeekLabel">Week of …</span><button id="habitNext">→</button></div>
             <div><span class="week-streak"><span id="habitStreakNum">0</span> day streak</span></div>
         </div>
         <div style="overflow-x:auto">
@@ -724,7 +724,7 @@ const HTML = `
             <tbody id="habitTableBody"></tbody>
             </table>
         </div>
-        <div class="fld" style="margin-top:24px"><span class="fld-label">Reflection — what worked this week?</span><textarea data-habit-reflect rows="3" placeholder="Notes for this week…"></textarea></div>
+        <div class="fld" style="margin-top:24px"><span class="fld-label">Reflection: what worked this week?</span><textarea data-habit-reflect rows="3" placeholder="Notes for this week…"></textarea></div>
         </div>
     </div>
     </section>
@@ -758,11 +758,11 @@ const HTML = `
             <h2 class="serif">The Weekly Growth Tracker</h2>
             <div class="sec-chip"><span id="weeklyChipPct">0%</span><div class="sec-chip-track"><div class="sec-chip-fill" data-sec-chip="weekly"></div></div></div>
         </div>
-        <p class="section-sub">Each day this week — what was the goal, what came up, did you do it?</p>
+        <p class="section-sub">Each day this week: what was the goal, what came up, did you do it?</p>
         </div>
         <div class="card">
         <div class="tracker-head">
-            <div class="week-nav"><button id="weeklyPrev">←</button><span id="weeklyLabel">Week of —</span><button id="weeklyNext">→</button></div>
+            <div class="week-nav"><button id="weeklyPrev">←</button><span id="weeklyLabel">Week of …</span><button id="weeklyNext">→</button></div>
         </div>
         <div id="weeklyBody"></div>
         </div>
@@ -777,7 +777,7 @@ const HTML = `
             <h2 class="serif">Understanding Your Why</h2>
             <div class="sec-chip"><span id="whyChipPct">0%</span><div class="sec-chip-track"><div class="sec-chip-fill" data-sec-chip="why"></div></div></div>
         </div>
-        <p class="section-sub">When motivation dips — and it will — your <em>why</em> is what brings you back. Move down through these five layers slowly.</p>
+        <p class="section-sub">When motivation dips, and it will, your <em>why</em> is what brings you back. Move down through these five layers slowly.</p>
         </div>
         <div class="why-step"><div class="why-num">01</div><div class="fld-label">My goal</div><div class="why-prompt">What is the goal you want to achieve?</div><textarea data-why="goal" rows="2" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;background:var(--cream)"></textarea></div>
         <div class="why-step"><div class="why-num">02</div><div class="fld-label">Why 1</div><div class="why-prompt">And what will achieving that give you?</div><textarea data-why="w1" rows="2" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;background:var(--cream)"></textarea></div>
@@ -794,8 +794,8 @@ const HTML = `
         <div class="divider"></div>
         <h2 class="serif" style="font-style:italic;font-weight:300">A note from Lauren</h2>
         <div class="letter">
-        <p>If you've made it this far — even if your pages are messy, half-filled, with skipped weeks and re-starts — you've already done the part most people don't. You showed up. You looked at the small habits that grow hair, and you got honest about which ones you actually do.</p>
-        <p>That is the work. Not the perfect routine. Not the longest length. The work is the rhythm — gentle, repeatable, real — that you build with yourself.</p>
+        <p>If you've made it this far, even if your pages are messy, half-filled, with skipped weeks and re-starts, you've already done the part most people don't. You showed up. You looked at the small habits that grow hair, and you got honest about which ones you actually do.</p>
+        <p>That is the work. Not the perfect routine. Not the longest length. The work is the rhythm, gentle, repeatable, real, that you build with yourself.</p>
         <p>Come back to this journal whenever you forget. Re-read your <em>why</em>. Sit with your wheel. Fill in another week. Hair is a slow project; you've got time.</p>
         </div>
         <div class="note-strip" style="margin:32px 0"><div class="note-strip-label">Carry it forward</div><p>"Every time you show up for your hair, you're really showing up for you."</p></div>
@@ -803,7 +803,7 @@ const HTML = `
         <div class="cta">
         <span style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.85;font-weight:500">Ready for the full method</span>
         <h3>Build your 21-day rhythm.</h3>
-        <p>How To Grow Your Hair is the full course this workbook companions — every wash day mapped, every product paired to your profile, every habit reinforced.</p>
+        <p>How To Grow Your Hair is the full course this workbook companions: every wash day mapped, every product paired to your profile, every habit reinforced.</p>
         <a href="#" class="cta-btn" id="ctaBtn">Join the course</a>
         </div>
     </div>

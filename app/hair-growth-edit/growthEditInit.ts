@@ -1,13 +1,13 @@
 // @ts-nocheck
-/* The Growth Edit interactive logic — runs client-side only, called from useEffect */
+/* The Growth Edit interactive logic, runs client-side only, called from useEffect */
 
 export function initGrowthEdit(): () => void {
     /* ============================================================
-   THE GROWTH EDIT — product catalog + routine logic
+   THE GROWTH EDIT, product catalog + routine logic
    PRO picks = Davines (professional / salon-grade)
    MATCH picks = comparable, more accessible professional brands
-   Prices are approximate placeholders — edit freely.
-   shop:'#' is a placeholder — drop in your ShopMy links.
+   Prices are approximate placeholders, edit freely.
+   shop:'#' is a placeholder, drop in your ShopMy links.
    ============================================================ */
 
     /* repurchase = typical weeks a full-size lasts on a 2–4×/week routine.
@@ -26,8 +26,8 @@ export function initGrowthEdit(): () => void {
             why: 'Davines’ answer to thinning hair: a lightweight cleanse that energises the scalp and builds the healthiest possible environment for new growth.',
             ingredients:
                 'Active principle from spinach extract + stinging nettle to stimulate microcirculation at the follicle; featherlight surfactants that rinse clean without residue.',
-            howTo: 'Massage into a wet scalp for a full 60 seconds — that contact time is what boosts circulation — then rinse. Your main wash 3–4× a week.',
-            avoid: 'Pair it with the matching leave-on Superactive to see results — washing alone leaves most of the benefit on the shower floor.',
+            howTo: 'Massage into a wet scalp for a full 60 seconds; that contact time is what boosts circulation. Then rinse. Your main wash 3–4× a week.',
+            avoid: 'Pair it with the matching leave-on Superactive to see results; washing alone leaves most of the benefit on the shower floor.',
         },
         'dav-rebalancing-sham': {
             brand: 'Davines',
@@ -37,11 +37,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Rebalancing Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815157-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-66731048',
-            why: 'Regulates an oily, congested scalp so roots stay fresh and clean for longer — without drying out the lengths.',
+            why: 'Regulates an oily, congested scalp so roots stay fresh and clean for longer, without drying out the lengths.',
             ingredients:
                 'A sulphur-based active + a lab-grown botanical complex that helps normalise sebum production.',
             howTo: 'Focus on the roots, let it sit 1–2 minutes, then rinse. 3–4× a week.',
-            avoid: 'Over-washing actually triggers more oil — don’t exceed once a day.',
+            avoid: 'Over-washing actually triggers more oil, don’t exceed once a day.',
         },
         'dav-momo-sham': {
             brand: 'Davines',
@@ -51,11 +51,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MOMO Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817328-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68366953',
-            why: 'A deeply quenching cleanse for hair that drinks up moisture — Davines’ yellow-melon formula hydrates as it washes so lengths never feel stripped.',
+            why: 'A deeply quenching cleanse for hair that drinks up moisture, Davines’ yellow-melon formula hydrates as it washes so lengths never feel stripped.',
             ingredients:
                 'Yellow melon extract, rich in antioxidants, in a gentle low-strip surfactant base.',
             howTo: 'One lather concentrated on the lengths, leave a minute to soak in, then rinse.',
-            avoid: 'Frequent washing re-strips dry hair — stretch your washes and refresh with dry shampoo in between.',
+            avoid: 'Frequent washing re-strips dry hair, stretch your washes and refresh with dry shampoo in between.',
         },
         'dav-oi-sham': {
             brand: 'Davines',
@@ -68,7 +68,7 @@ export function initGrowthEdit(): () => void {
             why: 'The cult all-rounder: Davines’ roucou-oil cleanse leaves balanced hair impossibly soft, glossy and easy to comb.',
             ingredients:
                 'Roucou (annatto) oil, high in antioxidants, for softness, shine and silk-like slip.',
-            howTo: 'Your everyday wash — lather, rinse, and repeat only if hair still feels heavy.',
+            howTo: 'Your everyday wash, lather, rinse, and repeat only if hair still feels heavy.',
             avoid: 'If your scalp runs oily, work a clarifying wash in midweek so softness doesn’t tip into greasiness.',
         },
 
@@ -81,10 +81,10 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MOMO Conditioner',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815710-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68367319',
-            why: 'Davines’ richest everyday conditioner — floods thirsty, dry and coily hair with slip and softness so it’s finally easy to detangle.',
+            why: 'Davines’ richest everyday conditioner, floods thirsty, dry and coily hair with slip and softness so it’s finally easy to detangle.',
             ingredients:
                 'Yellow melon extract + nourishing emollients for deep, lasting moisture.',
-            howTo: 'Work generously through the lengths, finger-detangle, leave 2–3 minutes, then rinse — or leave a little in if hair is very dry.',
+            howTo: 'Work generously through the lengths, finger-detangle, leave 2–3 minutes, then rinse, or leave a little in if hair is very dry.',
             avoid: 'Concentrate on the lengths and ends, not the scalp, so roots stay clean between washes.',
         },
         'dav-oi-cond': {
@@ -99,7 +99,7 @@ export function initGrowthEdit(): () => void {
             ingredients:
                 'Roucou oil for softness and gloss that rinses perfectly clean.',
             howTo: 'Smooth through lengths and ends, leave a minute, then rinse.',
-            avoid: 'It’s built to be weightless — if hair feels coated, you’re using more than you need.',
+            avoid: 'It’s built to be weightless, if hair feels coated, you’re using more than you need.',
         },
 
         /* ---------- DAVINES · SCALP & TREATMENT ---------- */
@@ -111,11 +111,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Energizing Superactive',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815744-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-27371775',
-            why: 'The hero of any thinning routine — a leave-on tonic Davines designed to support hair through its active growth phase, week after week.',
+            why: 'The hero of any thinning routine, a leave-on tonic Davines designed to support hair through its active growth phase, week after week.',
             ingredients:
                 'A concentrated spinach active + stinging nettle that energise the follicle and help prolong the growth cycle.',
             howTo: 'Part dry or towel-dried hair and massage straight onto the scalp. Don’t rinse. Weekly, or follow the vial schedule.',
-            avoid: 'Results compound with consistency — skipping weeks quietly erases the progress you’ve banked.',
+            avoid: 'Results compound with consistency, skipping weeks quietly erases the progress you’ve banked.',
         },
         'dav-replumping-superactive': {
             brand: 'Davines',
@@ -125,11 +125,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Replumping Superactive',
             imgUrl: 'https://us.davines.com/cdn/shop/files/Davines-71337-replumping-hair-filler-superactive-leave-in-100ml-8004608275411-1_2000x.jpg?v=1770669979',
             shop: 'https://go.shopmy.us/p-66764639',
-            why: 'Refills weak, fragile strands from within so hair reads thicker, bouncier and more elastic — Davines’ fix for hair that’s lost its body.',
+            why: 'Refills weak, fragile strands from within so hair reads thicker, bouncier and more elastic, Davines’ fix for hair that’s lost its body.',
             ingredients:
                 'A hyaluronic-acid–style filling complex that plumps the hair fibre.',
             howTo: 'Smooth onto damp lengths and leave in, then style as usual.',
-            avoid: 'Apply before any oil or cream — layering oil first blocks the filler from absorbing.',
+            avoid: 'Apply before any oil or cream, layering oil first blocks the filler from absorbing.',
         },
         'dav-detox-scrub': {
             brand: 'Davines',
@@ -139,11 +139,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Detoxifying Scrub',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815132-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67238589',
-            why: 'A purifying scalp scrub that lifts the build-up, sweat and residue that quietly smother the follicle — essential when you have a lot of hair.',
+            why: 'A purifying scalp scrub that lifts the build-up, sweat and residue that quietly smother the follicle, essential when you have a lot of hair.',
             ingredients:
                 'Natural exfoliating granules + purifying clay that decongest the scalp.',
             howTo: 'Once a week or as needed, massage into a wet scalp in place of shampoo, work in small circles, then rinse thoroughly.',
-            avoid: 'Once a week is the ceiling — over-scrubbing strips the scalp’s barrier and triggers irritation.',
+            avoid: 'Once a week is the ceiling, over-scrubbing strips the scalp’s barrier and triggers irritation.',
         },
 
         /* ---------- DAVINES · LEAVE-IN / BOND ---------- */
@@ -154,11 +154,11 @@ export function initGrowthEdit(): () => void {
             price: '≈ $34',
             repurchase: 8,
             img: 'Davines MOMO Leave-in Conditioner',
-            why: 'A true leave-in conditioner — spray it on after the shower for instant slip, easy detangling and a layer of weightless moisture that primes hair for everything that follows.',
+            why: 'A true leave-in conditioner, spray it on after the shower for instant slip, easy detangling and a layer of weightless moisture that primes hair for everything that follows.',
             ingredients:
                 'Yellow melon extract + lightweight conditioning agents for slip and hydration.',
             howTo: 'On towel-dried, damp hair, mist through mid-lengths to ends and comb through. No rinse.',
-            avoid: 'Keep it off the scalp — this is for the lengths, where slip and detangling matter.',
+            avoid: 'Keep it off the scalp; this is for the lengths, where slip and detangling matter.',
         },
         'dav-oi-milk': {
             brand: 'Davines',
@@ -168,11 +168,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines OI All in One Milk',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817096-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-66732986',
-            why: 'A featherlight leave-in milk that gives fine hair slip and detangling after the shower without an ounce of weight — it also smooths frizz and adds shine.',
+            why: 'A featherlight leave-in milk that gives fine hair slip and detangling after the shower without an ounce of weight, it also smooths frizz and adds shine.',
             ingredients:
                 'A roucou-oil multi-benefit complex delivering slip, softness and shine.',
             howTo: 'Mist evenly over damp, towel-dried lengths and comb through. No rinse, safe daily.',
-            avoid: 'Build it in light layers — too much at once can weigh fine hair down, so start with 1–2 pumps.',
+            avoid: 'Build it in light layers, too much at once can weigh fine hair down, so start with 1–2 pumps.',
         },
         'dav-melu-shield': {
             brand: 'Davines',
@@ -182,11 +182,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MELU Hair Shield',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815496-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68367514',
-            why: 'A true heat shield for every blow-dry and hot-tool session — seals the cuticle and guards against the breakage that heat and length cause.',
+            why: 'A true heat shield for every blow-dry and hot-tool session, seals the cuticle and guards against the breakage that heat and length cause.',
             ingredients:
                 'A lengthening complex + a heat-protective film effective up to 215°C / 419°F.',
             howTo: 'Work or mist through damp mid-lengths and ends before blow-drying or using any hot tool.',
-            avoid: 'Always apply before heat — adding it afterward does nothing — and focus on the ends where breakage lives.',
+            avoid: 'Always apply before heat, adding it afterward does nothing, and focus on the ends where breakage lives.',
         },
 
         /* ---------- DAVINES · MASK ---------- */
@@ -198,11 +198,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines OI Hair Butter Mask',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2816965-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68540954',
-            why: 'A weekly butter mask that wraps hair in deep, cushioning moisture — leaves it silky-soft, luminous and dramatically easier to manage.',
+            why: 'A weekly butter mask that wraps hair in deep, cushioning moisture, leaves it silky-soft, luminous and dramatically easier to manage.',
             ingredients:
                 'Roucou oil + OI complex for intense softness and shine.',
             howTo: 'Smooth through clean, damp lengths, leave 5–10 minutes, then rinse. Once a week.',
-            avoid: 'Keep it to the lengths and ends — mask on the scalp can leave roots flat and greasy.',
+            avoid: 'Keep it to the lengths and ends, mask on the scalp can leave roots flat and greasy.',
         },
         'dav-nounou-mask': {
             brand: 'Davines',
@@ -212,11 +212,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines NOUNOU Mask',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817237-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68540346',
-            why: 'A reconstructing rescue for very dry, over-processed or color-damaged hair — rebuilds softness and strength exactly where hair is stressed.',
+            why: 'A reconstructing rescue for very dry, over-processed or color-damaged hair, rebuilds softness and strength exactly where hair is stressed.',
             ingredients:
                 'Tomato extract + reconstructing lipids that repair and protect the fibre.',
             howTo: 'Apply to lengths and ends, leave 5–10 minutes, then rinse. Once weekly.',
-            avoid: 'Target only where the damage is — there’s no benefit taking a repair mask up to healthy roots.',
+            avoid: 'Target only where the damage is, there’s no benefit taking a repair mask up to healthy roots.',
         },
         'dav-melu-mask': {
             brand: 'Davines',
@@ -226,11 +226,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MINU Mask',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2985943-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-27371286',
-            why: 'Strengthens long or fine hair against splitting and breakage — adds resilience without the weight that flattens delicate strands.',
+            why: 'Strengthens long or fine hair against splitting and breakage, adds resilience without the weight that flattens delicate strands.',
             ingredients:
                 'Spinach extract + a lengthening, bond-supporting complex.',
             howTo: 'Once a week from mid-lengths to ends, leave a few minutes, then rinse.',
-            avoid: 'Don’t leave strengthening masks on for hours — too much protein can leave hair stiff rather than supple.',
+            avoid: 'Don’t leave strengthening masks on for hours, too much protein can leave hair stiff rather than supple.',
         },
 
         /* ---------- GROWTH SUPPLEMENT (MaryRuth Organics) ---------- */
@@ -242,11 +242,11 @@ export function initGrowthEdit(): () => void {
             img: 'MaryRuth Hair Growth Vitamins',
             imgUrl: 'https://cdn.shopify.com/s/files/1/0883/6750/files/liquid-morning-multivitamin-_-hair-growth-dragon-fruit-melon-30oz-maryruths.png',
             shop: 'https://go.shopmy.us/p-66757153',
-            why: 'A gentle, vegan daily formula that supports growth from the inside — built on bioavailable vitamins rather than harsh actives.',
+            why: 'A gentle, vegan daily formula that supports growth from the inside, built on bioavailable vitamins rather than harsh actives.',
             ingredients:
                 'Biotin, folate, zinc and vitamins A, C, D & E plus a supporting botanical blend.',
             howTo: 'Take daily as directed on the label, with food; give it 3+ months of consistency to judge results.',
-            avoid: 'Not a substitute for scalp care or medical treatment — pair it with your topical routine and follow the label dosing.',
+            avoid: 'Not a substitute for scalp care or medical treatment, pair it with your topical routine and follow the label dosing.',
         },
         'mr-biotin': {
             brand: 'MaryRuth Organics',
@@ -258,9 +258,9 @@ export function initGrowthEdit(): () => void {
             shop: 'https://go.shopmy.us/p-66757602',
             why: 'A simple, budget-friendly vegan biotin gummy to support stronger strands and nails.',
             ingredients:
-                'Biotin plus a light vitamin blend — vegan and non-GMO.',
+                'Biotin plus a light vitamin blend, vegan and non-GMO.',
             howTo: 'Two gummies daily with food; stay consistent over the months.',
-            avoid: 'More biotin isn’t better — stick to the label dose and don’t stack it with other biotin products.',
+            avoid: 'More biotin isn’t better, stick to the label dose and don’t stack it with other biotin products.',
         },
 
         /* ---------- DAVINES · STYLING / HEAT ---------- */
@@ -272,10 +272,10 @@ export function initGrowthEdit(): () => void {
             img: 'Davines VOLU Mist',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817278-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68543829',
-            why: 'A weightless volumizing mist that builds lasting lift at the roots — body you can brush through, not a stiff sprayed shell.',
+            why: 'A weightless volumizing mist that builds lasting lift at the roots, body you can brush through, not a stiff sprayed shell.',
             ingredients: 'Tara gum for buildable, brushable hold.',
             howTo: 'Mist at the roots of damp hair, then blow-dry flipped upside down for maximum lift.',
-            avoid: 'Build it gradually — over-spraying crosses from full into crunchy.',
+            avoid: 'Build it gradually, over-spraying crosses from full into crunchy.',
         },
         'dav-blowdry-primer': {
             brand: 'Davines',
@@ -289,7 +289,7 @@ export function initGrowthEdit(): () => void {
             ingredients:
                 'Heat-protective polymers + tara gum for a fast, smooth blow-dry.',
             howTo: 'Spray evenly over damp hair, let it absorb for a moment, then blow-dry.',
-            avoid: 'Give it a few seconds to sink in before heat — blasting it soaking wet wastes the protection.',
+            avoid: 'Give it a few seconds to sink in before heat, blasting it soaking wet wastes the protection.',
         },
         'dav-love-smooth': {
             brand: 'Davines',
@@ -315,11 +315,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines LOVE Curl Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2986875-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68368261',
-            why: 'A gentle, hydrating curl cleanse that respects your pattern — washes without stripping the natural oils curls depend on.',
+            why: 'A gentle, hydrating curl cleanse that respects your pattern, washes without stripping the natural oils curls depend on.',
             ingredients:
                 'Lentil-seed extract + a curl-defining complex; low-foam and sulfate-light.',
             howTo: 'Massage gently into the scalp and let the lather slip down the lengths; rinse. 1–2× a week.',
-            avoid: 'Don’t scrub or pile hair up — rough handling roughens the cuticle and sparks frizz.',
+            avoid: 'Don’t scrub or pile hair up, rough handling roughens the cuticle and sparks frizz.',
         },
         'dav-love-curl-cond': {
             brand: 'Davines',
@@ -343,11 +343,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Curl Building Serum',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815959-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67253446',
-            why: 'The heart of a curl routine — a leave-in serum that builds soft, springy, defined curls with touchable, never-crunchy hold.',
+            why: 'The heart of a curl routine, a leave-in serum that builds soft, springy, defined curls with touchable, never-crunchy hold.',
             ingredients:
                 'Film-forming curl polymers in a lightweight, moisturising base.',
             howTo: 'On soaking-wet hair, rake through and scrunch upward, then air-dry or diffuse on low.',
-            avoid: 'Apply to soaking-wet — not towel-dry — hair, or curls clump and dry unevenly.',
+            avoid: 'Apply to soaking-wet, not towel-dry, hair, or curls clump and dry unevenly.',
         },
         'dav-curl-mousse': {
             brand: 'Davines',
@@ -357,11 +357,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Curl Mousse',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815991-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67238437',
-            why: 'A weightless mousse that defines waves and curls while adding moisture and bounce — definition without the crunch.',
+            why: 'A weightless mousse that defines waves and curls while adding moisture and bounce, definition without the crunch.',
             ingredients:
                 'A conditioning curl complex in an airy, brushable foam.',
             howTo: 'Scrunch into wet hair from the ends up, then diffuse on low or air-dry.',
-            avoid: 'Resist touching it while it dries — scrunch out any cast only once hair is fully dry.',
+            avoid: 'Resist touching it while it dries, scrunch out any cast only once hair is fully dry.',
         },
         'dav-oi-oil': {
             brand: 'Davines',
@@ -371,11 +371,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines OI Oil',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817112-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-66735292',
-            why: 'A luxurious finishing oil that seals in moisture, tames frizz and lays a glassy shine over any hair type — and the sealing “O” of the LOC method for curls and coils.',
+            why: 'A luxurious finishing oil that seals in moisture, tames frizz and lays a glassy shine over any hair type, and the sealing “O” of the LOC method for curls and coils.',
             ingredients:
                 'Roucou oil, rich in antioxidants, for slip, shine and protection.',
             howTo: 'Warm a few drops in your palms and smooth over damp or dry ends to seal and shine.',
-            avoid: 'A few drops is plenty, concentrated on the ends — too much oil weighs hair down and dulls shine.',
+            avoid: 'A few drops is plenty, concentrated on the ends, too much oil weighs hair down and dulls shine.',
         },
 
         /* ============================================================
@@ -408,7 +408,7 @@ export function initGrowthEdit(): () => void {
             why: 'Weightless, everyday softness and shine for balanced hair.',
             ingredients: 'Moringa oil + hydrolyzed quinoa.',
             howTo: 'Daily-safe lather, rinse.',
-            avoid: 'A simple, reliable wash — nothing to flag.',
+            avoid: 'A simple, reliable wash, nothing to flag.',
         },
         'm-briogeo-moist-sham': {
             brand: 'Briogeo',
@@ -421,7 +421,7 @@ export function initGrowthEdit(): () => void {
             why: 'A creamy, sulfate-free moisture wash for dry, coarse hair.',
             ingredients: 'Rosehip oil, algae extract + B-vitamins.',
             howTo: 'Gentle lather concentrated on the lengths, rinse.',
-            avoid: 'Pair with its matching conditioner — don’t re-strip with a clarifier.',
+            avoid: 'Pair with its matching conditioner, don’t re-strip with a clarifier.',
         },
 
         /* CONDITIONER */
@@ -436,7 +436,7 @@ export function initGrowthEdit(): () => void {
             why: 'Lightweight slip and shine for balanced, medium hair.',
             ingredients: 'Moringa oil + hydrolyzed quinoa.',
             howTo: 'Lengths and ends, rinse after a minute.',
-            avoid: 'Easy and weightless — nothing to flag.',
+            avoid: 'Easy and weightless, nothing to flag.',
         },
         'm-briogeo-moist-cond': {
             brand: 'Briogeo',
@@ -449,7 +449,7 @@ export function initGrowthEdit(): () => void {
             why: 'Rich, sulfate-free moisture that softens coarse, dry lengths.',
             ingredients: 'Rosehip oil, algae + B-vitamins.',
             howTo: 'Saturate lengths, comb through, leave 2–3 minutes, rinse.',
-            avoid: 'Rinse well — it’s a rich formula, so a little goes a long way on the lengths.',
+            avoid: 'Rinse well, it’s a rich formula, so a little goes a long way on the lengths.',
         },
 
         /* SCALP & TREATMENT */
@@ -464,7 +464,7 @@ export function initGrowthEdit(): () => void {
             why: 'A peptide scalp serum that visibly supports density for a fraction of the price.',
             ingredients: 'Hair-targeting peptide complex + caffeine.',
             howTo: 'Massage into a dry or damp scalp daily; leave in, don’t rinse.',
-            avoid: 'Give it 8–12 weeks of daily use — peptides work slowly.',
+            avoid: 'Give it 8–12 weeks of daily use, peptides work slowly.',
         },
         'm-actacre-serum': {
             brand: 'Act+Acre',
@@ -477,7 +477,7 @@ export function initGrowthEdit(): () => void {
             why: 'A lightweight leave-in serum that strengthens and balances the scalp.',
             ingredients: 'Plant-based peptides + nourishing oils.',
             howTo: 'Apply a few drops to the scalp and massage in; leave on.',
-            avoid: 'A little goes a long way — too much can feel greasy.',
+            avoid: 'A little goes a long way, too much can feel greasy.',
         },
         'm-briogeo-scalp-scrub': {
             brand: 'Briogeo',
@@ -490,10 +490,10 @@ export function initGrowthEdit(): () => void {
             why: 'A gentle exfoliating scrub that clears build-up and soothes flaking.',
             ingredients: 'Binchotan charcoal + tea-tree and peppermint oils.',
             howTo: 'Massage into the scalp once weekly, then rinse.',
-            avoid: 'Weekly is plenty — daily scrubbing irritates the scalp.',
+            avoid: 'Weekly is plenty, daily scrubbing irritates the scalp.',
         },
 
-        /* HEAT · OIL — accessible matches */
+        /* HEAT · OIL, accessible matches */
         'm-its-a-10': {
             brand: 'It’s a 10',
             name: 'Miracle Leave-In Spray',
@@ -502,10 +502,10 @@ export function initGrowthEdit(): () => void {
             img: 'It’s a 10 Miracle Leave-In',
             imgUrl: 'https://cdn.shopify.com/s/files/1/1737/7579/files/Conditioning_Leave_in_4oz.jpg',
             shop: 'https://go.shopmy.us/p-67238862',
-            why: 'The cult spray leave-in conditioner — detangles, softens, smooths frizz and adds shine in a few quick mists.',
+            why: 'The cult spray leave-in conditioner, detangles, softens, smooths frizz and adds shine in a few quick mists.',
             ingredients: 'Silk proteins, panthenol + conditioning botanicals.',
             howTo: 'Mist over damp hair from mid-lengths to ends before styling. No rinse, safe daily.',
-            avoid: 'A few mists is plenty — layer lightly so finer hair doesn’t go limp.',
+            avoid: 'A few mists is plenty, layer lightly so finer hair doesn’t go limp.',
         },
         'm-amika-blockade': {
             brand: 'amika',
@@ -519,7 +519,7 @@ export function initGrowthEdit(): () => void {
             ingredients:
                 'A bond-protecting complex + rice protein for thermal defence.',
             howTo: 'Smooth a few drops through damp or dry hair before any hot tool.',
-            avoid: 'Always apply before heat — adding it after styling protects nothing.',
+            avoid: 'Always apply before heat, adding it after styling protects nothing.',
         },
         'm-moroccanoil': {
             brand: 'Moroccanoil',
@@ -529,11 +529,11 @@ export function initGrowthEdit(): () => void {
             img: 'Moroccanoil Treatment',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1869478-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-46828494',
-            why: 'The iconic argan-oil finishing treatment — seals the cuticle, tames frizz and leaves a glassy, healthy shine.',
+            why: 'The iconic argan-oil finishing treatment, seals the cuticle, tames frizz and leaves a glassy, healthy shine.',
             ingredients:
                 'Argan oil + linseed extract, rich in antioxidants and fatty acids.',
             howTo: 'Warm a few drops and smooth through damp or dry ends to seal and shine.',
-            avoid: 'Keep it to the ends — too much, too high up looks greasy on finer hair.',
+            avoid: 'Keep it to the ends, too much, too high up looks greasy on finer hair.',
         },
 
         /* MASK */
@@ -563,7 +563,7 @@ export function initGrowthEdit(): () => void {
             why: 'Buildable, weightless volume and grip for fine hair.',
             ingredients: 'Patented thickening + texturizing polymers.',
             howTo: 'Spray into dry roots and lengths, then tousle.',
-            avoid: 'Shake well and mist lightly — over-application gets chalky.',
+            avoid: 'Shake well and mist lightly, over-application gets chalky.',
         },
         'm-colorwow-dreamcoat': {
             brand: 'Color Wow',
@@ -576,10 +576,10 @@ export function initGrowthEdit(): () => void {
             why: 'A heat-activated treatment that seals out humidity and frizz for days.',
             ingredients: 'Heat-responsive smoothing polymers.',
             howTo: 'Spray on damp hair, then blow-dry to activate the seal.',
-            avoid: 'It must be heat-activated — air-drying won’t switch it on.',
+            avoid: 'It must be heat-activated, air-drying won’t switch it on.',
         },
 
-        /* CURL CARE — accessible matches */
+        /* CURL CARE, accessible matches */
         'm-briogeo-curl-sham': {
             brand: 'Briogeo',
             name: 'Curl Charisma Cleansing Shampoo',
@@ -592,7 +592,7 @@ export function initGrowthEdit(): () => void {
             ingredients:
                 'Rice amino acids, tomato-fruit ferment + avocado oil.',
             howTo: 'Gentle lather at the scalp, rinse. 1–2× weekly.',
-            avoid: 'Keep washes infrequent — curls dry out with frequent shampooing.',
+            avoid: 'Keep washes infrequent, curls dry out with frequent shampooing.',
         },
         'm-briogeo-curl-cond': {
             brand: 'Briogeo',
@@ -605,7 +605,7 @@ export function initGrowthEdit(): () => void {
             why: 'Slip-rich, sulfate-free conditioning for easy detangling and definition.',
             ingredients: 'Rice amino acids, quinoa protein + shea butter.',
             howTo: 'Coat the lengths, finger-detangle, then rinse most of it out.',
-            avoid: 'Leave a little in if your curls run dry — don’t strip all the slip.',
+            avoid: 'Leave a little in if your curls run dry, don’t strip all the slip.',
         },
         'm-curl-cream': {
             brand: 'SheaMoisture',
@@ -618,7 +618,7 @@ export function initGrowthEdit(): () => void {
             why: 'A rich, affordable curl cream that defines and softens thirsty curls and coils.',
             ingredients: 'Coconut oil, shea butter + silk protein.',
             howTo: 'Rake through soaking-wet hair, scrunch, then air-dry or diffuse.',
-            avoid: 'Can build up — clarify every few weeks if curls start to feel coated.',
+            avoid: 'Can build up, clarify every few weeks if curls start to feel coated.',
         },
         'm-leavein-curl': {
             brand: 'Kinky-Curly',
@@ -631,11 +631,11 @@ export function initGrowthEdit(): () => void {
             why: 'A cult leave-in detangler that softens and preps curls and coils for styling.',
             ingredients: 'Slippery elm, marshmallow root + organic mango.',
             howTo: 'On soaking-wet hair, smooth through, detangle, then layer your styler on top.',
-            avoid: 'Apply to very wet hair for the most slip — it grips on dry hair.',
+            avoid: 'Apply to very wet hair for the most slip, it grips on dry hair.',
         },
 
         /* ============================================================
-     DAVINES — DEDE (fine/lightweight moisture), MINU (color), HEART OF GLASS (blonde)
+     DAVINES, DEDE (fine/lightweight moisture), MINU (color), HEART OF GLASS (blonde)
      ============================================================ */
         'dav-dede-sham': {
             brand: 'Davines',
@@ -645,11 +645,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines DEDE Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815579-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68367704',
-            why: 'Davines’ most delicate daily cleanse — feeds lightweight moisture and softness into fine, fragile hair without an ounce of weight, so it stays bouncy but stops snapping.',
+            why: 'Davines’ most delicate daily cleanse, feeds lightweight moisture and softness into fine, fragile hair without an ounce of weight, so it stays bouncy but stops snapping.',
             ingredients:
                 'A lightweight muskmelon extract + gentle cleansers that hydrate as they wash.',
             howTo: 'Lather gently at the scalp and through the lengths, then rinse. Your everyday wash.',
-            avoid: 'Skip heavy butters at the root afterward — DEDE keeps fine hair light, and oils there undo it.',
+            avoid: 'Skip heavy butters at the root afterward, DEDE keeps fine hair light, and oils there undo it.',
         },
         'dav-dede-cond': {
             brand: 'Davines',
@@ -672,7 +672,7 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MINU Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817005-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68369604',
-            why: 'Davines’ color-protecting cleanse — locks in your tone and adds illuminating shine while it gently washes, so color stays vibrant far longer.',
+            why: 'Davines’ color-protecting cleanse, locks in your tone and adds illuminating shine while it gently washes, so color stays vibrant far longer.',
             ingredients:
                 'Goji-berry extract, rich in antioxidants, to shield color from fading.',
             howTo: 'Gentle lather, rinse. Your everyday color-safe wash.',
@@ -689,7 +689,7 @@ export function initGrowthEdit(): () => void {
             why: 'Seals the cuticle to hold color true and leaves hair glossy, soft and protected against fade.',
             ingredients: 'Goji-berry antioxidant complex.',
             howTo: 'Lengths and ends, leave a minute, then rinse.',
-            avoid: 'A color-safe finish — concentrate it on the lengths.',
+            avoid: 'A color-safe finish, concentrate it on the lengths.',
         },
         'dav-heart-sham': {
             brand: 'Davines',
@@ -699,11 +699,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Heart of Glass Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815348-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68370676',
-            why: 'Davines’ blonde-hair hero — a silkening cleanse that deeply moisturises fragile, lightened hair, strengthens it against breakage and keeps brass in check.',
+            why: 'Davines’ blonde-hair hero, a silkening cleanse that deeply moisturises fragile, lightened hair, strengthens it against breakage and keeps brass in check.',
             ingredients:
                 'Roucou oil + blue-toning pigments and strengthening proteins for blonde hair.',
             howTo: 'Lather gently, leave a minute to tone, then rinse. 2–3× a week.',
-            avoid: 'Don’t use the toning pigments daily — a couple of times a week keeps blonde bright, not dull or grey.',
+            avoid: 'Don’t use the toning pigments daily, a couple of times a week keeps blonde bright, not dull or grey.',
         },
         'dav-heart-cond': {
             brand: 'Davines',
@@ -719,7 +719,7 @@ export function initGrowthEdit(): () => void {
             avoid: 'Focus on the lengths where lightened blonde is most porous and fragile.',
         },
 
-        /* MOISTURE / COLOUR / BLONDE — accessible matches */
+        /* MOISTURE / COLOUR / BLONDE, accessible matches */
         'm-verb-hydra-sham': {
             brand: 'Verb',
             name: 'Hydrating Shampoo',
@@ -757,7 +757,7 @@ export function initGrowthEdit(): () => void {
             why: 'A sulfate-free, color-safe moisture cleanse that protects tone while it hydrates.',
             ingredients: 'Coconut + camelina oils in a color-protecting base.',
             howTo: 'Gentle lather, rinse.',
-            avoid: 'Sulfate-free by design — don’t alternate with a stripping clarifier.',
+            avoid: 'Sulfate-free by design, don’t alternate with a stripping clarifier.',
         },
         'm-pureology-cond': {
             brand: 'Pureology',
@@ -770,7 +770,7 @@ export function initGrowthEdit(): () => void {
             why: 'Color-safe moisture that seals the cuticle for vibrancy and shine.',
             ingredients: 'Camelina oil + antioxidants.',
             howTo: 'Lengths and ends, rinse.',
-            avoid: 'A color-safe finish — concentrate on the lengths.',
+            avoid: 'A color-safe finish, concentrate on the lengths.',
         },
         'm-blonde-sham': {
             brand: 'Pureology',
@@ -783,7 +783,7 @@ export function initGrowthEdit(): () => void {
             why: 'A purple, bond-strengthening cleanse that tones brass and rebuilds fragile, lightened blonde hair.',
             ingredients: 'Purple pigments + a bonding complex and keratin.',
             howTo: 'Lather, leave 1–2 minutes to tone, then rinse. 2–3× a week.',
-            avoid: 'Don’t leave purple shampoo on too long or too often — it can over-tone to grey.',
+            avoid: 'Don’t leave purple shampoo on too long or too often, it can over-tone to grey.',
         },
         'm-blonde-cond': {
             brand: 'Pureology',
@@ -808,11 +808,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines Volume Boosting Mousse',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2816056-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67239150',
-            why: 'A volumizing mousse built for fine hair — builds lasting, touchable body from roots to ends without the stiffness of a spray or the weight that drags fine strands down.',
+            why: 'A volumizing mousse built for fine hair, builds lasting, touchable body from roots to ends without the stiffness of a spray or the weight that drags fine strands down.',
             ingredients:
                 'Volumizing polymers in a lightweight conditioning foam base.',
             howTo: 'Rake or scrunch through damp hair from roots to ends, then blow-dry for full, bouncy results.',
-            avoid: 'Start golf-ball-sized and work through quickly — too much stacks on weight instead of volume.',
+            avoid: 'Start golf-ball-sized and work through quickly, too much stacks on weight instead of volume.',
         },
 
         /* ---------- BUMBLE AND BUMBLE · SHAMPOO ---------- */
@@ -824,7 +824,7 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Gentle Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1270065-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67239305',
-            why: 'A mild, moisturizing daily cleanse gentle enough for everyday washing — clean without stripping, with enough moisture to support fine hair’s real need for hydration.',
+            why: 'A mild, moisturizing daily cleanse gentle enough for everyday washing, clean without stripping, with enough moisture to support fine hair’s real need for hydration.',
             ingredients:
                 'Moisturizing and conditioning agents in an ultra-gentle surfactant base.',
             howTo: 'Lather gently, rinse. Everyday-safe.',
@@ -838,7 +838,7 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Hairdresser’s Invisible Oil Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1602945-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67239724',
-            why: 'A frizz-fighting, hydrating shampoo infused with a featherlight 6-oil blend — washes hair clean while depositing real moisture and shine without a trace of heaviness.',
+            why: 'A frizz-fighting, hydrating shampoo infused with a featherlight 6-oil blend, washes hair clean while depositing real moisture and shine without a trace of heaviness.',
             ingredients:
                 'A featherlight 6-oil blend with frizz-reducing and hydrating agents.',
             howTo: 'Lather from roots to ends, rinse. Everyday-safe.',
@@ -852,11 +852,11 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Bond-Building Repair Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2556850-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240048',
-            why: 'A bond-building daily shampoo that repairs and strengthens highlighted or chemically processed hair — cleanses while rebuilding exactly what bleaching breaks down.',
+            why: 'A bond-building daily shampoo that repairs and strengthens highlighted or chemically processed hair, cleanses while rebuilding exactly what bleaching breaks down.',
             ingredients:
                 'Bond-repairing actives and strengthening agents in a gentle cleanser.',
-            howTo: 'Lather gently, leave a minute, rinse. Use 2—3× a week alternating with your toning shampoo.',
-            avoid: 'Alternate with Heart of Glass — daily toning shampoo flattens color dimension over time.',
+            howTo: 'Lather gently, leave a minute, rinse. Use 2-3× a week alternating with your toning shampoo.',
+            avoid: 'Alternate with Heart of Glass, daily toning shampoo flattens color dimension over time.',
         },
 
         /* ---------- BUMBLE AND BUMBLE · CONDITIONER ---------- */
@@ -868,7 +868,7 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Hairdresser’s Invisible Oil Conditioner',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1602952-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67239859',
-            why: 'Frizz-reducing hydration with the same featherlight 6-oil complex — slip, softness and shine without any weight.',
+            why: 'Frizz-reducing hydration with the same featherlight 6-oil complex, slip, softness and shine without any weight.',
             ingredients: '6-oil featherlight blend plus conditioning agents.',
             howTo: 'Mid-lengths to ends, leave a minute, rinse.',
             avoid: 'Keep it off the scalp to maintain root lift and volume.',
@@ -881,10 +881,10 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Bond-Building Repair Conditioner',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2556868-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240106',
-            why: 'A reparative daily conditioner that rebuilds broken bonds in fragile blonde hair — restoring the strength, elasticity and shine that bleaching strips away.',
+            why: 'A reparative daily conditioner that rebuilds broken bonds in fragile blonde hair, restoring the strength, elasticity and shine that bleaching strips away.',
             ingredients:
                 'Bond-building and strengthening complex in a rich conditioning base.',
-            howTo: 'Lengths and ends, leave 2—3 minutes, rinse.',
+            howTo: 'Lengths and ends, leave 2-3 minutes, rinse.',
             avoid: 'Focus on the porous mid-lengths and ends where lightening has done the most damage.',
         },
 
@@ -897,11 +897,11 @@ export function initGrowthEdit(): () => void {
             img: 'Bumble and bumble Thickening Full Form Mousse',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2126688-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240247',
-            why: 'A pro-brand volume mousse that lifts and thickens fine strands with lasting, touchable body — the soft, brushable finish that spray products cannot match.',
+            why: 'A pro-brand volume mousse that lifts and thickens fine strands with lasting, touchable body, the soft, brushable finish that spray products cannot match.',
             ingredients:
                 'Thickening and volumizing polymers in a lightweight foam.',
             howTo: 'Rake or scrunch through damp roots and lengths, then blow-dry for full, bouncy volume.',
-            avoid: 'Apply to damp hair only — working mousse into dry hair gets clumpy and uneven.',
+            avoid: 'Apply to damp hair only, working mousse into dry hair gets clumpy and uneven.',
         },
 
         /* ---------- IT’S A 10 · KERATIN ---------- */
@@ -913,11 +913,11 @@ export function initGrowthEdit(): () => void {
             img: 'It’s a 10 Miracle Leave-In Plus Keratin',
             imgUrl: 'https://cdn.shopify.com/s/files/1/1737/7579/files/Keratin_Leave-in_4oz_1e4c4973-8483-4394-8ee5-cc9c80295993.jpg',
             shop: 'https://go.shopmy.us/p-67238901',
-            why: 'The keratin version of the cult leave-in — keratin physically smooths and seals the raised cuticle so fine hair locks in the moisture and protein that would otherwise escape. This is the step that turns growth into retained length.',
+            why: 'The keratin version of the cult leave-in, keratin physically smooths and seals the raised cuticle so fine hair locks in the moisture and protein that would otherwise escape. This is the step that turns growth into retained length.',
             ingredients:
                 'Keratin plus silk proteins, panthenol and conditioning botanicals.',
-            howTo: 'Mist over damp — not soaking-wet — hair from mid-lengths to ends before styling. No rinse, safe daily.',
-            avoid: 'Apply to damp hair, not soaking-wet — too much water dilutes the keratin before it can seal the cuticle.',
+            howTo: 'Mist over damp, not soaking-wet, hair from mid-lengths to ends before styling. No rinse, safe daily.',
+            avoid: 'Apply to damp hair, not soaking-wet, too much water dilutes the keratin before it can seal the cuticle.',
         },
 
         /* ---------- MOROCCANOIL · BLONDE SAFE ---------- */
@@ -929,11 +929,11 @@ export function initGrowthEdit(): () => void {
             img: 'Moroccanoil Treatment Light',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1869502-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240521',
-            why: 'The iconic argan treatment in a clear, tint-free version made specifically for blonde, fine and light-colored hair — all the seal-and-shine with zero risk of the amber deposit the original leaves on light hair.',
+            why: 'The iconic argan treatment in a clear, tint-free version made specifically for blonde, fine and light-colored hair, all the seal-and-shine with zero risk of the amber deposit the original leaves on light hair.',
             ingredients:
                 'Clear argan oil plus linseed extract, rich in antioxidants and fatty acids.',
             howTo: 'Warm a few drops and smooth over damp or dry ends to seal and shine.',
-            avoid: 'Keep it to the ends — Light is clear but still oil, so too much up high reads greasy on fine hair.',
+            avoid: 'Keep it to the ends, Light is clear but still oil, so too much up high reads greasy on fine hair.',
         },
         'm-moroccanoil-violet': {
             brand: 'Moroccanoil',
@@ -943,16 +943,16 @@ export function initGrowthEdit(): () => void {
             img: 'Moroccanoil Violet Oil',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2771947-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240705',
-            why: 'A toning version of the iconic treatment — argan oil with violet pigment that neutralizes yellow tones and keeps blonde bright between salon visits, all while sealing the cuticle.',
+            why: 'A toning version of the iconic treatment, argan oil with violet pigment that neutralizes yellow tones and keeps blonde bright between salon visits, all while sealing the cuticle.',
             ingredients:
                 'Argan oil plus violet toning pigments and antioxidant fatty acids.',
-            howTo: 'A few drops smoothed over damp or dry ends. Use 1—2× a week for toning, not every wash.',
-            avoid: '1—2× a week is all you need — daily violet oil builds up pigment fast and turns bright blonde flat and dull.',
+            howTo: 'A few drops smoothed over damp or dry ends. Use 1-2× a week for toning, not every wash.',
+            avoid: '1-2× a week is all you need, daily violet oil builds up pigment fast and turns bright blonde flat and dull.',
         },
     };
 
     /* ============================================================
-   ROUTINE BUILDER — texture × density → 7-step regimen
+   ROUTINE BUILDER, texture × density → 7-step regimen
    ============================================================ */
 
     const TEXTURES = {
@@ -962,7 +962,7 @@ export function initGrowthEdit(): () => void {
         },
         medium: {
             label: 'Medium',
-            desc: 'The balanced middle — holds a style, neither fragile nor wiry.',
+            desc: 'The balanced middle, holds a style, neither fragile nor wiry.',
         },
         coarse: {
             label: 'Coarse',
@@ -976,7 +976,7 @@ export function initGrowthEdit(): () => void {
         },
         medium: {
             label: 'Medium',
-            desc: 'A moderate amount of hair — neither sparse nor especially full.',
+            desc: 'A moderate amount of hair, neither sparse nor especially full.',
         },
         dense: {
             label: 'Dense',
@@ -998,32 +998,32 @@ export function initGrowthEdit(): () => void {
         },
         coily: {
             label: 'Coily',
-            desc: 'Tight coils, zig-zags or kinks — the driest, most fragile pattern. Moisture is everything.',
+            desc: 'Tight coils, zig-zags or kinks, the driest, most fragile pattern. Moisture is everything.',
         },
     };
     const HAIRSTATUS = {
         natural: {
             label: 'Natural',
-            desc: 'Uncolored or grown-out — no color to protect.',
+            desc: 'Uncolored or grown-out, no color to protect.',
         },
         color: {
             label: 'Color-treated',
-            desc: 'Dyed or glossed — wants color protection plus extra moisture.',
+            desc: 'Dyed or glossed, wants color protection plus extra moisture.',
         },
         blonde: {
             label: 'Blonde / Lightened',
-            desc: 'Bleached or highlighted — the most fragile; craves moisture, bond and tone.',
+            desc: 'Bleached or highlighted, the most fragile; craves moisture, bond and tone.',
         },
     };
     const STATUS_COPY = {
         natural: '',
         color: ' And because it’s color-treated, your cleanse and conditioner switch to Davines MINU to lock in tone and shine while you grow it out.',
-        blonde: ' And because it’s blonde or lightened, your cleanse and conditioner switch to Davines Heart of Glass — deep moisture and bond strength to stop the breakage that dryness causes in lightened hair.',
+        blonde: ' And because it’s blonde or lightened, your cleanse and conditioner switch to Davines Heart of Glass, deep moisture and bond strength to stop the breakage that dryness causes in lightened hair.',
     };
     const PATTERN_COPY = {
         straight: {
             priority: 'Light & lifted',
-            clause: 'Because your hair is straight, natural oils slide down the strand fast — so your edit stays light and lifted, with smoothing to finish.',
+            clause: 'Because your hair is straight, natural oils slide down the strand fast, so your edit stays light and lifted, with smoothing to finish.',
         },
         wavy: {
             priority: 'Define & de-frizz',
@@ -1031,7 +1031,7 @@ export function initGrowthEdit(): () => void {
         },
         curly: {
             priority: 'Moisture & definition',
-            clause: 'Curls run dry because oils can’t travel down the spiral — so your edit leans into gentle cleansing, deep moisture and curl-defining leave-ins.',
+            clause: 'Curls run dry because oils can’t travel down the spiral, so your edit leans into gentle cleansing, deep moisture and curl-defining leave-ins.',
         },
         coily: {
             priority: 'Max moisture & protect',
@@ -1042,7 +1042,7 @@ export function initGrowthEdit(): () => void {
     const PROFILE_COPY = {
         'fine-thin': {
             name: 'Fine & Thin',
-            blurb: 'Delicate strands and a sparse density — the combination most prone to looking flat and showing scalp. Your edit leads with growth support and scalp health, then builds weightless volume on top.',
+            blurb: 'Delicate strands and a sparse density, the combination most prone to looking flat and showing scalp. Your edit leads with growth support and scalp health, then builds weightless volume on top.',
         },
         'fine-medium': {
             name: 'Fine & Medium',
@@ -1050,7 +1050,7 @@ export function initGrowthEdit(): () => void {
         },
         'fine-dense': {
             name: 'Fine & Dense',
-            blurb: 'Lots of fine strands — full but quick to fall flat and turn oily at the roots. Your edit keeps things light and lifted while balancing the scalp.',
+            blurb: 'Lots of fine strands, full but quick to fall flat and turn oily at the roots. Your edit keeps things light and lifted while balancing the scalp.',
         },
         'medium-thin': {
             name: 'Medium & Thin',
@@ -1058,7 +1058,7 @@ export function initGrowthEdit(): () => void {
         },
         'medium-medium': {
             name: 'Medium & Medium',
-            blurb: 'The most adaptable hair type. A clean, softening routine keeps it healthy and shiny without tipping it oily or dry — the classic all-rounder.',
+            blurb: 'The most adaptable hair type. A clean, softening routine keeps it healthy and shiny without tipping it oily or dry, the classic all-rounder.',
         },
         'medium-dense': {
             name: 'Medium & Dense',
@@ -1099,7 +1099,7 @@ export function initGrowthEdit(): () => void {
         supplement: { step: 9, name: 'Growth Supplement', cadence: 'Daily' },
     };
 
-    /* Foundation pick shown above every routine — applies to all hair types. */
+    /* Foundation pick shown above every routine, applies to all hair types. */
     const FOUNDATION = {
         id: 'jolie-showerhead',
         brand: 'Jolie',
@@ -1110,13 +1110,13 @@ export function initGrowthEdit(): () => void {
         img: 'Jolie Filtered Showerhead',
         imgUrl: 'https://m.media-amazon.com/images/I/61MCvSZUKaL._SL1500_.jpg',
         shop: 'https://go.shopmy.us/p-67307318',
-        tagline: "Start here — it's the water, first.",
-        why: 'Every product below works harder when the water itself is clean. Jolie filters out the chlorine, heavy metals and hard-water minerals that dry out hair, dull color and irritate the scalp — so this is the foundation of any growth routine, no matter your hair type.',
+        tagline: "Start here, it's the water, first.",
+        why: 'Every product below works harder when the water itself is clean. Jolie filters out the chlorine, heavy metals and hard-water minerals that dry out hair, dull color and irritate the scalp, so this is the foundation of any growth routine, no matter your hair type.',
         ingredients:
             'A multi-stage KDF-55 + calcium-sulfite filter that removes chlorine, chloramine and heavy metals from your shower water.',
         howTo: 'Swaps onto your existing shower arm in minutes. Replace the filter roughly every 90 days to keep performance up.',
-        avoid: "Hard or heavily chlorinated water undoes good products — don't skip this and wonder why hair still feels dry.",
-        // Recurring replacement — for anyone who already owns the head (and every owner, every ~90 days).
+        avoid: "Hard or heavily chlorinated water undoes good products, don't skip this and wonder why hair still feels dry.",
+        // Recurring replacement, for anyone who already owns the head (and every owner, every ~90 days).
         refillProduct: {
             id: 'jolie-filter-refill',
             brand: 'Jolie',
@@ -1128,11 +1128,11 @@ export function initGrowthEdit(): () => void {
             imgUrl: 'https://exclusivebeautyclub.com/cdn/shop/products/jolie-showerhead-replacement-filter-jolie-skin-co-shop-at-exclusive-beauty-club-267805.jpg?v=1762271295',
             shop: 'https://go.shopmy.us/p-67307418',
             tagline: 'Already have the head? Keep it working.',
-            why: "A filter only works until it's full. After about 90 days it stops absorbing chlorine and minerals — so swapping it on schedule is what keeps your water (and everything you wash with it) actually clean.",
+            why: "A filter only works until it's full. After about 90 days it stops absorbing chlorine and minerals, so swapping it on schedule is what keeps your water (and everything you wash with it) actually clean.",
             ingredients:
-                'A fresh multi-stage KDF-55 + calcium-sulfite cartridge — the same filtration, renewed.',
+                'A fresh multi-stage KDF-55 + calcium-sulfite cartridge, the same filtration, renewed.',
             howTo: 'Twists into your existing Jolie head in under a minute. Set a reminder for every 90 days.',
-            avoid: "Don't stretch it past ~3 months — a spent filter quietly does nothing, and your hair feels it first.",
+            avoid: "Don't stretch it past ~3 months, a spent filter quietly does nothing, and your hair feels it first.",
         },
     };
 
@@ -1152,17 +1152,17 @@ export function initGrowthEdit(): () => void {
             shamPro = 'dav-energizing-sham';
             shamAlt = 'm-actacre-sham';
             shamWhy =
-                'Because your hair reads sparse, we lead with a density-supporting cleanse to wake the follicles — moisture comes later in the routine.';
+                'Because your hair reads sparse, we lead with a density-supporting cleanse to wake the follicles; moisture comes later in the routine.';
         } else if (t === 'fine') {
             shamPro = 'dav-momo-sham';
             shamAlt = 'm-bb-gentle-sham';
             shamWhy =
-                'Fine hair is often told to fear moisture — but the cuticle stays more open and deposits moisture just as fast as it loses it. A moisture-forward cleanse paired with protein to seal it in is what lets fine hair actually retain the length it grows.';
+                'Fine hair is often told to fear moisture, but the cuticle stays more open and deposits moisture just as fast as it loses it. A moisture-forward cleanse paired with protein to seal it in is what lets fine hair actually retain the length it grows.';
         } else if (t === 'coarse') {
             shamPro = 'dav-momo-sham';
             shamAlt = 'm-briogeo-moist-sham';
             shamWhy =
-                'Coarse hair loses moisture fast — a hydrating cleanse stops the dryness and frizz before they start.';
+                'Coarse hair loses moisture fast, a hydrating cleanse stops the dryness and frizz before they start.';
         } else {
             shamPro = 'dav-oi-sham';
             shamAlt = 'm-bb-hio-sham';
@@ -1177,7 +1177,7 @@ export function initGrowthEdit(): () => void {
             conPro = 'dav-momo-cond';
             conAlt = 'm-bb-hio-cond';
             conWhy =
-                'Fine hair loses moisture almost as fast as it absorbs it — a moisture-forward conditioner floods the strand, and the keratin leave-in seals it in. This combination builds the resilience to grow and keep length.';
+                'Fine hair loses moisture almost as fast as it absorbs it, a moisture-forward conditioner floods the strand, and the keratin leave-in seals it in. This combination builds the resilience to grow and keep length.';
         } else if (t === 'coarse') {
             conPro = 'dav-momo-cond';
             conAlt = 'm-briogeo-moist-cond';
@@ -1197,12 +1197,12 @@ export function initGrowthEdit(): () => void {
             scPro = 'dav-energizing-superactive';
             scAlt = 'm-ordinary-serum';
             scWhy =
-                'This is the hero of a thinning routine — a leave-on tonic that targets the growth phase week after week.';
+                'This is the hero of a thinning routine, a leave-on tonic that targets the growth phase week after week.';
         } else if (isDense) {
             scPro = 'dav-detox-scrub';
             scAlt = 'm-briogeo-scalp-scrub';
             scWhy =
-                'With so much hair, build-up hides at the scalp — a weekly exfoliating treatment keeps the follicles clear and healthy.';
+                'With so much hair, build-up hides at the scalp, a weekly exfoliating treatment keeps the follicles clear and healthy.';
         } else {
             scPro = 'dav-replumping-superactive';
             scAlt = 'm-actacre-serum';
@@ -1220,7 +1220,7 @@ export function initGrowthEdit(): () => void {
         } else if (t === 'fine') {
             mPro = 'dav-nounou-mask';
             mWhy =
-                'Fine hair is chronically under-treated — a weekly nourishing mask deposits the moisture and protein that slip out fast, building the resilience to hold onto length instead of snapping off.';
+                'Fine hair is chronically under-treated, a weekly nourishing mask deposits the moisture and protein that slip out fast, building the resilience to hold onto length instead of snapping off.';
         } else {
             mPro = 'dav-nounou-mask';
             mWhy =
@@ -1234,12 +1234,12 @@ export function initGrowthEdit(): () => void {
             liPro = 'm-its-a-10-keratin';
             liAlt = 'm-its-a-10-keratin';
             liWhy =
-                'This is the most important step for fine hair — keratin physically smooths and seals the raised cuticle so moisture and protein stay locked in. Davines does not make a keratin spray, so this is one slot where the best product wins regardless of brand. Seal this step and everything you layered below actually stays.';
+                'This is the most important step for fine hair, keratin physically smooths and seals the raised cuticle so moisture and protein stay locked in. Davines does not make a keratin spray, so this is one slot where the best product wins regardless of brand. Seal this step and everything you layered below actually stays.';
         } else if (t === 'coarse') {
             liPro = 'm-its-a-10-keratin';
             liAlt = 'm-its-a-10';
             liWhy =
-                'A moisture-rich leave-in conditioner sprayed on after the shower gives thirsty, coarse lengths real slip for detangling — the groundwork before you heat-protect and style.';
+                'A moisture-rich leave-in conditioner sprayed on after the shower gives thirsty, coarse lengths real slip for detangling, the groundwork before you heat-protect and style.';
         } else {
             liPro = 'm-its-a-10';
             liAlt = 'm-its-a-10-keratin';
@@ -1251,8 +1251,8 @@ export function initGrowthEdit(): () => void {
         /* ---- 6. Heat protectant ---- */
         const heatWhy =
             t === 'fine'
-                ? 'Non-negotiable before any hot tool — a light-mist heat protectant shields fine, fragile strands from blow-dryers and irons so you keep the length you grow.'
-                : 'Non-negotiable before any hot tool — a heat protectant seals the cuticle against blow-dryers, irons and wands so heat builds shine instead of breakage.';
+                ? 'Non-negotiable before any hot tool, a light-mist heat protectant shields fine, fragile strands from blow-dryers and irons so you keep the length you grow.'
+                : 'Non-negotiable before any hot tool, a heat protectant seals the cuticle against blow-dryers, irons and wands so heat builds shine instead of breakage.';
         R.push({
             cat: 'heat',
             pro: 'dav-melu-shield',
@@ -1266,7 +1266,7 @@ export function initGrowthEdit(): () => void {
             stPro = 'dav-volume-mousse';
             stAlt = 'm-bb-mousse';
             stWhy =
-                'A volume mousse gives fine hair buildable, touchable lift that lasts through the day — more controlled than a spray, dries brushable not stiff, and holds body without going flat.';
+                'A volume mousse gives fine hair buildable, touchable lift that lasts through the day, more controlled than a spray, dries brushable not stiff, and holds body without going flat.';
         } else if (t === 'coarse') {
             stPro = 'dav-love-smooth';
             stAlt = 'm-colorwow-dreamcoat';
@@ -1284,7 +1284,7 @@ export function initGrowthEdit(): () => void {
         let oilWhy;
         if (t === 'fine') {
             oilWhy =
-                'A drop or two on the ends only seals split-prone tips and adds shine — kept low and light so it never drags fine hair down.';
+                'A drop or two on the ends only seals split-prone tips and adds shine, kept low and light so it never drags fine hair down.';
         } else if (t === 'coarse') {
             oilWhy =
                 'A finishing oil seals in moisture, smooths frizz and lays a glossy shine over thirsty, coarse ends.';
@@ -1303,13 +1303,13 @@ export function initGrowthEdit(): () => void {
         let supWhy;
         if (isThin) {
             supWhy =
-                'When density is your main concern, a daily supplement supports growth from the inside in a way topicals can’t — an easy, affordable habit to commit to.';
+                'When density is your main concern, a daily supplement supports growth from the inside in a way topicals can’t, an easy, affordable habit to commit to.';
         } else if (isDense) {
             supWhy =
-                'Optional for you — more of a maintenance and shine boost than a necessity, since density isn’t your challenge.';
+                'Optional for you, more of a maintenance and shine boost than a necessity, since density isn’t your challenge.';
         } else {
             supWhy =
-                'A steady daily habit that supports stronger, fuller growth over time — the long game of your routine.';
+                'A steady daily habit that supports stronger, fuller growth over time, the long game of your routine.';
         }
         R.push({
             cat: 'supplement',
@@ -1336,7 +1336,7 @@ export function initGrowthEdit(): () => void {
                 cond.pro = 'dav-minu-cond';
                 cond.alt = 'm-pureology-cond';
                 sham.why =
-                    'Color-treated hair fades and dries with every wash — MINU is a gentle, color-locking cleanse that protects your tone and adds illuminating shine.';
+                    'Color-treated hair fades and dries with every wash, MINU is a gentle, color-locking cleanse that protects your tone and adds illuminating shine.';
                 cond.why =
                     'A color-protecting conditioner that seals the cuticle so color stays vibrant and the lengths stay glossy and moisturised.';
             } else {
@@ -1351,14 +1351,14 @@ export function initGrowthEdit(): () => void {
                 cond.pro = 'dav-heart-cond';
                 cond.alt = 'm-bb-bond-cond';
                 sham.why =
-                    'Blonde hair breaks because bleaching leaves it dry and porous — Heart of Glass floods it with moisture and bond strength with a sheer toning pigment safe to use 2—3× a week. Rotate with your other shampoo so color keeps its dimension.';
+                    'Blonde hair breaks because bleaching leaves it dry and porous, Heart of Glass floods it with moisture and bond strength with a sheer toning pigment safe to use 2-3× a week. Rotate with your other shampoo so color keeps its dimension.';
                 cond.why =
                     'A rich, strengthening conditioner that deeply moisturises fragile blonde lengths and smooths them for glassy, breakage-free shine.';
                 const blondeOil = R.find(s => s.cat === 'oil');
                 if (blondeOil) {
                     blondeOil.alt = 'm-moroccanoil-light';
                     blondeOil.why =
-                        'The original Moroccanoil has an amber tint that deposits on light hair — always use Treatment Light or Violet Oil for blonde. Light is colorless and safe every wash; Violet adds a toning boost 1—2× a week. Choose based on how much brass you are managing.';
+                        'The original Moroccanoil has an amber tint that deposits on light hair, always use Treatment Light or Violet Oil for blonde. Light is colorless and safe every wash; Violet adds a toning boost 1-2× a week. Choose based on how much brass you are managing.';
                 }
             } else {
                 cond.why =
@@ -1385,16 +1385,16 @@ export function initGrowthEdit(): () => void {
             if (d === 'dense' && t !== 'coarse') {
                 sham.pro = 'dav-rebalancing-sham';
                 sham.why =
-                    'Straight, dense hair gets oily at the roots fastest — a rebalancing cleanse regulates the scalp so your wash lasts longer, while volume comes from your styling step.';
+                    'Straight, dense hair gets oily at the roots fastest, a rebalancing cleanse regulates the scalp so your wash lasts longer, while volume comes from your styling step.';
             }
             li.why =
-                'Straight hair shows product weight fastest, so use a light hand — a few mists through the lengths detangle and soften without greasing the roots.';
+                'Straight hair shows product weight fastest, so use a light hand, a few mists through the lengths detangle and soften without greasing the roots.';
             return;
         }
         if (p === 'wavy') {
             sham.cadence = '2–3× a week';
             li.why =
-                'Mist your leave-in through soaking-wet hair and scrunch upward — it coaxes out your natural S-bend instead of dragging it straight.';
+                'Mist your leave-in through soaking-wet hair and scrunch upward, it coaxes out your natural S-bend instead of dragging it straight.';
             sty.pro = 'dav-curl-mousse';
             sty.alt = 'm-curl-cream';
             sty.why =
@@ -1407,65 +1407,65 @@ export function initGrowthEdit(): () => void {
             sham.cadence = '1–2× a week';
             if (isThin) {
                 sham.why =
-                    'Density comes first, so keep the energizing cleanse — but only lather the scalp and let it rinse through your curls; never scrub the lengths.';
+                    'Density comes first, so keep the energizing cleanse, but only lather the scalp and let it rinse through your curls; never scrub the lengths.';
             } else {
                 sham.pro = 'dav-love-curl-sham';
                 sham.alt = 'm-briogeo-curl-sham';
                 sham.why =
-                    'Curls dry out fast, so we swap in a gentle, hydrating curl cleanse — your scalp-and-growth support moves to the leave-on serum step below.';
+                    'Curls dry out fast, so we swap in a gentle, hydrating curl cleanse, your scalp-and-growth support moves to the leave-on serum step below.';
             }
             cond.pro = 'dav-love-curl-cond';
             cond.alt = 'm-briogeo-curl-cond';
             cond.why =
-                'A slip-rich curl conditioner detangles and defines without roughing the cuticle — finger-detangle in the shower while it’s still in.';
+                'A slip-rich curl conditioner detangles and defines without roughing the cuticle, finger-detangle in the shower while it’s still in.';
             if (t === 'fine') {
                 li.why =
-                    'Fine curly hair loses protein fastest of all — the keratin spray seals the raised cuticle so the moisture you just put in actually stays. Apply to soaking-wet curls before you scrunch and define.';
+                    'Fine curly hair loses protein fastest of all, the keratin spray seals the raised cuticle so the moisture you just put in actually stays. Apply to soaking-wet curls before you scrunch and define.';
             } else {
                 li.pro = 'm-its-a-10-keratin';
                 li.alt = 'm-leavein-curl';
                 li.why =
-                    'A true leave-in conditioner worked through soaking-wet curls gives the slip to finger-detangle and locks in the moisture curls need before you style — never skip it.';
+                    'A true leave-in conditioner worked through soaking-wet curls gives the slip to finger-detangle and locks in the moisture curls need before you style, never skip it.';
             }
             heat.why =
-                'Only if you diffuse or blow-dry — protect first. Air-drying your curls skips this step entirely.';
+                'Only if you diffuse or blow-dry, protect first. Air-drying your curls skips this step entirely.';
             mask.pro = 'dav-momo-mask';
             mask.why =
-                'Curls thrive on the OI Butter Mask — its roucou-oil richness floods each strand weekly so they stay soft, defined and frizz-free instead of dry and crunchy.';
+                'Curls thrive on the OI Butter Mask, its roucou-oil richness floods each strand weekly so they stay soft, defined and frizz-free instead of dry and crunchy.';
             sty.pro = 'dav-curl-serum';
             sty.alt = 'm-curl-cream';
             sty.why =
-                'Build and hold definition with a curl serum or cream raked through soaking-wet hair, then diffuse on low or air-dry — don’t touch until fully dry.';
+                'Build and hold definition with a curl serum or cream raked through soaking-wet hair, then diffuse on low or air-dry, don’t touch until fully dry.';
             oil.why =
-                'Seal your styled curls with a little oil for lasting moisture and glassy shine — the “O” of the LOC method.';
+                'Seal your styled curls with a little oil for lasting moisture and glassy shine, the “O” of the LOC method.';
             return;
         }
         if (p === 'coily') {
             sham.cadence = '1× a week or less';
             if (isThin) {
                 sham.why =
-                    'Keep the energizing cleanse for density, but use it sparingly — wash once a week at most and never scrub your coils.';
+                    'Keep the energizing cleanse for density, but use it sparingly, wash once a week at most and never scrub your coils.';
             } else {
                 sham.pro = 'dav-love-curl-sham';
                 sham.alt = 'm-briogeo-curl-sham';
                 sham.why =
-                    'Coils are fragile and dry, so cleanse gently and rarely — your scalp-and-growth support shifts to the leave-on serum step below.';
+                    'Coils are fragile and dry, so cleanse gently and rarely, your scalp-and-growth support shifts to the leave-on serum step below.';
             }
             cond.pro = 'dav-momo-cond';
             cond.alt = 'm-briogeo-curl-cond';
             cond.why =
-                'Coily hair needs the richest conditioner with maximum slip — leave some in to keep coils soft and possible to detangle.';
+                'Coily hair needs the richest conditioner with maximum slip, leave some in to keep coils soft and possible to detangle.';
             if (t === 'fine') {
                 li.why =
-                    'Fine coily hair has the most open cuticle of all — keratin is non-negotiable here. It seals in the moisture below it and gives the protein boost fine coils need to stop snapping at every manipulation.';
+                    'Fine coily hair has the most open cuticle of all, keratin is non-negotiable here. It seals in the moisture below it and gives the protein boost fine coils need to stop snapping at every manipulation.';
             } else {
                 li.pro = 'm-its-a-10-keratin';
                 li.alt = 'm-leavein-curl';
                 li.why =
-                    'Drench soaking-wet coils in a rich leave-in conditioner for maximum slip and moisture — the “L” of the LOC method, and non-negotiable for coils.';
+                    'Drench soaking-wet coils in a rich leave-in conditioner for maximum slip and moisture, the “L” of the LOC method, and non-negotiable for coils.';
             }
             heat.why =
-                'Coils do best air-dried or diffused on low — if you ever reach for heat, this protectant is essential first.';
+                'Coils do best air-dried or diffused on low, if you ever reach for heat, this protectant is essential first.';
             mask.pro = 'dav-nounou-mask';
             mask.why =
                 'A rich, reconstructing mask every week keeps fragile coils strong and deeply moisturised against breakage.';
@@ -1474,7 +1474,7 @@ export function initGrowthEdit(): () => void {
             sty.why =
                 'Define and clump coils with a moisturising curl cream or mousse on soaking-wet hair, then seal with oil and diffuse or air-dry.';
             oil.why =
-                'Seal everything in with an oil — the “O” of LOC — for lasting moisture, sheen and protection against breakage.';
+                'Seal everything in with an oil, the “O” of LOC, for lasting moisture, sheen and protection against breakage.';
             return;
         }
     }
@@ -1485,9 +1485,9 @@ export function initGrowthEdit(): () => void {
         const wavish = p === 'wavy' || curlish;
         const heatText = curlish
             ? 'If you diffuse or blow-dry, mist a heat protectant first. Air-drying? You can skip it.'
-            : 'Before any blow-dryer, iron or wand, coat damp hair in heat protectant — every single time.';
+            : 'Before any blow-dryer, iron or wand, coat damp hair in heat protectant, every single time.';
         const styleText = curlish
-            ? 'Rake a curl serum or cream through soaking-wet hair and scrunch upward, then diffuse on low or air-dry — don’t touch until fully dry.'
+            ? 'Rake a curl serum or cream through soaking-wet hair and scrunch upward, then diffuse on low or air-dry, don’t touch until fully dry.'
             : p === 'wavy'
               ? 'Scrunch a curl mousse or cream into wet hair from the ends up, then diffuse or air-dry to bring out the wave.'
               : t === 'coarse'
@@ -1496,22 +1496,22 @@ export function initGrowthEdit(): () => void {
                   ? 'Mist a volumizer at the roots, then blow-dry flipped upside down for body.'
                   : 'Spray a blow-dry primer, then style as usual.';
         const oilText = curlish
-            ? 'Seal your styled curls with a few drops of oil down the lengths — the final “O” of the LOC method — for moisture and shine.'
+            ? 'Seal your styled curls with a few drops of oil down the lengths, the final “O” of the LOC method, for moisture and shine.'
             : t === 'fine'
-              ? 'One drop of oil on the very ends only — just enough to seal split ends and add shine without weighing hair down.'
+              ? 'One drop of oil on the very ends only, just enough to seal split ends and add shine without weighing hair down.'
               : 'Smooth a few drops of oil over the ends to seal, fight frizz and finish with a glassy shine.';
         const wash = [
             {
                 n: 1,
                 name: 'Filter the water',
-                text: 'It starts before the products: a filtered showerhead strips out the chlorine and hard minerals that dry hair out — the foundation every step below builds on.',
+                text: 'It starts before the products: a filtered showerhead strips out the chlorine and hard minerals that dry hair out, the foundation every step below builds on.',
             },
             {
                 n: 2,
                 name: 'Cleanse',
                 text:
                     (curlish
-                        ? 'Focus shampoo on the scalp only and let it rinse through the lengths — wash less often to protect moisture. '
+                        ? 'Focus shampoo on the scalp only and let it rinse through the lengths, wash less often to protect moisture. '
                         : 'Shampoo at the scalp, massaging 60 seconds to boost circulation. ') +
                     (t === 'coarse' || curlish
                         ? 'One gentle lather is plenty.'
@@ -1521,9 +1521,9 @@ export function initGrowthEdit(): () => void {
                 n: 3,
                 name: 'Condition',
                 text: curlish
-                    ? 'A slip-rich conditioner on the lengths — finger-detangle while it’s in, and leave a little in for extra moisture.'
+                    ? 'A slip-rich conditioner on the lengths, finger-detangle while it’s in, and leave a little in for extra moisture.'
                     : t === 'fine'
-                      ? 'Conditioner on mid-lengths to ends only — never the roots.'
+                      ? 'Conditioner on mid-lengths to ends only, never the roots.'
                       : 'Work conditioner through the lengths, comb, leave 2 minutes, rinse.',
             },
             {
@@ -1537,7 +1537,7 @@ export function initGrowthEdit(): () => void {
             {
                 n: 5,
                 name: 'Mask (weekly)',
-                text: 'Once a week, swap conditioner for your mask — leave 5–10 minutes before rinsing.',
+                text: 'Once a week, swap conditioner for your mask, leave 5–10 minutes before rinsing.',
             },
             {
                 n: 6,
@@ -1545,7 +1545,7 @@ export function initGrowthEdit(): () => void {
                 text: curlish
                     ? 'Mist a spray leave-in through soaking-wet hair to detangle and lock in moisture before you style.'
                     : t === 'fine'
-                      ? 'A few mists of leave-in through damp lengths — light hands keep roots lifted.'
+                      ? 'A few mists of leave-in through damp lengths, light hands keep roots lifted.'
                       : 'Mist a spray leave-in through damp hair to detangle and soften before styling.',
             },
             { n: 7, name: 'Heat protect', text: heatText },
@@ -1556,7 +1556,7 @@ export function initGrowthEdit(): () => void {
             {
                 n: 1,
                 name: 'Supplement',
-                text: 'Take your growth supplement with breakfast — consistency is what delivers results.',
+                text: 'Take your growth supplement with breakfast, consistency is what delivers results.',
             },
             {
                 n: 2,
@@ -1570,20 +1570,20 @@ export function initGrowthEdit(): () => void {
                 n: 3,
                 name: wavish ? 'Refresh your pattern' : 'Refresh & protect',
                 text: wavish
-                    ? 'Re-wet curls with a water + leave-in spray and scrunch to revive definition — never brush dry curls; re-wet to restyle.'
+                    ? 'Re-wet curls with a water + leave-in spray and scrunch to revive definition, never brush dry curls; re-wet to restyle.'
                     : 'A touch of leave-in on the ends tames frizz; a drop of oil seals and shines between washes.',
             },
             {
                 n: 4,
                 name: 'Repurchase on time',
-                text: 'Re-buy each product before it runs out so you never break the routine — your saved list tracks the timing.',
+                text: 'Re-buy each product before it runs out so you never break the routine. Your saved list tracks the timing.',
             },
         ];
         return { wash, daily };
     }
 
     /* ============================================================
-   GROWTH RATIONALE — the "why this grows your hair" closing
+   GROWTH RATIONALE, the "why this grows your hair" closing
    section. Tailored by texture / density / pattern / status.
    ============================================================ */
     function buildRationale(t, d, p, status) {
@@ -1598,31 +1598,31 @@ export function initGrowthEdit(): () => void {
      not losing what you grow. Every profile gets a tailored version. */
         let principle;
         if (isThin) {
-            principle = `Your hair grows about half an inch a month no matter what — so the real question for ${Tl}, ${Dl}-density hair isn’t whether it grows, it’s whether it survives long enough to show. We lead with the scalp, because thinning density means every follicle counts: the energizing tonic and growth support wake up the root, while the moisture and protection downstream make sure the new length you earn doesn’t snap off before you ever see it.`;
+            principle = `Your hair grows about half an inch a month no matter what, so the real question for ${Tl}, ${Dl}-density hair isn’t whether it grows, it’s whether it survives long enough to show. We lead with the scalp, because thinning density means every follicle counts: the energizing tonic and growth support wake up the root, while the moisture and protection downstream make sure the new length you earn doesn’t snap off before you ever see it.`;
         } else if (curlish) {
-            principle = `Length on ${Pl} hair is won or lost on moisture. Because the natural oils from your scalp can’t travel down a ${p === 'coily' ? 'tight coil' : 'spiral'}, your lengths are dry by default — and dry hair is brittle hair that breaks faster than it grows. This whole routine is engineered to keep your ${Pl} hair soft, sealed and hydrated from wash to style, so it stretches to its full length instead of snapping back.`;
+            principle = `Length on ${Pl} hair is won or lost on moisture. Because the natural oils from your scalp can’t travel down a ${p === 'coily' ? 'tight coil' : 'spiral'}, your lengths are dry by default, and dry hair is brittle hair that breaks faster than it grows. This whole routine is engineered to keep your ${Pl} hair soft, sealed and hydrated from wash to style, so it stretches to its full length instead of snapping back.`;
         } else if (t === 'fine') {
-            principle = `Fine hair has the most delicate strand of any type, which means it breaks the easiest — and breakage, not slow growth, is almost always why fine hair won’t pass a certain length. So instead of drying volumizers, your routine is built on lightweight moisture and gentle strengthening: enough body to look full, but enough flexibility and hydration that each fragile strand bends instead of snapping.`;
+            principle = `Fine hair has the most delicate strand of any type, which means it breaks the easiest, and breakage, not slow growth, is almost always why fine hair won’t pass a certain length. So instead of drying volumizers, your routine is built on lightweight moisture and gentle strengthening: enough body to look full, but enough flexibility and hydration that each fragile strand bends instead of snapping.`;
         } else if (t === 'coarse') {
-            principle = `Coarse hair is strong but thirsty — its raised cuticle loses moisture fast, and once it dries out it gets brittle and frizzy and starts to split. For ${Dl}-density, coarse hair, length comes from keeping all that strength supple: deep, consistent moisture so the strand stays elastic and holds onto every inch you grow.`;
+            principle = `Coarse hair is strong but thirsty; its raised cuticle loses moisture fast, and once it dries out it gets brittle and frizzy and starts to split. For ${Dl}-density, coarse hair, length comes from keeping all that strength supple: deep, consistent moisture so the strand stays elastic and holds onto every inch you grow.`;
         } else {
-            principle = `Balanced, ${Tl} hair is the most adaptable type — which means the fastest route to length is simply not getting in its own way. Your routine keeps the scalp healthy, the lengths moisturised and every hot tool buffered, so nothing interrupts the steady growth your hair is already capable of.`;
+            principle = `Balanced, ${Tl} hair is the most adaptable type, which means the fastest route to length is simply not getting in its own way. Your routine keeps the scalp healthy, the lengths moisturised and every hot tool buffered, so nothing interrupts the steady growth your hair is already capable of.`;
         }
 
-        /* Four pillars — the strategy, mapped to the actual product roles. */
+        /* Four pillars, the strategy, mapped to the actual product roles. */
         const pillars = [];
 
-        // 1 — scalp / follicle
+        // 1, scalp / follicle
         pillars.push({
             title: 'It starts at the scalp',
             text: isThin
-                ? 'Healthy hair is grown, not bought — so your routine front-loads the follicle. The cleanse stimulates circulation and the leave-on tonic supports the active growth phase, giving thinning density its best shot at fuller regrowth.'
+                ? 'Healthy hair is grown, not bought, so your routine front-loads the follicle. The cleanse stimulates circulation and the leave-on tonic supports the active growth phase, giving thinning density its best shot at fuller regrowth.'
                 : isDense
                   ? 'With a lot of hair, build-up smothers the follicle without you noticing. Weekly exfoliation keeps the scalp clear and the roots breathing, so growth is never quietly choked off at the source.'
                   : 'A clean, balanced scalp is the soil your hair grows from. The cleanse and weekly treatment keep the follicle clear and supported, so each strand starts strong.',
         });
 
-        // 2 — moisture / breakage (the length pillar)
+        // 2, moisture / breakage (the length pillar)
         pillars.push({
             title: curlish
                 ? 'Moisture is length insurance'
@@ -1630,45 +1630,45 @@ export function initGrowthEdit(): () => void {
                   ? 'Strength without dryness'
                   : 'Moisture keeps it on your head',
             text: curlish
-                ? `Every hydrating step — the gentle cleanse, the rich conditioner, the weekly mask and the sealing oil — exists to stop the dry-then-snap cycle that keeps ${Pl} hair stuck at one length. Moisturised hair is elastic hair, and elastic hair holds its length.`
+                ? `Every hydrating step, the gentle cleanse, the rich conditioner, the weekly mask and the sealing oil, exists to stop the dry-then-snap cycle that keeps ${Pl} hair stuck at one length. Moisturised hair is elastic hair, and elastic hair holds its length.`
                 : t === 'fine'
-                  ? 'Swapping volume for lightweight moisture is the single biggest change for fine hair. DEDE and a strengthening mask keep delicate strands hydrated and flexible — so they survive brushing, styling and daily wear instead of breaking mid-length.'
+                  ? 'Swapping volume for lightweight moisture is the single biggest change for fine hair. DEDE and a strengthening mask keep delicate strands hydrated and flexible, so they survive brushing, styling and daily wear instead of breaking mid-length.'
                   : 'The conditioner, weekly mask and finishing oil work as a moisture system. Well-moisturised hair flexes instead of fracturing, which is exactly how coarse and medium hair gets past the length where it usually starts to split.',
         });
 
-        // 3 — protection
+        // 3, protection
         pillars.push({
             title: 'Protected from the things that break it',
             text:
                 status === 'blonde'
-                    ? 'Lightened hair is porous and fragile, so your routine doubles down on defence: Heart of Glass rebuilds bonds and floods in moisture, the leave-in and heat protectant guard every style, and the finishing oil seals the cuticle — because for blonde hair, preventing breakage IS the growth strategy.'
+                    ? 'Lightened hair is porous and fragile, so your routine doubles down on defence: Heart of Glass rebuilds bonds and floods in moisture, the leave-in and heat protectant guard every style, and the finishing oil seals the cuticle, because for blonde hair, preventing breakage IS the growth strategy.'
                     : status === 'color'
                       ? 'Color-treated hair is chemically stressed, so MINU protects your tone while the leave-in, heat protectant and finishing oil shield the strand from the heat and friction that turn processed hair brittle.'
-                      : 'A dedicated leave-in, heat protectant and finishing oil mean your hair is buffered at every vulnerable moment — wet detangling, hot tools, daily friction. Less damage means less breakage, and less breakage means more length.',
+                      : 'A dedicated leave-in, heat protectant and finishing oil mean your hair is buffered at every vulnerable moment, wet detangling, hot tools, daily friction. Less damage means less breakage, and less breakage means more length.',
         });
 
-        // 4 — consistency / inside-out
+        // 4, consistency / inside-out
         pillars.push({
             title: 'Supported inside and out',
-            text: 'A daily supplement feeds growth from within while the topical routine protects from without — and because the whole system is built to repeat, your saved list keeps you on schedule. Hair rewards consistency over months, not days; this routine is built to be the one you actually keep.',
+            text: 'A daily supplement feeds growth from within while the topical routine protects from without, and because the whole system is built to repeat, your saved list keeps you on schedule. Hair rewards consistency over months, not days; this routine is built to be the one you actually keep.',
         });
 
         const close = isThin
-            ? 'Give it three to six months of consistency. Density rebuilds slowly, but this is the routine that compounds — and the saved list is here so you never break the streak.'
+            ? 'Give it three to six months of consistency. Density rebuilds slowly, but this is the routine that compounds, and the saved list is here so you never break the streak.'
             : curlish
-              ? 'Stay consistent and protect the moisture, and your curls will start holding length you didn’t know they had. Re-buy before you run out — the saved list tracks it for you.'
+              ? 'Stay consistent and protect the moisture, and your curls will start holding length you didn’t know they had. Re-buy before you run out, the saved list tracks it for you.'
               : 'Length is a long game won by not losing ground. Keep this routine steady for a few months and let your saved list keep you on track.';
 
         return { principle, pillars, close };
     }
 
     /* ============================================================
-   THE GROWTH EDIT — app: finder, shelf, layering, saved list
+   THE GROWTH EDIT, app: finder, shelf, layering, saved list
    ============================================================ */
     (function () {
         const LS_TYPE = 'tgi_type',
             LS_LIST = 'tgi_list';
-        /* Your ShopMy storefront — used as the default link on every Shop button.
+        /* Your ShopMy storefront, used as the default link on every Shop button.
      To link a specific product, add  shop:'https://shopmy.us/...'  to that
      product in guide-data.js and it overrides this. */
         const STOREFRONT = 'https://shopmy.us/shop/lifewithlaurenj';
@@ -1790,7 +1790,7 @@ export function initGrowthEdit(): () => void {
             if (hint) {
                 hint.textContent = ready
                     ? state.status
-                        ? 'Looks complete — generate your personalised routine.'
+                        ? 'Looks complete, generate your personalised routine.'
                         : 'Add your color status for a blonde/color-tuned edit, or generate now.'
                     : 'Choose your texture, density & pattern above to unlock your routine.';
             }
@@ -1843,7 +1843,7 @@ export function initGrowthEdit(): () => void {
                 !generated ||
                 !(state.texture && state.density && state.pattern)
             ) {
-                res.innerHTML = `<div class="result-empty">Your personalised edit will appear here — make your selections above and hit <em>Generate my edit</em>.</div>`;
+                res.innerHTML = `<div class="result-empty">Your personalised edit will appear here, make your selections above and hit <em>Generate my edit</em>.</div>`;
                 return;
             }
             const key = state.texture + '-' + state.density;
@@ -1992,7 +1992,7 @@ export function initGrowthEdit(): () => void {
         <div class="disclaimer-icon">!</div>
         <div>
           <div class="disclaimer-title">Please read · This is not medical advice</div>
-          <p>Supplements are not medicine, and nothing in this guide is medical advice. <strong>Always talk to your doctor or a qualified healthcare provider before taking any supplement</strong> — especially if you’re pregnant, nursing, taking medication, or managing a health condition. The Hair Insider is not a medical professional, takes no responsibility for any health outcome, and accepts no liability for products you choose to take. You do so entirely at your own discretion and risk.</p>
+          <p>Supplements are not medicine, and nothing in this guide is medical advice. <strong>Always talk to your doctor or a qualified healthcare provider before taking any supplement</strong>, especially if you’re pregnant, nursing, taking medication, or managing a health condition. The Hair Insider is not a medical professional, takes no responsibility for any health outcome, and accepts no liability for products you choose to take. You do so entirely at your own discretion and risk.</p>
         </div>
       </div>`
                     : '';

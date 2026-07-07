@@ -26,21 +26,21 @@ export default function MeetYourEducatorClient() {
             <SiteBreadcrumbs />
 
             <main>
-                {/* Hero + Story — sticky image on desktop, stacked on mobile */}
+                {/* Hero + Story: sticky image on desktop, stacked on mobile */}
                 <section
                     ref={heroRef}
                     className='mx-auto max-w-6xl px-6 pb-14 pt-14 sm:pb-20 sm:pt-20'>
                     <FadeIn
                         inView={heroIn}
                         delayMs={100}>
-                        {/* Intro badges + heading — above the split on all sizes */}
+                        {/* Intro badges + heading: above the split on all sizes */}
                         <div className='mb-10 space-y-4 bg-background/50 rounded-3xl p-6'>
                             <h1 className='text-4xl font-semibold tracking-tight sm:text-5xl'>
                                 Hi, I&apos;m Lauren.
                             </h1>
                             <p className='text-lg leading-8 max-w-2xl'>
                                 Licensed cosmetologist, 8 years behind the
-                                chair, and the founder of The Hair Insider — a
+                                chair, and the founder of The Hair Insider, a
                                 space built to give you what your stylist knows
                                 but never had time to tell you.
                             </p>
@@ -59,7 +59,7 @@ export default function MeetYourEducatorClient() {
 
                         {/* Split layout */}
                         <div className='flex flex-col gap-10 md:flex-row md:items-start'>
-                            {/* Sticky image — right on desktop, top on mobile */}
+                            {/* Sticky image: right on desktop, top on mobile */}
                             <div className='w-full md:w-1/2 md:sticky md:top-24 md:self-start order-first md:order-last'>
                                 <div className='rounded-3xl border bg-card shadow-sm overflow-hidden'>
                                     <div className='relative aspect-[4/5] w-full'>
@@ -75,7 +75,7 @@ export default function MeetYourEducatorClient() {
                                 </div>
                             </div>
 
-                            {/* Scrollable story — left on desktop, below image on mobile */}
+                            {/* Scrollable story: left on desktop, below image on mobile */}
                             <div className='w-full md:w-1/2 order-last md:order-first'>
                                 <div className='space-y-8 bg-background rounded-3xl p-6'>
                                     <div className='space-y-2'>
@@ -96,7 +96,7 @@ export default function MeetYourEducatorClient() {
                                         hair. While my older sister effortlessly
                                         grew hers out, mine was short, wiry, and
                                         stubborn. My mom would buy me clip-in
-                                        ponytail extensions made for kids — and
+                                        ponytail extensions made for kids, and
                                         I wore them every single day. That
                                         little girl desperately wanted long
                                         hair, and she never really stopped
@@ -107,20 +107,20 @@ export default function MeetYourEducatorClient() {
                                         As I got older, my hair settled into a
                                         dense, fine, wavy-curly texture. And
                                         like most girls in high school, I wanted
-                                        to be blonde. So I lightened it —
-                                        repeatedly — and by senior year I
+                                        to be blonde. So I lightened it,
+                                        repeatedly, and by senior year I
                                         already had three years of cosmetology
                                         education under my belt. You'd think I
                                         would have known better, but the
                                         experimenting didn't stop there. Once I
                                         graduated, I went straight to
-                                        cosmetology school and kept going —
+                                        cosmetology school and kept going:
                                         color, bleach, toners, clip-in
                                         extensions, you name it. By the time I
                                         finished, my hair was fried, damaged,
                                         and crying for help. I turned to
-                                        extensions twice — tape-ins first, then
-                                        hand-tied — and both times, with little
+                                        extensions twice, tape-ins first, then
+                                        hand-tied, and both times, with little
                                         guidance on proper care, they pulled my
                                         hair out and left me worse off than
                                         before.
@@ -142,17 +142,17 @@ export default function MeetYourEducatorClient() {
                                         styles, and truly learning what my
                                         specific hair needed. A year later it
                                         was the longest and fullest it had ever
-                                        been. Five years in, it reaches my waist
-                                        — and people ask me constantly if it's
+                                        been. Five years in, it reaches my waist,
+                                        and people ask me constantly if it's
                                         real. It is. And no, I'll probably never
                                         cut it short.
                                     </p>
 
                                     <p className='text-lg leading-8'>
-                                        That personal journey — combined with
+                                        That personal journey, combined with
                                         eight years behind the chair watching
-                                        clients struggle with the same confusion
-                                        — is what led me to create The Hair
+                                        clients struggle with the same confusion,
+                                        is what led me to create The Hair
                                         Insider. I kept seeing women come in
                                         frustrated, having followed influencer
                                         advice that just didn't work for their
@@ -166,7 +166,7 @@ export default function MeetYourEducatorClient() {
                                     <p className='text-lg leading-8'>
                                         That's exactly what I'm here to do.
                                         Because when you truly understand your
-                                        hair, everything changes — and that
+                                        hair, everything changes, and that
                                         knowledge should be available to
                                         everyone, not just those lucky enough to
                                         have the right stylist.

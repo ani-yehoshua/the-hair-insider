@@ -36,7 +36,7 @@ export async function startCheckout(courseSlug: string) {
         body: JSON.stringify({ courseSlug }),
     });
 
-    // Stale token — try refreshing once before giving up
+    // Stale token; try refreshing once before giving up
     if (res.status === 401) {
         const { data: refreshed } = await supabase.auth.refreshSession();
         token = refreshed.session?.access_token ?? null;

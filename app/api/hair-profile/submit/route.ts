@@ -85,7 +85,7 @@ export async function POST(req: Request) {
 
 Your task is to analyze a user's hair quiz results and recommend specific products from Lauren's curated ShopMy catalog.
 
-Return ONLY valid JSON in this exact format — no markdown, no preamble:
+Return ONLY valid JSON in this exact format. No markdown, no preamble:
 {
   "summary": "2-3 paragraph personalized hair profile summary written directly to the user. Be warm, specific, and educational. Explain what their hair type means, what their main challenges are, and what to focus on.",
   "recommendations": [
@@ -100,9 +100,9 @@ Rules:
 - Recommend 6-10 products that genuinely match their hair profile
 - Prioritize products that address their stated concerns and goals
 - Include a mix of product types (shampoo, conditioner, treatment, styling) where appropriate
-- Only recommend products from the provided catalog — use the exact ID
+- Only recommend products from the provided catalog; use the exact ID
 - Do not recommend products that conflict with their hair type (e.g. volumizing products for thick hair)
-- Be specific in reasons — reference their actual answers`;
+- Be specific in reasons; reference their actual answers`;
 
     const userMessage = `Here are the user's hair quiz answers:
 
@@ -163,7 +163,7 @@ Please analyze the quiz results and recommend the most suitable products from th
         validIds.has(r.product_id),
     );
 
-    // Save to hair_profiles — shift current to previous
+    // Save to hair_profiles; shift current to previous
     const { data: existing } = await admin
         .from('hair_profiles')
         .select('answers, ai_summary, recommended_product_ids')

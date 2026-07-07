@@ -196,7 +196,7 @@ export default function AccountClient() {
                                     <form
                                         onSubmit={onSaveDisplayName}
                                         className='space-y-4'>
-                                        <div className='space-y-2 w-1/4'>
+                                        <div className='space-y-2 w-full sm:w-1/2 lg:w-1/4'>
                                             <Label htmlFor='displayName'>
                                                 Name
                                             </Label>
@@ -237,7 +237,7 @@ export default function AccountClient() {
                                     <form
                                         onSubmit={onChangeEmail}
                                         className='space-y-4'>
-                                        <div className='space-y-2 w-1/4'>
+                                        <div className='space-y-2 w-full sm:w-1/2 lg:w-1/4'>
                                             <Label htmlFor='newEmail'>
                                                 Email
                                             </Label>

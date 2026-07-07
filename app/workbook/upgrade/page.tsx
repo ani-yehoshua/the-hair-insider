@@ -66,7 +66,7 @@ export default function WorkbookUpgradePage() {
                             A digital guided journal and companion to the mini
                             course. SMART goals, habit tracking, daily
                             check-ins, and weekly reviews to lock in your hair
-                            routine — for good.
+                            routine, for good.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className='space-y-4'>

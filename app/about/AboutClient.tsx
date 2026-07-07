@@ -37,13 +37,13 @@ export default function AboutClient() {
                                 There is a gap between what your stylist knows
                                 and what they have time to tell you. Most
                                 clients leave a salon appointment with
-                                instructions but no understanding — and that gap
+                                instructions but no understanding, and that gap
                                 is where years of trial and error live.
                             </p>
                             <p className='text-lg leading-8'>
                                 The Hair Insider exists to close it. Not with
                                 more tips, more products, or more
-                                influencer-tested routines — but with the actual
+                                influencer-tested routines, but with the actual
                                 mechanics behind how hair works, why it does
                                 what it does, and what to do about it.
                             </p>
@@ -64,7 +64,7 @@ export default function AboutClient() {
                             <ul className='space-y-4 text-lg leading-8'>
                                 <li>
                                     Teach you why your hair behaves the way it
-                                    does — not just what to do about it.
+                                    does, not just what to do about it.
                                 </li>
                                 <li>
                                     Help you build a simple, repeatable routine
@@ -102,7 +102,7 @@ export default function AboutClient() {
                                 If you&apos;re experiencing scalp pain,
                                 bleeding, infection, sudden or extreme shedding,
                                 allergic reactions, or any condition you&apos;re
-                                unsure about — please consult a licensed
+                                unsure about, please consult a licensed
                                 dermatologist or healthcare provider. We mean
                                 that sincerely.
                             </p>

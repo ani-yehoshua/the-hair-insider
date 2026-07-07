@@ -17,7 +17,7 @@ import {
 export default function EmailConfirmedPage() {
     React.useEffect(() => {
         // If a session exists (same-device confirmation), run side effects.
-        // Cross-device: no session here — side effects run on sign-in instead.
+        // Cross-device: no session here; side effects run on sign-in instead.
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (!session) return;
             fetch("/api/stripe/ensure-customer", {

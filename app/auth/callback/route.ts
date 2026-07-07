@@ -47,7 +47,7 @@ export async function GET(req: Request) {
         if (error) {
             console.error('Code exchange failed:', error.message);
         } else if (data.session?.user?.email) {
-            // Same-device confirmation — subscribe to Mailchimp now that we have the session
+            // Same-device confirmation; subscribe to Mailchimp now that we have the session
             subscribeToMailchimp(data.session.user.email).catch(e =>
                 console.error('Mailchimp callback error:', e),
             );

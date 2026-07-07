@@ -645,7 +645,7 @@ const HTML = `
   <div class="hero-inner">
     <div class="hero-mark">The Hair Insider · Professional Edit</div>
     <h1>The Growth<br>Product Edit</h1>
-    <p class="hero-sub">The exact products that grow your hair — matched to your type.</p>
+    <p class="hero-sub">The exact products that grow your hair, matched to your type.</p>
     <p class="hero-note">A curated, salon-grade routine built around <em>Davines</em> and professional-brand picks, with an honest, more affordable match for every step. Find your hair type, get your shelf, save your list.</p>
     <a class="hero-cta" href="#finder">Find your hair type <span class="arrow">↓</span></a>
     <div class="hero-meta">
@@ -660,7 +660,7 @@ const HTML = `
     <div class="sec-head">
       <span class="eyebrow">Step one</span>
       <h2 class="serif">Find your hair type</h2>
-      <p>Three quick choices — your strand texture, your density, and your curl pattern — unlock a routine built precisely for you. Add your color status and it adapts for blonde or color-treated hair too.</p>
+      <p>Three quick choices, your strand texture, your density, and your curl pattern, unlock a routine built precisely for you. Add your color status and it adapts for blonde or color-treated hair too.</p>
     </div>
 
     <div class="finder-step">
@@ -690,7 +690,7 @@ const HTML = `
     <div class="finder-step">
       <div class="finder-step-label">
         <span class="finder-step-num serif">iv.</span>
-        <span class="finder-step-title">Color status <em class="finder-opt">— for blondes &amp; color</em></span>
+        <span class="finder-step-title">Color status <em class="finder-opt">(for blondes &amp; color)</em></span>
       </div>
       <div class="finder-grid" id="status-grid"></div>
     </div>
@@ -699,9 +699,9 @@ const HTML = `
       <summary>Not sure? Two-minute test <span class="ic">+</span></summary>
       <div class="finder-help-body">
         <p><strong>Texture (how thick each strand is).</strong> Take a single shed hair and roll it between your fingers. If you can barely feel it, you’re <strong>fine</strong>. If it feels distinctly thick or wiry, you’re <strong>coarse</strong>. Anywhere in between is <strong>medium</strong>.</p>
-        <p><strong>Density (how much hair you have).</strong> Pull your hair into a ponytail and measure around it. Under ~2 inches reads <strong>thin</strong>, around 2–3 inches is <strong>medium</strong>, and over ~4 inches is <strong>dense</strong>. Or simply check how easily you see your scalp in the mirror — the more visible, the thinner the density.</p>
+        <p><strong>Density (how much hair you have).</strong> Pull your hair into a ponytail and measure around it. Under ~2 inches reads <strong>thin</strong>, around 2–3 inches is <strong>medium</strong>, and over ~4 inches is <strong>dense</strong>. Or simply check how easily you see your scalp in the mirror: the more visible, the thinner the density.</p>
         <p><strong>Curl pattern (the shape of the strand).</strong> Wash your hair and let it air-dry with no product. If it dries flat and straight you’re <strong>straight</strong>; loose S-shapes are <strong>wavy</strong>; defined spirals or ringlets are <strong>curly</strong>; tight coils, zig-zags or kinks are <strong>coily</strong>.</p>
-        <p><strong>Color status.</strong> Leave it on <strong>Natural</strong> if your hair is uncolored. Choose <strong>Color-treated</strong> for any dye or gloss, or <strong>Blonde</strong> if you lighten or highlight — both swap in moisture-rich, color-protecting Davines lines, since processed hair breaks from dryness.</p>
+        <p><strong>Color status.</strong> Leave it on <strong>Natural</strong> if your hair is uncolored. Choose <strong>Color-treated</strong> for any dye or gloss, or <strong>Blonde</strong> if you lighten or highlight, both swap in moisture-rich, color-protecting Davines lines, since processed hair breaks from dryness.</p>
       </div>
     </details>
 
@@ -727,7 +727,7 @@ const HTML = `
   <div class="foot-inner">
     <span class="eyebrow light">Your routine, on repeat</span>
     <h2 class="serif">Growth is a habit,<br>not a one-time buy.</h2>
-    <p>Save your products, repurchase before they run out, and keep the routine going. Consistency is the whole secret — your hair rewards the ones who keep showing up.</p>
+    <p>Save your products, repurchase before they run out, and keep the routine going. Consistency is the whole secret: your hair rewards the ones who keep showing up.</p>
     <div class="foot-brand">The Hair Insider<small>The Growth Edit</small></div>
   </div>
 </footer>

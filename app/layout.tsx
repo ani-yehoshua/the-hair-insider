@@ -22,7 +22,7 @@ const siteUrl =
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
-        default: "The Hair Insider — Hair Care Education & Routines",
+        default: "The Hair Insider: Hair Care Education & Routines",
         template: "%s | The Hair Insider",
     },
     description:
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         apple: [{ url: "/apple-touch-icon.png" }],
     },
     openGraph: {
-        title: "The Hair Insider — Hair Care Education & Routines",
+        title: "The Hair Insider: Hair Care Education & Routines",
         description:
             "Education-first hair care. Learn what your hair actually needs, build a simple routine, and understand the science behind healthy hair growth.",
         siteName: "The Hair Insider",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "The Hair Insider — Hair Care Education & Routines",
+        title: "The Hair Insider: Hair Care Education & Routines",
         description:
             "Education-first hair care. Learn what your hair actually needs, build a simple routine, and understand the science behind healthy hair growth.",
     },

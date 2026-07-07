@@ -68,7 +68,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     {
         id: 'porosity',
         question: 'What is your hair porosity?',
-        hint: "Porosity is how well your hair absorbs and retains moisture. If unsure, try the float test: drop a clean strand in water — if it sinks quickly it's high porosity, floats it's low.",
+        hint: "Porosity is how well your hair absorbs and retains moisture. If unsure, try the float test: drop a clean strand in water. If it sinks quickly it's high porosity, floats it's low.",
         type: 'single',
         options: [
             {

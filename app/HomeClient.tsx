@@ -142,7 +142,7 @@ function CourseCard({
                 {course.stripe_price_id && !owned && (
                     <div className='flex items-center gap-3'>
                         <p className='text-3xl font-semibold tracking-tight'>
-                            {priceText ?? "—"}
+                            {priceText ?? "$–"}
                         </p>
                         {savingsBadge && (
                             <span className='rounded-full bg-rose-500 text-white text-xs font-semibold px-3 py-1'>
@@ -265,7 +265,7 @@ function WorkbookCard({
     href = "/workbook",
     ownedCta = "Open digital workbook →",
     buyCta = "Get the digital workbook",
-    detailNote = "Already own the mini course? Add the digital workbook to your toolkit — sold separately.",
+    detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
 }: {
     course: Course;
     owned: boolean;
@@ -314,7 +314,7 @@ function WorkbookCard({
 
                 {course.stripe_price_id && !owned && (
                     <p className='text-3xl font-semibold tracking-tight'>
-                        {priceText ?? "—"}
+                        {priceText ?? "$–"}
                     </p>
                 )}
 
@@ -545,7 +545,7 @@ export default function HomeClient() {
                                         <p className='max-w-xl text-lg leading-8'>
                                             The Hair Insider is a private course
                                             library that teaches you the{" "}
-                                            <em>why</em> behind your hair — so
+                                            <em>why</em> behind your hair, so
                                             you stop starting over and finally
                                             build a routine that works.
                                         </p>
@@ -556,7 +556,7 @@ export default function HomeClient() {
                                                 <span>
                                                     Understand porosity,
                                                     breakage, shedding, and
-                                                    moisture — the things your
+                                                    moisture, the things your
                                                     stylist learned in school
                                                     that nobody passed on to
                                                     you.
@@ -567,7 +567,7 @@ export default function HomeClient() {
                                                 <span>
                                                     Build a simple, repeatable
                                                     routine with what you
-                                                    already own — no new
+                                                    already own, no new
                                                     products required.
                                                 </span>
                                             </li>
@@ -615,7 +615,7 @@ export default function HomeClient() {
                                                     <p className='mt-1'>
                                                         Finally understand why
                                                         your hair does what it
-                                                        does — not just what to
+                                                        does, not just what to
                                                         do about it.
                                                     </p>
                                                 </li>
@@ -626,7 +626,7 @@ export default function HomeClient() {
                                                     </p>
                                                     <p className='mt-1'>
                                                         Simple, repeatable, and
-                                                        built around your life —
+                                                        built around your life,
                                                         not an influencer&apos;s
                                                         10-step process.
                                                     </p>
@@ -794,7 +794,7 @@ export default function HomeClient() {
                                                     The mini course teaches you
                                                     the science behind your
                                                     hair. The digital workbook
-                                                    puts it into practice —
+                                                    puts it into practice,
                                                     daily guided journaling,
                                                     habit tracking, and progress
                                                     reviews. Get both together
@@ -925,7 +925,7 @@ export default function HomeClient() {
                                                         href='/hair-growth-edit'
                                                         ownedCta='Open The Growth Edit →'
                                                         buyCta='Get The Growth Edit'
-                                                        detailNote='Find your hair type and get a matched, salon-grade product routine — professional picks with an affordable match for every step.'
+                                                        detailNote='Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.'
                                                     />
                                                 )}
                                             </div>
@@ -965,7 +965,7 @@ export default function HomeClient() {
                                                 behind the chair. She built The
                                                 Hair Insider because she kept
                                                 watching clients leave salons
-                                                confused — with instructions,
+                                                confused, with instructions,
                                                 but no understanding.
                                             </p>
                                             <p className='text-base leading-8'>

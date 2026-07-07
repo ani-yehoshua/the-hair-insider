@@ -7,7 +7,7 @@ type AdminStatus =
     | { loading: true; signedIn: boolean; isAdmin: boolean }
     | { loading: false; signedIn: boolean; isAdmin: boolean };
 
-// Module-level cache — survives re-renders, cleared on sign-out
+// Module-level cache; survives re-renders, cleared on sign-out
 let cachedToken: string | null = null;
 let cachedIsAdmin: boolean | null = null;
 
@@ -38,7 +38,7 @@ export function useAdminStatus(): AdminStatus {
                 return;
             }
 
-            // Cache hit — same token, skip the API call
+            // Cache hit; same token, skip the API call
             if (
                 !forceRefresh &&
                 token === cachedToken &&
@@ -54,7 +54,7 @@ export function useAdminStatus(): AdminStatus {
                 return;
             }
 
-            // Cache miss — fetch and store
+            // Cache miss; fetch and store
             const res = await fetch('/api/admin/me', {
                 headers: { Authorization: `Bearer ${token}` },
             });

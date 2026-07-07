@@ -37,7 +37,7 @@ function getContext(next: string): SignInContext | null {
     if (next.startsWith("/courses") || next.includes("checkout"))
         return {
             eyebrow: "Almost there",
-            reason: "You'll need an account so we know exactly who to grant access to — it only takes a second.",
+            reason: "You'll need an account so we know exactly who to grant access to. It only takes a second.",
         };
     return null;
 }
@@ -101,7 +101,7 @@ export default function SignInClient() {
         });
         if (error) {
             setStatus("error");
-            setMessage("Code is invalid or expired — request a new one.");
+            setMessage("Code is invalid or expired. Request a new one.");
             return;
         }
         const token = data.session?.access_token;
@@ -140,7 +140,7 @@ export default function SignInClient() {
             setMessage(error.message);
         } else {
             setStatus("idle");
-            setMessage("New code sent — check your inbox.");
+            setMessage("New code sent. Check your inbox.");
         }
     }
 

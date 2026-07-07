@@ -36,7 +36,7 @@ export default function GrowthEditUpgradePage() {
                         </CardTitle>
                         <CardDescription className='text-base leading-relaxed'>
                             Find your hair type and get a matched, salon-grade
-                            product routine — professional Davines picks with an
+                            product routine, with professional Davines picks and an
                             honest, more affordable match for every step.
                             Unlimited use, saved list, and repurchase reminders.
                         </CardDescription>

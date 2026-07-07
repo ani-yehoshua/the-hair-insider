@@ -596,7 +596,7 @@ export default function FreeGuideClient() {
                         }
                         #guide-root .feel-list li:last-child{ border-bottom: none; }
                         #guide-root .feel-list li::before{
-                            content: '—';
+                            content: '\\2013';
                             color: #6e6e6e;
                             margin-right: 10px;
                         }
@@ -1299,7 +1299,7 @@ export default function FreeGuideClient() {
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src='/braided_pony_double_bow.jpeg'
-                                    alt='Fishtail braid finished with sheer ribbons — The Hair Insider'
+                                    alt='Fishtail braid finished with sheer ribbons, The Hair Insider'
                                 />
                             </div>
                         </figure>
@@ -1566,13 +1566,13 @@ export default function FreeGuideClient() {
                             <span className='label'>
                                 The Hair Insider · Your 7 days
                             </span>
-                            <span className='num'>04 — 06</span>
+                            <span className='num'>04–06</span>
                         </div>
 
                         <div className='days-intro'>
                             <span className='script'>The reset begins</span>
                             <h2>
-                                Days <span className='num-display'>1 — 7</span>
+                                Days <span className='num-display'>1–7</span>
                             </h2>
                             <p
                                 style={{
@@ -2534,7 +2534,7 @@ export default function FreeGuideClient() {
                                             Workbook
                                         </h3>
                                         <p className='lead'>
-                                            The full 21-day routine — every
+                                            The full 21-day routine: every
                                             lesson, the digital workbook, and
                                             lifetime access. Sold together at a
                                             discount.
@@ -2700,12 +2700,12 @@ export default function FreeGuideClient() {
                                 marginBottom: "24px",
                             }}>
                             <li>
-                                It&apos;s interactive — check off steps as you
+                                It&apos;s interactive, check off steps as you
                                 go
                             </li>
                             <li>There&apos;s no PDF or download version</li>
                             <li>
-                                It only exists at this URL — bookmark it or save
+                                It only exists at this URL, bookmark it or save
                                 the link so you can follow along each day
                             </li>
                             <li>
@@ -2728,7 +2728,7 @@ export default function FreeGuideClient() {
                                 textTransform: "uppercase",
                                 cursor: "pointer",
                             }}>
-                            Got it — let&apos;s start
+                            Got it, let&apos;s start
                         </button>
                     </div>
                 </div>

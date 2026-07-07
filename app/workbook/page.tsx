@@ -6,7 +6,7 @@ import WorkbookClient from "./WorkbookClient";
 export const metadata: Metadata = {
     title: "Hair Growth Workbook",
     description:
-        "A guided journal and companion to the mini course — SMART goals, habit tracking, daily check-ins, and weekly reviews to lock in your hair routine.",
+        "A guided journal and companion to the mini course, featuring SMART goals, habit tracking, daily check-ins, and weekly reviews to lock in your hair routine.",
     robots: { index: false, follow: false },
 };
 

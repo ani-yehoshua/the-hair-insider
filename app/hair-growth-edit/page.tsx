@@ -6,7 +6,7 @@ import GrowthEditClient from "./GrowthEditClient";
 export const metadata: Metadata = {
     title: "The Growth Edit",
     description:
-        "Find your hair type and get a matched, salon-grade product routine — professional picks and an affordable match for every step.",
+        "Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.",
     robots: { index: false, follow: false },
 };
 

@@ -90,7 +90,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Payment Link purchases won't have user_id — look up by email
+        // Payment Link purchases won't have user_id, so look up by email
         if (!user_id) {
             const email = session.customer_details?.email;
             if (email) {
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
         }
 
         if (!user_id) {
-            // No matching account — can't grant entitlement yet
+            // No matching account, can't grant entitlement yet
             console.warn('Stripe webhook: no user_id resolved for session', session.id);
             return NextResponse.json({ received: true });
         }
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
                 ? session.payment_intent
                 : null;
 
-        // Resolve all course IDs to grant — for bundles, include component courses
+        // Resolve all course IDs to grant; for bundles, include component courses
         const courseIdsToGrant = [course_id];
 
         const { data: purchasedCourse } = await admin
@@ -149,7 +149,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
-        // Non-blocking side effects — don't fail the webhook if these error
+        // Non-blocking side effects; don't fail the webhook if these error
         try {
             const { data: userData } =
                 await admin.auth.admin.getUserById(user_id);

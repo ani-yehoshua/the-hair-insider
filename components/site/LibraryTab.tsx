@@ -237,7 +237,7 @@ export function LibraryTab() {
                 <p className='text-sm'>Loading your library…</p>
             ) : cards.length === 0 ? (
                 <p className='text-sm'>
-                    Nothing here yet —{" "}
+                    Nothing here yet,{" "}
                     <Link
                         href='/7-day-moisture-reset'
                         className='underline underline-offset-4'>
