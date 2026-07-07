@@ -212,7 +212,7 @@ export function initGrowthEdit(): () => void {
             img: 'Davines NOUNOU Mask',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817237-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68540346',
-            why: 'A reconstructing rescue for very dry, over-processed or colour-damaged hair — rebuilds softness and strength exactly where hair is stressed.',
+            why: 'A reconstructing rescue for very dry, over-processed or color-damaged hair — rebuilds softness and strength exactly where hair is stressed.',
             ingredients:
                 'Tomato extract + reconstructing lipids that repair and protect the fibre.',
             howTo: 'Apply to lengths and ends, leave 5–10 minutes, then rinse. Once weekly.',
@@ -635,7 +635,7 @@ export function initGrowthEdit(): () => void {
         },
 
         /* ============================================================
-     DAVINES — DEDE (fine/lightweight moisture), MINU (colour), HEART OF GLASS (blonde)
+     DAVINES — DEDE (fine/lightweight moisture), MINU (color), HEART OF GLASS (blonde)
      ============================================================ */
         'dav-dede-sham': {
             brand: 'Davines',
@@ -672,11 +672,11 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MINU Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2817005-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-68369604',
-            why: 'Davines’ colour-protecting cleanse — locks in your tone and adds illuminating shine while it gently washes, so colour stays vibrant far longer.',
+            why: 'Davines’ color-protecting cleanse — locks in your tone and adds illuminating shine while it gently washes, so color stays vibrant far longer.',
             ingredients:
-                'Goji-berry extract, rich in antioxidants, to shield colour from fading.',
-            howTo: 'Gentle lather, rinse. Your everyday colour-safe wash.',
-            avoid: 'Steer clear of harsh clarifying shampoos that strip colour between washes.',
+                'Goji-berry extract, rich in antioxidants, to shield color from fading.',
+            howTo: 'Gentle lather, rinse. Your everyday color-safe wash.',
+            avoid: 'Steer clear of harsh clarifying shampoos that strip color between washes.',
         },
         'dav-minu-cond': {
             brand: 'Davines',
@@ -686,10 +686,10 @@ export function initGrowthEdit(): () => void {
             img: 'Davines MINU Conditioner',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2815454-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-27371287',
-            why: 'Seals the cuticle to hold colour true and leaves hair glossy, soft and protected against fade.',
+            why: 'Seals the cuticle to hold color true and leaves hair glossy, soft and protected against fade.',
             ingredients: 'Goji-berry antioxidant complex.',
             howTo: 'Lengths and ends, leave a minute, then rinse.',
-            avoid: 'A colour-safe finish — concentrate it on the lengths.',
+            avoid: 'A color-safe finish — concentrate it on the lengths.',
         },
         'dav-heart-sham': {
             brand: 'Davines',
@@ -754,8 +754,8 @@ export function initGrowthEdit(): () => void {
             img: 'Pureology Hydrate Shampoo',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2390755-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-66755998',
-            why: 'A sulfate-free, colour-safe moisture cleanse that protects tone while it hydrates.',
-            ingredients: 'Coconut + camelina oils in a colour-protecting base.',
+            why: 'A sulfate-free, color-safe moisture cleanse that protects tone while it hydrates.',
+            ingredients: 'Coconut + camelina oils in a color-protecting base.',
             howTo: 'Gentle lather, rinse.',
             avoid: 'Sulfate-free by design — don’t alternate with a stripping clarifier.',
         },
@@ -767,10 +767,10 @@ export function initGrowthEdit(): () => void {
             img: 'Pureology Hydrate Conditioner',
             imgUrl: 'https://www.sephora.com/productimages/sku/s2390771-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-66756025',
-            why: 'Colour-safe moisture that seals the cuticle for vibrancy and shine.',
+            why: 'Color-safe moisture that seals the cuticle for vibrancy and shine.',
             ingredients: 'Camelina oil + antioxidants.',
             howTo: 'Lengths and ends, rinse.',
-            avoid: 'A colour-safe finish — concentrate on the lengths.',
+            avoid: 'A color-safe finish — concentrate on the lengths.',
         },
         'm-blonde-sham': {
             brand: 'Pureology',
@@ -856,7 +856,7 @@ export function initGrowthEdit(): () => void {
             ingredients:
                 'Bond-repairing actives and strengthening agents in a gentle cleanser.',
             howTo: 'Lather gently, leave a minute, rinse. Use 2—3× a week alternating with your toning shampoo.',
-            avoid: 'Alternate with Heart of Glass — daily toning shampoo flattens colour dimension over time.',
+            avoid: 'Alternate with Heart of Glass — daily toning shampoo flattens color dimension over time.',
         },
 
         /* ---------- BUMBLE AND BUMBLE · CONDITIONER ---------- */
@@ -929,7 +929,7 @@ export function initGrowthEdit(): () => void {
             img: 'Moroccanoil Treatment Light',
             imgUrl: 'https://www.sephora.com/productimages/sku/s1869502-main-zoom.jpg?imwidth=465',
             shop: 'https://go.shopmy.us/p-67240521',
-            why: 'The iconic argan treatment in a clear, tint-free version made specifically for blonde, fine and light-coloured hair — all the seal-and-shine with zero risk of the amber deposit the original leaves on light hair.',
+            why: 'The iconic argan treatment in a clear, tint-free version made specifically for blonde, fine and light-colored hair — all the seal-and-shine with zero risk of the amber deposit the original leaves on light hair.',
             ingredients:
                 'Clear argan oil plus linseed extract, rich in antioxidants and fatty acids.',
             howTo: 'Warm a few drops and smooth over damp or dry ends to seal and shine.',
@@ -1004,11 +1004,11 @@ export function initGrowthEdit(): () => void {
     const HAIRSTATUS = {
         natural: {
             label: 'Natural',
-            desc: 'Uncoloured or grown-out — no colour to protect.',
+            desc: 'Uncolored or grown-out — no color to protect.',
         },
         color: {
-            label: 'Colour-treated',
-            desc: 'Dyed or glossed — wants colour protection plus extra moisture.',
+            label: 'Color-treated',
+            desc: 'Dyed or glossed — wants color protection plus extra moisture.',
         },
         blonde: {
             label: 'Blonde / Lightened',
@@ -1017,7 +1017,7 @@ export function initGrowthEdit(): () => void {
     };
     const STATUS_COPY = {
         natural: '',
-        color: ' And because it’s colour-treated, your cleanse and conditioner switch to Davines MINU to lock in tone and shine while you grow it out.',
+        color: ' And because it’s color-treated, your cleanse and conditioner switch to Davines MINU to lock in tone and shine while you grow it out.',
         blonde: ' And because it’s blonde or lightened, your cleanse and conditioner switch to Davines Heart of Glass — deep moisture and bond strength to stop the breakage that dryness causes in lightened hair.',
     };
     const PATTERN_COPY = {
@@ -1111,7 +1111,7 @@ export function initGrowthEdit(): () => void {
         imgUrl: 'https://m.media-amazon.com/images/I/61MCvSZUKaL._SL1500_.jpg',
         shop: 'https://go.shopmy.us/p-67307318',
         tagline: "Start here — it's the water, first.",
-        why: 'Every product below works harder when the water itself is clean. Jolie filters out the chlorine, heavy metals and hard-water minerals that dry out hair, dull colour and irritate the scalp — so this is the foundation of any growth routine, no matter your hair type.',
+        why: 'Every product below works harder when the water itself is clean. Jolie filters out the chlorine, heavy metals and hard-water minerals that dry out hair, dull color and irritate the scalp — so this is the foundation of any growth routine, no matter your hair type.',
         ingredients:
             'A multi-stage KDF-55 + calcium-sulfite filter that removes chlorine, chloramine and heavy metals from your shower water.',
         howTo: 'Swaps onto your existing shower arm in minutes. Replace the filter roughly every 90 days to keep performance up.',
@@ -1224,7 +1224,7 @@ export function initGrowthEdit(): () => void {
         } else {
             mPro = 'dav-nounou-mask';
             mWhy =
-                'A weekly nourishing mask keeps balanced lengths healthy and protected, especially if you colour or heat-style.';
+                'A weekly nourishing mask keeps balanced lengths healthy and protected, especially if you color or heat-style.';
         }
         R.push({ cat: 'mask', pro: mPro, alt: 'm-briogeo-mask', why: mWhy });
 
@@ -1323,7 +1323,7 @@ export function initGrowthEdit(): () => void {
         return R;
     }
 
-    /* ---- Colour overlay: blonde & colour-treated swap the daily wash line ---- */
+    /* ---- Color overlay: blonde & color-treated swap the daily wash line ---- */
     function applyColor(R, status, p) {
         const get = c => R.find(s => s.cat === c);
         const sham = get('shampoo'),
@@ -1336,13 +1336,13 @@ export function initGrowthEdit(): () => void {
                 cond.pro = 'dav-minu-cond';
                 cond.alt = 'm-pureology-cond';
                 sham.why =
-                    'Colour-treated hair fades and dries with every wash — MINU is a gentle, colour-locking cleanse that protects your tone and adds illuminating shine.';
+                    'Color-treated hair fades and dries with every wash — MINU is a gentle, color-locking cleanse that protects your tone and adds illuminating shine.';
                 cond.why =
-                    'A colour-protecting conditioner that seals the cuticle so colour stays vibrant and the lengths stay glossy and moisturised.';
+                    'A color-protecting conditioner that seals the cuticle so color stays vibrant and the lengths stay glossy and moisturised.';
             } else {
                 cond.why =
                     cond.why +
-                    ' Your curl line is sulfate-light and colour-safe, so it already protects your tone.';
+                    ' Your curl line is sulfate-light and color-safe, so it already protects your tone.';
             }
         } else if (status === 'blonde') {
             if (!curlish) {
@@ -1351,14 +1351,14 @@ export function initGrowthEdit(): () => void {
                 cond.pro = 'dav-heart-cond';
                 cond.alt = 'm-bb-bond-cond';
                 sham.why =
-                    'Blonde hair breaks because bleaching leaves it dry and porous — Heart of Glass floods it with moisture and bond strength with a sheer toning pigment safe to use 2—3× a week. Rotate with your other shampoo so colour keeps its dimension.';
+                    'Blonde hair breaks because bleaching leaves it dry and porous — Heart of Glass floods it with moisture and bond strength with a sheer toning pigment safe to use 2—3× a week. Rotate with your other shampoo so color keeps its dimension.';
                 cond.why =
                     'A rich, strengthening conditioner that deeply moisturises fragile blonde lengths and smooths them for glassy, breakage-free shine.';
                 const blondeOil = R.find(s => s.cat === 'oil');
                 if (blondeOil) {
                     blondeOil.alt = 'm-moroccanoil-light';
                     blondeOil.why =
-                        'The original Moroccanoil has an amber tint that deposits on light hair — always use Treatment Light or Violet Oil for blonde. Light is colourless and safe every wash; Violet adds a toning boost 1—2× a week. Choose based on how much brass you are managing.';
+                        'The original Moroccanoil has an amber tint that deposits on light hair — always use Treatment Light or Violet Oil for blonde. Light is colorless and safe every wash; Violet adds a toning boost 1—2× a week. Choose based on how much brass you are managing.';
                 }
             } else {
                 cond.why =
@@ -1643,7 +1643,7 @@ export function initGrowthEdit(): () => void {
                 status === 'blonde'
                     ? 'Lightened hair is porous and fragile, so your routine doubles down on defence: Heart of Glass rebuilds bonds and floods in moisture, the leave-in and heat protectant guard every style, and the finishing oil seals the cuticle — because for blonde hair, preventing breakage IS the growth strategy.'
                     : status === 'color'
-                      ? 'Colour-treated hair is chemically stressed, so MINU protects your tone while the leave-in, heat protectant and finishing oil shield the strand from the heat and friction that turn processed hair brittle.'
+                      ? 'Color-treated hair is chemically stressed, so MINU protects your tone while the leave-in, heat protectant and finishing oil shield the strand from the heat and friction that turn processed hair brittle.'
                       : 'A dedicated leave-in, heat protectant and finishing oil mean your hair is buffered at every vulnerable moment — wet detangling, hot tools, daily friction. Less damage means less breakage, and less breakage means more length.',
         });
 
@@ -1791,7 +1791,7 @@ export function initGrowthEdit(): () => void {
                 hint.textContent = ready
                     ? state.status
                         ? 'Looks complete — generate your personalised routine.'
-                        : 'Add your colour status for a blonde/colour-tuned edit, or generate now.'
+                        : 'Add your color status for a blonde/color-tuned edit, or generate now.'
                     : 'Choose your texture, density & pattern above to unlock your routine.';
             }
         }
@@ -2212,6 +2212,16 @@ export function initGrowthEdit(): () => void {
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') closeDrawer();
             });
+
+            const menuBtn = $('#menu-btn');
+            const mobileMenu = $('#mobile-menu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.toggle('open');
+                    menuBtn.classList.toggle('active', isOpen);
+                    menuBtn.setAttribute('aria-expanded', String(isOpen));
+                });
+            }
         }
         if (document.readyState === 'loading')
             document.addEventListener('DOMContentLoaded', init);

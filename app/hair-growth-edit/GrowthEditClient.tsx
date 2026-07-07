@@ -65,12 +65,42 @@ const CSS = `
 }
 #growth-edit-root .topbar-brand{
   font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
-  font-size:1.18rem;letter-spacing:0.01em;line-height:1;
+  font-size:1.18rem;letter-spacing:0.01em;line-height:1;min-width:0;
 }
 #growth-edit-root .topbar-brand small{
   display:block;font-family:'Inter',sans-serif;font-style:normal;font-weight:600;
   font-size:0.56rem;letter-spacing:0.32em;text-transform:uppercase;
   color:var(--sage-deep);margin-top:5px;
+}
+#growth-edit-root .topbar-actions{display:flex;align-items:center;gap:20px}
+#growth-edit-root .topbar-nav{
+  display:flex;gap:16px;align-items:center;
+  font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;
+  letter-spacing:0.14em;text-transform:uppercase;
+}
+#growth-edit-root .topbar-nav a{color:var(--ink);text-decoration:none}
+#growth-edit-root .menu-btn{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;
+  width:34px;height:34px;flex:0 0 auto;border-radius:50%;
+  border:1px solid var(--line);background:var(--cream);
+}
+#growth-edit-root .menu-btn span{
+  display:block;width:15px;height:1.5px;background:var(--ink);transition:all .2s ease;
+}
+#growth-edit-root .menu-btn.active span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+#growth-edit-root .menu-btn.active span:nth-child(2){opacity:0}
+#growth-edit-root .menu-btn.active span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+#growth-edit-root .mobile-menu{
+  display:none;flex-direction:column;
+  max-width:1080px;margin:0 auto;padding:0 24px;
+  max-height:0;overflow:hidden;transition:max-height .25s ease;
+}
+#growth-edit-root .mobile-menu.open{max-height:220px;padding-bottom:14px}
+#growth-edit-root .mobile-menu a{
+  color:var(--ink);text-decoration:none;padding:12px 0;
+  border-top:1px solid var(--line-soft);
+  font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
 }
 #growth-edit-root .list-btn{
   display:flex;align-items:center;gap:9px;
@@ -573,11 +603,14 @@ const CSS = `
 #growth-edit-root .finder-grid.four{grid-template-columns:1fr}
 #growth-edit-root .chip{display:flex;align-items:center;gap:14px;padding:16px 18px}
 #growth-edit-root .chip-name{margin-bottom:0;font-size:1.25rem;flex:0 0 auto;min-width:88px}
-#growth-edit-root .chip-tick{position:static;margin-left:auto}
+#growth-edit-root .chip-tick{position:static;margin-left:auto;flex:0 0 18px}
 #growth-edit-root .picks{grid-template-columns:1fr}
 #growth-edit-root .layer-cols{grid-template-columns:1fr}
 #growth-edit-root .cat-head{flex-wrap:wrap}
 #growth-edit-root .cat-cadence{text-align:left;width:100%;order:3}
+#growth-edit-root .topbar-nav{display:none}
+#growth-edit-root .menu-btn{display:flex}
+#growth-edit-root .mobile-menu{display:flex}
 }
 `;
 
@@ -586,17 +619,25 @@ const HTML = `
 <header class="topbar">
   <div class="topbar-inner">
     <div class="topbar-brand">The Hair Insider<small>The Growth Edit</small></div>
-    <div style="display:flex;align-items:center;gap:20px">
-      <nav style="display:flex;gap:16px;align-items:center;font-family:'Inter',sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase">
-        <a href="/" style="color:var(--ink);text-decoration:none">Home</a>
-        <a href="/account?tab=library" style="color:var(--ink);text-decoration:none">Library</a>
-        <a href="/account" style="color:var(--ink);text-decoration:none">Account</a>
+    <div class="topbar-actions">
+      <nav class="topbar-nav">
+        <a href="/">Home</a>
+        <a href="/account?tab=library">Library</a>
+        <a href="/account">Account</a>
       </nav>
       <button class="list-btn" id="list-btn">
         My List <span class="count" id="list-count" style="display:none">0</span>
       </button>
+      <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="/">Home</a>
+    <a href="/account?tab=library">Library</a>
+    <a href="/account">Account</a>
+  </nav>
 </header>
 
 <!-- ===== HERO ===== -->
@@ -619,7 +660,7 @@ const HTML = `
     <div class="sec-head">
       <span class="eyebrow">Step one</span>
       <h2 class="serif">Find your hair type</h2>
-      <p>Three quick choices — your strand texture, your density, and your curl pattern — unlock a routine built precisely for you. Add your colour status and it adapts for blonde or colour-treated hair too.</p>
+      <p>Three quick choices — your strand texture, your density, and your curl pattern — unlock a routine built precisely for you. Add your color status and it adapts for blonde or color-treated hair too.</p>
     </div>
 
     <div class="finder-step">
@@ -649,7 +690,7 @@ const HTML = `
     <div class="finder-step">
       <div class="finder-step-label">
         <span class="finder-step-num serif">iv.</span>
-        <span class="finder-step-title">Colour status <em class="finder-opt">— for blondes &amp; colour</em></span>
+        <span class="finder-step-title">Color status <em class="finder-opt">— for blondes &amp; color</em></span>
       </div>
       <div class="finder-grid" id="status-grid"></div>
     </div>
@@ -660,7 +701,7 @@ const HTML = `
         <p><strong>Texture (how thick each strand is).</strong> Take a single shed hair and roll it between your fingers. If you can barely feel it, you’re <strong>fine</strong>. If it feels distinctly thick or wiry, you’re <strong>coarse</strong>. Anywhere in between is <strong>medium</strong>.</p>
         <p><strong>Density (how much hair you have).</strong> Pull your hair into a ponytail and measure around it. Under ~2 inches reads <strong>thin</strong>, around 2–3 inches is <strong>medium</strong>, and over ~4 inches is <strong>dense</strong>. Or simply check how easily you see your scalp in the mirror — the more visible, the thinner the density.</p>
         <p><strong>Curl pattern (the shape of the strand).</strong> Wash your hair and let it air-dry with no product. If it dries flat and straight you’re <strong>straight</strong>; loose S-shapes are <strong>wavy</strong>; defined spirals or ringlets are <strong>curly</strong>; tight coils, zig-zags or kinks are <strong>coily</strong>.</p>
-        <p><strong>Colour status.</strong> Leave it on <strong>Natural</strong> if your hair is uncoloured. Choose <strong>Colour-treated</strong> for any dye or gloss, or <strong>Blonde</strong> if you lighten or highlight — both swap in moisture-rich, colour-protecting Davines lines, since processed hair breaks from dryness.</p>
+        <p><strong>Color status.</strong> Leave it on <strong>Natural</strong> if your hair is uncolored. Choose <strong>Color-treated</strong> for any dye or gloss, or <strong>Blonde</strong> if you lighten or highlight — both swap in moisture-rich, color-protecting Davines lines, since processed hair breaks from dryness.</p>
       </div>
     </details>
 
