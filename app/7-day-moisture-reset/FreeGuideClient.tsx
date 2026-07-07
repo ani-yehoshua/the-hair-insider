@@ -17,12 +17,15 @@ export default function FreeGuideClient() {
     const [showWelcome, setShowWelcome] = useState(false);
     const [buying, setBuying] = useState(false);
     const [buyError, setBuyError] = useState<string | null>(null);
+    const [growthEditPrice, setGrowthEditPrice] = useState<string | null>(
+        null,
+    );
 
-    async function handleBundleCheckout() {
+    async function handleGrowthEditCheckout() {
         setBuying(true);
         setBuyError(null);
         try {
-            await startCheckout("hair-growth-bundle");
+            await startCheckout("hair-growth-edit");
         } catch (e) {
             setBuyError(
                 e instanceof Error ? e.message : "Something went wrong.",
@@ -30,6 +33,36 @@ export default function FreeGuideClient() {
             setBuying(false);
         }
     }
+
+    // Fetch the live Growth Edit price so the offer card never goes stale
+    useEffect(() => {
+        const run = async () => {
+            const { data: course } = await supabase
+                .from("courses")
+                .select("stripe_price_id")
+                .eq("slug", "hair-growth-edit")
+                .maybeSingle();
+
+            if (!course?.stripe_price_id) return;
+
+            const res = await fetch("/api/stripe/price", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ priceId: course.stripe_price_id }),
+            });
+            if (!res.ok) return;
+
+            const json = await res.json();
+            if (json.unitAmount != null) {
+                const formatted = new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: json.currency.toUpperCase(),
+                }).format(json.unitAmount / 100);
+                setGrowthEditPrice(formatted);
+            }
+        };
+        run();
+    }, []);
 
     // Show welcome modal on first visit
     useEffect(() => {
@@ -2522,58 +2555,56 @@ export default function FreeGuideClient() {
                                 <span className='script'>Lock it in</span>
                                 <h2>Ready to keep your Day-7 results?</h2>
                                 <p className='lead'>
-                                    Build the 21-day rhythm inside{" "}
-                                    <em>How To Grow Your Hair</em> &mdash; $197,
-                                    lifetime access, 7-day guarantee.
+                                    Get your hair type matched to the exact
+                                    products that grow it inside{" "}
+                                    <em>The Growth Edit</em>, unlimited access,
+                                    lifetime updates.
                                 </p>
 
                                 <div className='offer-card'>
                                     <div className='offer-card-body'>
-                                        <h3>
-                                            How To Grow Your Hair + Digital
-                                            Workbook
-                                        </h3>
+                                        <h3>The Growth Edit</h3>
                                         <p className='lead'>
-                                            The full 21-day routine: every
-                                            lesson, the digital workbook, and
-                                            lifetime access. Sold together at a
-                                            discount.
+                                            Find your hair type and get a
+                                            matched, salon-grade product
+                                            routine: professional Davines
+                                            picks with an honest, more
+                                            affordable match for every step.
                                         </p>
                                         <ul className='offer-list'>
                                             <li>
-                                                Step-by-step moisture rhythm
-                                                built for your hair
+                                                Texture, density &amp; curl
+                                                pattern finder
                                             </li>
                                             <li>
-                                                Product dosages matched to your
-                                                hair density
+                                                Complete 9-step matched routine
                                             </li>
                                             <li>
-                                                Protective-style maintenance
-                                                that preserves length
+                                                Pro pick + budget-friendly
+                                                match for every step
                                             </li>
                                             <li>
-                                                Digital workbook with daily
-                                                journaling and habit tracking
+                                                Save your list &amp;
+                                                repurchase reminders
                                             </li>
                                             <li>
-                                                Full troubleshooting flow for
-                                                any setback
+                                                Unlimited, lifetime access
                                             </li>
                                         </ul>
                                         <div className='offer-price-row'>
-                                            <span className='price'>$229</span>
-                                            <span className='savings-badge'>
-                                                Save 10%
+                                            <span className='price'>
+                                                {growthEditPrice ?? "$–"}
                                             </span>
                                         </div>
                                         <div className='price-meta'>
-                                            One-time · Lifetime access · 7-day
-                                            money-back guarantee
+                                            One-time · Unlimited use ·
+                                            Lifetime access
                                         </div>
                                         <div className='offer-btn-row'>
                                             <button
-                                                onClick={handleBundleCheckout}
+                                                onClick={
+                                                    handleGrowthEditCheckout
+                                                }
                                                 disabled={buying}
                                                 className='btn btn-filled'>
                                                 {buying
@@ -2591,15 +2622,6 @@ export default function FreeGuideClient() {
                                                 {buyError}
                                             </p>
                                         )}
-                                    </div>
-                                    <hr className='offer-separator' />
-                                    <div className='bonus-card'>
-                                        <h5>Limited bonus</h5>
-                                        <p>
-                                            Routine Map template &mdash;
-                                            implement your full routine in under
-                                            an hour.
-                                        </p>
                                     </div>
                                 </div>
                             </div>

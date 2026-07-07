@@ -318,6 +318,12 @@ function WorkbookCard({
                     </p>
                 )}
 
+                {owned && (
+                    <p className='text-sm font-medium'>
+                        You already own this item.
+                    </p>
+                )}
+
                 {owned ? (
                     <Button
                         asChild
