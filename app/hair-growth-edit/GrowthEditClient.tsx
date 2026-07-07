@@ -132,7 +132,7 @@ const CSS = `
   margin-top:46px;opacity:0.82;
 }
 #growth-edit-root .hero-meta span:not(:last-child)::after{content:"·";margin-left:14px;opacity:0.6}
-#growth-edit-root .sec{padding:clamp(64px,9vw,108px) 0}
+#growth-edit-root .sec{padding:clamp(64px,9vw,108px) 0;background:#f3eee5}
 #growth-edit-root .sec.paper{background:var(--paper)}
 #growth-edit-root .sec-head{text-align:center;max-width:620px;margin:0 auto clamp(40px,6vw,64px)}
 #growth-edit-root .sec-head .eyebrow{margin-bottom:18px;display:block}
