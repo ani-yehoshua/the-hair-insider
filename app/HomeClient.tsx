@@ -814,7 +814,7 @@ export default function HomeClient() {
                                             </div>
 
                                             {/* Cards row */}
-                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-start'>
+                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
                                                 <CourseCard
                                                     course={bundleCourse}
                                                     owned={ownedCourseIds.has(
