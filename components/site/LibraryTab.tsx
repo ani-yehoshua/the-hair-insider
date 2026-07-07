@@ -159,8 +159,13 @@ export function LibraryTab() {
                 });
             }
 
+            const specialCaseSlugs = [
+                "hair-growth-workbook",
+                "hair-growth-edit",
+            ];
+
             for (const c of entitledCourses.filter(
-                c => c.slug !== "hair-growth-workbook",
+                c => !specialCaseSlugs.includes(c.slug),
             )) {
                 newCards.push({
                     id: c.id,
@@ -190,11 +195,27 @@ export function LibraryTab() {
                 });
             }
 
+            const growthEdit = entitledCourses.find(
+                c => c.slug === "hair-growth-edit",
+            );
+            if (growthEdit) {
+                newCards.push({
+                    id: growthEdit.id,
+                    slug: growthEdit.slug,
+                    title: growthEdit.title,
+                    subtitle: growthEdit.subtitle,
+                    badge: "The Growth Edit",
+                    coverImage: growthEdit.cover_image_url,
+                    href: "/hair-growth-edit",
+                    cta: "Open The Growth Edit →",
+                });
+            }
+
             setCards(newCards);
 
             // Fetch stats for courses only
             for (const c of entitledCourses.filter(
-                c => c.slug !== "hair-growth-workbook",
+                c => !specialCaseSlugs.includes(c.slug),
             )) {
                 fetch(`/api/courses/${encodeURIComponent(c.slug)}/stats`)
                     .then(r => (r.ok ? r.json() : null))

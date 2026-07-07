@@ -6,12 +6,14 @@ const SLUG_TO_TEMPLATE: Record<string, string> = {
     'hair-growth-bundle': 'bundle.html',
     'hair-growth-foundations-mini-course': 'mini-course.html',
     'hair-growth-workbook': 'workbook.html',
+    'hair-growth-edit': 'growth-edit.html',
 };
 
 const SLUG_TO_SUBJECT: Record<string, string> = {
     'hair-growth-bundle': "You're in — start here first",
     'hair-growth-foundations-mini-course': "You're in — here's where to start",
     'hair-growth-workbook': 'Your digital workbook is ready — start here',
+    'hair-growth-edit': 'Your Growth Edit is ready — start here',
 };
 
 export async function sendThankYouEmail({

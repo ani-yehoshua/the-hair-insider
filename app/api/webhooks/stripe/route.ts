@@ -17,6 +17,7 @@ const SLUG_TO_MAILCHIMP_TAG: Record<string, string> = {
     'hair-growth-foundations-mini-course': 'growth-mini-course-purchased',
     'hair-growth-bundle': 'growth-bundle-purchased',
     'hair-growth-workbook': 'growth-workbook-purchased',
+    'hair-growth-edit': 'growth-edit-purchased',
 };
 
 async function addMailchimpTag(email: string, tag: string) {

@@ -22,23 +22,48 @@ const siteUrl =
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
-        default: "The Hair Insider",
+        default: "The Hair Insider — Hair Care Education & Routines",
         template: "%s | The Hair Insider",
     },
     description:
-        "Education-first hair care. Simple routines, clear guidance, and a calm library experience.",
+        "Education-first hair care. Learn what your hair actually needs, build a simple routine, and understand the science behind healthy hair growth.",
+    keywords: [
+        "the hair insider",
+        "hair insider",
+        "hair care",
+        "hair care routine",
+        "hair care education",
+        "healthy hair",
+        "hair growth",
+        "natural hair",
+        "hair moisture",
+        "hair type",
+        "hair science",
+        "hair course",
+    ],
+    authors: [{ name: "The Hair Insider", url: siteUrl }],
+    creator: "The Hair Insider",
+    publisher: "The Hair Insider",
+    applicationName: "The Hair Insider",
+    alternates: { canonical: siteUrl },
     icons: {
         icon: [{ url: "/favicon.ico" }],
         apple: [{ url: "/apple-touch-icon.png" }],
     },
     openGraph: {
-        title: "The Hair Insider",
+        title: "The Hair Insider — Hair Care Education & Routines",
         description:
-            "Education-first hair care. Simple routines, clear guidance, and a calm library experience.",
+            "Education-first hair care. Learn what your hair actually needs, build a simple routine, and understand the science behind healthy hair growth.",
         siteName: "The Hair Insider",
+        url: siteUrl,
         type: "website",
     },
-    // optional baseline
+    twitter: {
+        card: "summary_large_image",
+        title: "The Hair Insider — Hair Care Education & Routines",
+        description:
+            "Education-first hair care. Learn what your hair actually needs, build a simple routine, and understand the science behind healthy hair growth.",
+    },
     robots: {
         index: true,
         follow: true,
@@ -59,6 +84,21 @@ export default function RootLayout({
             `}
             suppressHydrationWarning>
             <head>
+                <script
+                    type='application/ld+json'
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "EducationalOrganization",
+                            name: "The Hair Insider",
+                            description:
+                                "Education-first hair care. Simple routines, clear guidance, and science-backed hair care knowledge.",
+                            url: siteUrl,
+                            keywords:
+                                "the hair insider, hair insider, hair care, hair care routine, healthy hair, hair growth, natural hair, hair moisture",
+                        }),
+                    }}
+                />
                 <script
                     id='mcjs'
                     dangerouslySetInnerHTML={{

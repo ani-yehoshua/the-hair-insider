@@ -262,6 +262,10 @@ function WorkbookCard({
     buying,
     buyError,
     onBuy,
+    href = "/workbook",
+    ownedCta = "Open digital workbook →",
+    buyCta = "Get the digital workbook",
+    detailNote = "Already own the mini course? Add the digital workbook to your toolkit — sold separately.",
 }: {
     course: Course;
     owned: boolean;
@@ -269,6 +273,10 @@ function WorkbookCard({
     buying: boolean;
     buyError: string | null;
     onBuy: (slug: string) => void;
+    href?: string;
+    ownedCta?: string;
+    buyCta?: string;
+    detailNote?: string;
 }) {
     const [open, setOpen] = React.useState(false);
 
@@ -314,14 +322,14 @@ function WorkbookCard({
                     <Button
                         asChild
                         className='w-full h-11'>
-                        <Link href='/workbook'>Open digital workbook →</Link>
+                        <Link href={href}>{ownedCta}</Link>
                     </Button>
                 ) : (
                     <Button
                         className='w-full h-11'
                         onClick={() => onBuy(course.slug)}
                         disabled={buying || !course.stripe_price_id}>
-                        {buying ? "Redirecting…" : "Get the digital workbook"}
+                        {buying ? "Redirecting…" : buyCta}
                     </Button>
                 )}
 
@@ -357,10 +365,7 @@ function WorkbookCard({
                                     {course.description}
                                 </p>
                             )}
-                            <p className='text-xs'>
-                                Already own the mini course? Add the digital
-                                workbook to your toolkit — sold separately.
-                            </p>
+                            <p className='text-xs'>{detailNote}</p>
                         </div>
                     </div>
                 </div>
@@ -774,6 +779,9 @@ export default function HomeClient() {
                                             c.slug ===
                                             "hair-growth-foundations-mini-course",
                                     );
+                                    const growthEditCourse = courses.find(
+                                        c => c.slug === "hair-growth-edit",
+                                    );
 
                                     return (
                                         <div className='space-y-10'>
@@ -806,7 +814,7 @@ export default function HomeClient() {
                                             </div>
 
                                             {/* Cards row */}
-                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
+                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-start'>
                                                 <CourseCard
                                                     course={bundleCourse}
                                                     owned={ownedCourseIds.has(
@@ -887,6 +895,37 @@ export default function HomeClient() {
                                                             ] ?? null
                                                         }
                                                         onBuy={onBuy}
+                                                    />
+                                                )}
+                                                {growthEditCourse && (
+                                                    <WorkbookCard
+                                                        course={
+                                                            growthEditCourse
+                                                        }
+                                                        owned={ownedCourseIds.has(
+                                                            growthEditCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                growthEditCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        buying={
+                                                            buying ===
+                                                            growthEditCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                growthEditCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                        href='/hair-growth-edit'
+                                                        ownedCta='Open The Growth Edit →'
+                                                        buyCta='Get The Growth Edit'
+                                                        detailNote='Find your hair type and get a matched, salon-grade product routine — professional picks with an affordable match for every step.'
                                                     />
                                                 )}
                                             </div>
