@@ -1,5 +1,9 @@
 import { supabase } from '@/lib/supabase/client';
 
+const SLUG_TO_PAYMENT_LINK: Record<string, string> = {
+    'hair-growth-bundle': 'https://buy.stripe.com/7sY6oIbT56x4b5Y0PV4c800',
+};
+
 async function getValidToken(): Promise<string | null> {
     const { data } = await supabase.auth.getSession();
     if (data.session?.access_token) return data.session.access_token;
@@ -8,6 +12,12 @@ async function getValidToken(): Promise<string | null> {
 }
 
 export async function startCheckout(courseSlug: string) {
+    const paymentLink = SLUG_TO_PAYMENT_LINK[courseSlug];
+    if (paymentLink) {
+        window.location.href = paymentLink;
+        return;
+    }
+
     const signinUrl = `/signin?next=${encodeURIComponent(`/courses#${courseSlug}`)}`;
 
     let token = await getValidToken();
