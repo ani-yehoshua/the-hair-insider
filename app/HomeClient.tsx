@@ -330,10 +330,10 @@ function WorkbookCard({
                         <div className='flex items-center justify-between text-xs font-medium'>
                             <span>
                                 {founderSeats.claimed >= founderSeats.total
-                                    ? "Founder seats claimed"
-                                    : "Founder seats"}
+                                    ? "Founders claimed"
+                                    : "Founders"}
                             </span>
-                            <span className='text-muted-foreground'>
+                            <span>
                                 {Math.min(
                                     founderSeats.claimed,
                                     founderSeats.total,
