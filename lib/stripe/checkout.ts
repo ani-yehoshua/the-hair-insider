@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase/client';
 
 const SLUG_TO_PAYMENT_LINK: Record<string, string> = {
     'hair-growth-bundle': 'https://buy.stripe.com/7sY6oIbT56x4b5Y0PV4c800',
-    'hair-growth-edit': 'https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802',
+    'hair-growth-edit': 'https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802?prefilled_promo_code=FOUNDER20',
 };
 
 async function getValidToken(): Promise<string | null> {

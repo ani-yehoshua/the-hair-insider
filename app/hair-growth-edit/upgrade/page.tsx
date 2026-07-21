@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 
 const GROWTH_EDIT_PAYMENT_LINK =
-    "https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802";
+    "https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802?prefilled_promo_code=FOUNDER20";
 
 const GROWTH_EDIT_PROMO_CODE = PRODUCT_PROMO_CODES["hair-growth-edit"];
 
