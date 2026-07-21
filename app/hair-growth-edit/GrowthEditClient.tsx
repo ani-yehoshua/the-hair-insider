@@ -644,7 +644,7 @@ const HTML = `
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-mark">The Hair Insider · Professional Edit</div>
-    <h1>The Growth<br>Product Edit</h1>
+    <h1>The Growth Edit</h1>
     <p class="hero-sub">The exact products that grow your hair, matched to your type.</p>
     <p class="hero-note">A curated, salon-grade routine built around <em>Davines</em> and professional-brand picks, with an honest, more affordable match for every step. Find your hair type, get your shelf, save your list.</p>
     <a class="hero-cta" href="#finder">Find your hair type <span class="arrow">↓</span></a>

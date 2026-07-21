@@ -20,6 +20,26 @@ const SLUG_TO_MAILCHIMP_TAG: Record<string, string> = {
     'hair-growth-edit': 'growth-edit-purchased',
 };
 
+// Limited-run founder pricing: first 100 redemptions of this code on the
+// Growth Edit are enforced by Stripe's own max_redemptions, so a
+// successful checkout using it is definitionally one of the first 100.
+const FOUNDER_PROMO_CODE = 'FOUNDER20';
+const FOUNDER_ELIGIBLE_SLUGS = new Set(['hair-growth-edit']);
+
+async function usedFounderPromo(sessionId: string): Promise<boolean> {
+    const full = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ['discounts.promotion_code'],
+    });
+    return (full.discounts ?? []).some(d => {
+        const promo = d.promotion_code;
+        return (
+            promo &&
+            typeof promo === 'object' &&
+            promo.code === FOUNDER_PROMO_CODE
+        );
+    });
+}
+
 async function addMailchimpTag(email: string, tag: string) {
     const apiKey = process.env.MAILCHIMP_API_KEY!;
     const audienceId = process.env.MAILCHIMP_AUDIENCE_ID!;
@@ -132,6 +152,18 @@ export async function POST(req: Request) {
             for (const c of components ?? []) courseIdsToGrant.push(c.id);
         }
 
+        let isFounder = false;
+        if (
+            purchasedCourse?.slug &&
+            FOUNDER_ELIGIBLE_SLUGS.has(purchasedCourse.slug)
+        ) {
+            try {
+                isFounder = await usedFounderPromo(session.id);
+            } catch (e) {
+                console.error('Founder promo check failed:', e);
+            }
+        }
+
         const entitlements = courseIdsToGrant.map(cid => ({
             user_id,
             course_id: cid,
@@ -139,6 +171,7 @@ export async function POST(req: Request) {
             stripe_customer_id: stripeCustomerId,
             stripe_checkout_session_id: session.id,
             stripe_payment_intent_id: stripePaymentIntentId,
+            is_founder: isFounder,
         }));
 
         const { error } = await admin
@@ -159,6 +192,15 @@ export async function POST(req: Request) {
 
             const slug = purchasedCourse?.slug ?? '';
             const mailchimpTag = SLUG_TO_MAILCHIMP_TAG[slug];
+
+            if (isFounder && !userData.user?.user_metadata?.is_founder) {
+                await admin.auth.admin.updateUserById(user_id, {
+                    user_metadata: {
+                        ...userData.user?.user_metadata,
+                        is_founder: true,
+                    },
+                });
+            }
 
             if (email) {
                 await Promise.all([

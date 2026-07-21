@@ -269,6 +269,7 @@ function WorkbookCard({
     buyCta = "Get the digital workbook",
     detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
     promoCode,
+    founderSeats,
 }: {
     course: Course;
     owned: boolean;
@@ -281,6 +282,7 @@ function WorkbookCard({
     buyCta?: string;
     detailNote?: string;
     promoCode?: string;
+    founderSeats?: { claimed: number; total: number };
 }) {
     const [open, setOpen] = React.useState(false);
 
@@ -321,6 +323,33 @@ function WorkbookCard({
                         code={promoCode}
                         className='text-xs px-3 py-2'
                     />
+                )}
+
+                {founderSeats && !owned && (
+                    <div className='space-y-1.5'>
+                        <div className='flex items-center justify-between text-xs font-medium'>
+                            <span>
+                                {founderSeats.claimed >= founderSeats.total
+                                    ? "Founder seats claimed"
+                                    : "Founder seats"}
+                            </span>
+                            <span className='text-muted-foreground'>
+                                {Math.min(
+                                    founderSeats.claimed,
+                                    founderSeats.total,
+                                )}
+                                /{founderSeats.total} claimed
+                            </span>
+                        </div>
+                        <div className='h-1.5 w-full rounded-full bg-muted overflow-hidden'>
+                            <div
+                                className='h-full rounded-full bg-amber-500'
+                                style={{
+                                    width: `${Math.min(100, (founderSeats.claimed / founderSeats.total) * 100)}%`,
+                                }}
+                            />
+                        </div>
+                    </div>
                 )}
 
                 {course.stripe_price_id && !owned && (
@@ -403,6 +432,19 @@ export default function HomeClient() {
     const [buyErrors, setBuyErrors] = React.useState<Record<string, string>>(
         {},
     );
+    const [founderSeats, setFounderSeats] = React.useState<{
+        claimed: number;
+        total: number;
+    } | null>(null);
+
+    React.useEffect(() => {
+        fetch("/api/founder-count")
+            .then(res => (res.ok ? res.json() : null))
+            .then(json => {
+                if (json) setFounderSeats(json);
+            })
+            .catch(() => {});
+    }, []);
 
     React.useEffect(() => {
         function handleShopClick(e: MouseEvent) {
@@ -549,10 +591,211 @@ export default function HomeClient() {
                 <SiteBreadcrumbs />
 
                 <main>
+                    {/* Products */}
+                    <section
+                        ref={shopRef}
+                        id='shop'
+                        className='min-h-[100dvh] flex flex-col justify-center'>
+                        <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
+                            <FadeIn
+                                inView={shopIn}
+                                delayMs={150}>
+                                {(() => {
+                                    const bundleCourse = courses.find(
+                                        c => c.slug === "hair-growth-bundle",
+                                    );
+                                    const workbookCourse = courses.find(
+                                        c => c.slug === "hair-growth-workbook",
+                                    );
+
+                                    if (coursesLoading || !bundleCourse) {
+                                        return (
+                                            <Card className='rounded-3xl'>
+                                                <CardContent className='pt-6 text-sm'>
+                                                    {coursesLoading
+                                                        ? "Loading…"
+                                                        : "Nothing available yet."}
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    }
+
+                                    const miniCourse = courses.find(
+                                        c =>
+                                            c.slug ===
+                                            "hair-growth-foundations-mini-course",
+                                    );
+                                    const growthEditCourse = courses.find(
+                                        c => c.slug === "hair-growth-edit",
+                                    );
+
+                                    return (
+                                        <div className='space-y-10'>
+                                            {/* Header */}
+                                            <div className='space-y-3 bg-background/50 rounded-3xl p-6'>
+                                                <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+                                                    Learn it. Then live it.
+                                                </h2>
+                                                <p className='text-lg max-w-2xl'>
+                                                    The mini course teaches you
+                                                    the science behind your
+                                                    hair. The digital workbook
+                                                    puts it into practice,
+                                                    daily guided journaling,
+                                                    habit tracking, and progress
+                                                    reviews. Get both together
+                                                    at a discount.
+                                                </p>
+                                                <p className='text-sm'>
+                                                    Not sure yet?{" "}
+                                                    <a
+                                                        href='https://www.tiktok.com/@lifewith.laurenj'
+                                                        target='_blank'
+                                                        rel='noreferrer'
+                                                        className='underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                                        See Lauren&apos;s
+                                                        content on TikTok →
+                                                    </a>
+                                                </p>
+                                            </div>
+
+                                            {/* Cards row */}
+                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
+                                                {growthEditCourse && (
+                                                    <WorkbookCard
+                                                        course={
+                                                            growthEditCourse
+                                                        }
+                                                        owned={ownedCourseIds.has(
+                                                            growthEditCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                growthEditCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        buying={
+                                                            buying ===
+                                                            growthEditCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                growthEditCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                        href='/hair-growth-edit'
+                                                        ownedCta='Open The Growth Edit →'
+                                                        buyCta='Get Your Growth Edit'
+                                                        detailNote='Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.'
+                                                        promoCode={
+                                                            PRODUCT_PROMO_CODES[
+                                                                "hair-growth-edit"
+                                                            ]
+                                                        }
+                                                        founderSeats={
+                                                            founderSeats ??
+                                                            undefined
+                                                        }
+                                                    />
+                                                )}
+                                                <CourseCard
+                                                    course={bundleCourse}
+                                                    owned={ownedCourseIds.has(
+                                                        bundleCourse.id,
+                                                    )}
+                                                    priceText={
+                                                        prices[
+                                                            bundleCourse.id
+                                                        ] ?? null
+                                                    }
+                                                    stats={null}
+                                                    buying={
+                                                        buying ===
+                                                        bundleCourse.slug
+                                                    }
+                                                    buyError={
+                                                        buyErrors[
+                                                            bundleCourse.id
+                                                        ] ?? null
+                                                    }
+                                                    onBuy={onBuy}
+                                                    splitImages={[
+                                                        miniCourse?.cover_image_url ??
+                                                            null,
+                                                        workbookCourse?.cover_image_url ??
+                                                            null,
+                                                    ]}
+                                                    savingsBadge='Save 10%'
+                                                />
+                                                {miniCourse && (
+                                                    <CourseCard
+                                                        course={miniCourse}
+                                                        owned={ownedCourseIds.has(
+                                                            miniCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                miniCourse.id
+                                                            ] ?? null
+                                                        }
+                                                        stats={
+                                                            stats[
+                                                                miniCourse.id
+                                                            ] ?? null
+                                                        }
+                                                        buying={
+                                                            buying ===
+                                                            miniCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                miniCourse.id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                    />
+                                                )}
+                                                {workbookCourse && (
+                                                    <WorkbookCard
+                                                        course={workbookCourse}
+                                                        owned={ownedCourseIds.has(
+                                                            workbookCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                workbookCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        buying={
+                                                            buying ===
+                                                            workbookCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                workbookCourse
+                                                                    .id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </FadeIn>
+                        </div>
+                    </section>
+
+
                     {/* Hero */}
                     <section
                         ref={heroRef}
-                        className='flex flex-col min-h-[calc(100dvh-64px)]'>
+                        className='flex flex-col min-h-[calc(100dvh-64px)] border-t'>
                         <div className='flex-1 flex items-center mx-auto w-full max-w-6xl px-6 py-16'>
                             <FadeIn
                                 inView={heroIn}
@@ -766,202 +1009,6 @@ export default function HomeClient() {
                                         &middot; Built by a licensed stylist
                                     </p>
                                 </div>
-                            </FadeIn>
-                        </div>
-                    </section>
-
-                    {/* Products */}
-                    <section
-                        ref={shopRef}
-                        id='shop'
-                        className='min-h-[100dvh] flex flex-col justify-center border-t'>
-                        <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
-                            <FadeIn
-                                inView={shopIn}
-                                delayMs={150}>
-                                {(() => {
-                                    const bundleCourse = courses.find(
-                                        c => c.slug === "hair-growth-bundle",
-                                    );
-                                    const workbookCourse = courses.find(
-                                        c => c.slug === "hair-growth-workbook",
-                                    );
-
-                                    if (coursesLoading || !bundleCourse) {
-                                        return (
-                                            <Card className='rounded-3xl'>
-                                                <CardContent className='pt-6 text-sm'>
-                                                    {coursesLoading
-                                                        ? "Loading…"
-                                                        : "Nothing available yet."}
-                                                </CardContent>
-                                            </Card>
-                                        );
-                                    }
-
-                                    const miniCourse = courses.find(
-                                        c =>
-                                            c.slug ===
-                                            "hair-growth-foundations-mini-course",
-                                    );
-                                    const growthEditCourse = courses.find(
-                                        c => c.slug === "hair-growth-edit",
-                                    );
-
-                                    return (
-                                        <div className='space-y-10'>
-                                            {/* Header */}
-                                            <div className='space-y-3 bg-background/50 rounded-3xl p-6'>
-                                                <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
-                                                    Learn it. Then live it.
-                                                </h2>
-                                                <p className='text-lg max-w-2xl'>
-                                                    The mini course teaches you
-                                                    the science behind your
-                                                    hair. The digital workbook
-                                                    puts it into practice,
-                                                    daily guided journaling,
-                                                    habit tracking, and progress
-                                                    reviews. Get both together
-                                                    at a discount.
-                                                </p>
-                                                <p className='text-sm'>
-                                                    Not sure yet?{" "}
-                                                    <a
-                                                        href='https://www.tiktok.com/@lifewith.laurenj'
-                                                        target='_blank'
-                                                        rel='noreferrer'
-                                                        className='underline underline-offset-4 hover:opacity-70 transition-opacity'>
-                                                        See Lauren&apos;s
-                                                        content on TikTok →
-                                                    </a>
-                                                </p>
-                                            </div>
-
-                                            {/* Cards row */}
-                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
-                                                <CourseCard
-                                                    course={bundleCourse}
-                                                    owned={ownedCourseIds.has(
-                                                        bundleCourse.id,
-                                                    )}
-                                                    priceText={
-                                                        prices[
-                                                            bundleCourse.id
-                                                        ] ?? null
-                                                    }
-                                                    stats={null}
-                                                    buying={
-                                                        buying ===
-                                                        bundleCourse.slug
-                                                    }
-                                                    buyError={
-                                                        buyErrors[
-                                                            bundleCourse.id
-                                                        ] ?? null
-                                                    }
-                                                    onBuy={onBuy}
-                                                    splitImages={[
-                                                        miniCourse?.cover_image_url ??
-                                                            null,
-                                                        workbookCourse?.cover_image_url ??
-                                                            null,
-                                                    ]}
-                                                    savingsBadge='Save 10%'
-                                                />
-                                                {miniCourse && (
-                                                    <CourseCard
-                                                        course={miniCourse}
-                                                        owned={ownedCourseIds.has(
-                                                            miniCourse.id,
-                                                        )}
-                                                        priceText={
-                                                            prices[
-                                                                miniCourse.id
-                                                            ] ?? null
-                                                        }
-                                                        stats={
-                                                            stats[
-                                                                miniCourse.id
-                                                            ] ?? null
-                                                        }
-                                                        buying={
-                                                            buying ===
-                                                            miniCourse.slug
-                                                        }
-                                                        buyError={
-                                                            buyErrors[
-                                                                miniCourse.id
-                                                            ] ?? null
-                                                        }
-                                                        onBuy={onBuy}
-                                                    />
-                                                )}
-                                                {workbookCourse && (
-                                                    <WorkbookCard
-                                                        course={workbookCourse}
-                                                        owned={ownedCourseIds.has(
-                                                            workbookCourse.id,
-                                                        )}
-                                                        priceText={
-                                                            prices[
-                                                                workbookCourse
-                                                                    .id
-                                                            ] ?? null
-                                                        }
-                                                        buying={
-                                                            buying ===
-                                                            workbookCourse.slug
-                                                        }
-                                                        buyError={
-                                                            buyErrors[
-                                                                workbookCourse
-                                                                    .id
-                                                            ] ?? null
-                                                        }
-                                                        onBuy={onBuy}
-                                                    />
-                                                )}
-                                                {growthEditCourse && (
-                                                    <WorkbookCard
-                                                        course={
-                                                            growthEditCourse
-                                                        }
-                                                        owned={ownedCourseIds.has(
-                                                            growthEditCourse.id,
-                                                        )}
-                                                        priceText={
-                                                            prices[
-                                                                growthEditCourse
-                                                                    .id
-                                                            ] ?? null
-                                                        }
-                                                        buying={
-                                                            buying ===
-                                                            growthEditCourse.slug
-                                                        }
-                                                        buyError={
-                                                            buyErrors[
-                                                                growthEditCourse
-                                                                    .id
-                                                            ] ?? null
-                                                        }
-                                                        onBuy={onBuy}
-                                                        href='/hair-growth-edit'
-                                                        ownedCta='Open The Growth Edit →'
-                                                        buyCta='Get The Growth Edit'
-                                                        detailNote='Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.'
-                                                        promoCode={
-                                                            PRODUCT_PROMO_CODES[
-                                                                "hair-growth-edit"
-                                                            ]
-                                                        }
-                                                    />
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
                             </FadeIn>
                         </div>
                     </section>

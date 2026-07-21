@@ -31,12 +31,14 @@ import {
 
 import { Menu, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 export function Navbar() {
     const router = useRouter();
-    const { signedIn, loading } = useAuth();
+    const { signedIn, loading, user } = useAuth();
     const admin = useAdminStatus();
     const showAdmin = !admin.loading && admin.signedIn && admin.isAdmin;
+    const isFounder = !!(user?.user_metadata as any)?.is_founder;
 
     async function signOut() {
         await supabase.auth.signOut();
@@ -48,15 +50,22 @@ export function Navbar() {
             className='top-0 z-50 border-b bg-background'
             id='site-navbar'>
             <div className='mx-auto flex h-16 max-w-6xl items-center justify-between px-6'>
-                <Link href='/'>
-                    <Image
-                        src='/thi_navbar_logo.svg'
-                        alt='The Hair Insider'
-                        height={1}
-                        width={222}
-                        style={{ marginLeft: -20, marginTop: 5 }}
-                    />
-                </Link>
+                <div className='flex items-center gap-2'>
+                    <Link href='/'>
+                        <Image
+                            src='/thi_navbar_logo.svg'
+                            alt='The Hair Insider'
+                            height={1}
+                            width={222}
+                            style={{ marginLeft: -20, marginTop: 5 }}
+                        />
+                    </Link>
+                    {isFounder && (
+                        <Badge className='bg-amber-500 text-white shrink-0'>
+                            Founder
+                        </Badge>
+                    )}
+                </div>
 
                 {/* Desktop nav */}
                 <div className='hidden md:flex items-center gap-3'>
