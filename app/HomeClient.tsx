@@ -270,6 +270,8 @@ function WorkbookCard({
     detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
     promoCode,
     founderSeats,
+    priceCents,
+    founderDiscountCents,
 }: {
     course: Course;
     owned: boolean;
@@ -283,7 +285,20 @@ function WorkbookCard({
     detailNote?: string;
     promoCode?: string;
     founderSeats?: { claimed: number; total: number };
+    priceCents?: { amount: number; currency: string };
+    founderDiscountCents?: number;
 }) {
+    const founderSeatsRemaining =
+        !!founderSeats && founderSeats.claimed < founderSeats.total;
+    const founderPriceText =
+        founderSeatsRemaining && priceCents && founderDiscountCents
+            ? new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: priceCents.currency.toUpperCase(),
+              }).format(
+                  Math.max(0, priceCents.amount - founderDiscountCents) / 100,
+              )
+            : null;
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -352,7 +367,21 @@ function WorkbookCard({
                     </div>
                 )}
 
-                {course.stripe_price_id && !owned && (
+                {course.stripe_price_id && !owned && founderPriceText && (
+                    <div className='flex items-center gap-2 flex-wrap'>
+                        <span className='text-3xl font-semibold tracking-tight'>
+                            {founderPriceText}
+                        </span>
+                        <span className='text-lg text-muted-foreground line-through'>
+                            {priceText ?? "$–"}
+                        </span>
+                        <span className='text-xs font-semibold text-amber-600'>
+                            for founders
+                        </span>
+                    </div>
+                )}
+
+                {course.stripe_price_id && !owned && !founderPriceText && (
                     <p className='text-3xl font-semibold tracking-tight'>
                         {priceText ?? "$–"}
                     </p>
@@ -427,6 +456,9 @@ export default function HomeClient() {
         new Set(),
     );
     const [prices, setPrices] = React.useState<Record<string, string>>({});
+    const [priceCents, setPriceCents] = React.useState<
+        Record<string, { amount: number; currency: string }>
+    >({});
     const [stats, setStats] = React.useState<Record<string, Stats>>({});
     const [buying, setBuying] = React.useState<string | null>(null);
     const [buyErrors, setBuyErrors] = React.useState<Record<string, string>>(
@@ -508,6 +540,13 @@ export default function HomeClient() {
                                 setPrices(prev => ({
                                     ...prev,
                                     [c.id]: formatted,
+                                }));
+                                setPriceCents(prev => ({
+                                    ...prev,
+                                    [c.id]: {
+                                        amount: json.unitAmount,
+                                        currency: json.currency,
+                                    },
                                 }));
                             }
                         }
@@ -698,6 +737,15 @@ export default function HomeClient() {
                                                         founderSeats={
                                                             founderSeats ??
                                                             undefined
+                                                        }
+                                                        priceCents={
+                                                            priceCents[
+                                                                growthEditCourse
+                                                                    .id
+                                                            ]
+                                                        }
+                                                        founderDiscountCents={
+                                                            2000
                                                         }
                                                     />
                                                 )}
