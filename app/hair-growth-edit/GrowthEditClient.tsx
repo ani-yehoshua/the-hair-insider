@@ -119,7 +119,7 @@ const CSS = `
 #growth-edit-root .list-btn:hover .count{background:var(--cream);color:var(--ink)}
 #growth-edit-root .hero{
   background:linear-gradient(180deg,var(--sage-soft) 0%,var(--sage) 56%,var(--sage-deep) 100%);
-  color:var(--cream);text-align:center;position:relative;overflow:hidden;
+  color:#1a1a1a;text-align:center;position:relative;overflow:hidden;
   padding:clamp(80px,13vw,140px) 24px clamp(90px,12vw,130px);
 }
 #growth-edit-root .hero::before{
@@ -135,7 +135,7 @@ const CSS = `
 }
 #growth-edit-root .hero h1{
   font-style:italic;font-weight:300;
-  font-size:clamp(2.8rem,8.5vw,5.4rem);margin-bottom:0.28em;color:var(--cream);
+  font-size:clamp(2.8rem,8.5vw,5.4rem);margin-bottom:0.28em;color:#1a1a1a;
 }
 #growth-edit-root .hero-sub{
   font-family:'Cormorant Garamond',serif;font-style:italic;
