@@ -41,7 +41,7 @@ export default async function GrowthEditPage() {
         .maybeSingle();
 
     if (!entitlement) {
-        redirect("/hair-growth-edit/upgrade");
+        redirect("/#hair-growth-edit");
     }
 
     return <GrowthEditClient />;

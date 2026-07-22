@@ -41,7 +41,7 @@ export default async function WorkbookPage() {
         .maybeSingle();
 
     if (!entitlement) {
-        redirect("/workbook/upgrade");
+        redirect("/#hair-growth-workbook");
     }
 
     return <WorkbookClient />;

@@ -39,6 +39,7 @@ export function Navbar() {
     const admin = useAdminStatus();
     const showAdmin = !admin.loading && admin.signedIn && admin.isAdmin;
     const isFounder = !!(user?.user_metadata as any)?.is_founder;
+    // const isFounder = true;
 
     async function signOut() {
         await supabase.auth.signOut();
@@ -61,7 +62,7 @@ export function Navbar() {
                         />
                     </Link>
                     {isFounder && (
-                        <Badge className='bg-amber-500 text-white shrink-0'>
+                        <Badge className='bg-cyan-500 text-white shrink-0'>
                             Founder
                         </Badge>
                     )}

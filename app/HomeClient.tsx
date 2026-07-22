@@ -20,6 +20,13 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { TikTokIcon } from "@/components/site/SocialIcons";
 import { CountdownCouponBanner } from "@/components/site/CountdownCouponBanner";
 import { PRODUCT_PROMO_CODES } from "@/lib/promoConfig";
+import { PRODUCT_FAQS } from "@/lib/productFaqs";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type Course = {
     id: string;
@@ -68,6 +75,8 @@ function CourseCard({
     savingsBadge?: string;
 }) {
     const [open, setOpen] = React.useState(false);
+    const [faqOpen, setFaqOpen] = React.useState(false);
+    const faqs = PRODUCT_FAQS[course.slug];
 
     return (
         <Card
@@ -185,6 +194,52 @@ function CourseCard({
 
                 <Separator />
 
+                {faqs && faqs.length > 0 && (
+                    <>
+                        <button
+                            type='button'
+                            onClick={() => setFaqOpen(v => !v)}
+                            className='flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium'>
+                            FAQ
+                            {faqOpen ? (
+                                <ChevronUp className='h-4 w-4' />
+                            ) : (
+                                <ChevronDown className='h-4 w-4' />
+                            )}
+                        </button>
+
+                        <div
+                            className={[
+                                "grid transition-all duration-300 ease-in-out",
+                                faqOpen
+                                    ? "grid-rows-[1fr] opacity-100"
+                                    : "grid-rows-[0fr] opacity-0",
+                            ].join(" ")}>
+                            <div className='overflow-hidden'>
+                                <Accordion
+                                    type='single'
+                                    collapsible
+                                    className='-mb-3'>
+                                    {faqs.map((item, i) => (
+                                        <AccordionItem
+                                            key={i}
+                                            value={`${course.slug}-faq-${i}`}>
+                                            <AccordionTrigger className='text-sm text-left'>
+                                                {item.q}
+                                            </AccordionTrigger>
+                                            <AccordionContent className='text-sm leading-relaxed'>
+                                                {item.a}
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    ))}
+                                </Accordion>
+                            </div>
+                        </div>
+
+                        <Separator />
+                    </>
+                )}
+
                 <button
                     type='button'
                     onClick={() => setOpen(v => !v)}
@@ -300,9 +355,13 @@ function WorkbookCard({
               )
             : null;
     const [open, setOpen] = React.useState(false);
+    const [faqOpen, setFaqOpen] = React.useState(false);
+    const faqs = PRODUCT_FAQS[course.slug];
 
     return (
-        <Card className='rounded-3xl overflow-hidden p-0'>
+        <Card
+            id={course.slug}
+            className='rounded-3xl overflow-hidden p-0'>
             {course.cover_image_url ? (
                 <div className='relative aspect-[16/10] w-full'>
                     <Image
@@ -376,7 +435,7 @@ function WorkbookCard({
                             {priceText ?? "$–"}
                         </span>
                         <span className='text-xs font-semibold text-amber-600'>
-                            for founders
+                            <em>for founders</em>
                         </span>
                     </div>
                 )}
@@ -413,6 +472,52 @@ function WorkbookCard({
                 )}
 
                 <Separator />
+
+                {faqs && faqs.length > 0 && (
+                    <>
+                        <button
+                            type='button'
+                            onClick={() => setFaqOpen(v => !v)}
+                            className='flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium'>
+                            FAQ
+                            {faqOpen ? (
+                                <ChevronUp className='h-4 w-4' />
+                            ) : (
+                                <ChevronDown className='h-4 w-4' />
+                            )}
+                        </button>
+
+                        <div
+                            className={[
+                                "grid transition-all duration-300 ease-in-out",
+                                faqOpen
+                                    ? "grid-rows-[1fr] opacity-100"
+                                    : "grid-rows-[0fr] opacity-0",
+                            ].join(" ")}>
+                            <div className='overflow-hidden'>
+                                <Accordion
+                                    type='single'
+                                    collapsible
+                                    className='-mb-3'>
+                                    {faqs.map((item, i) => (
+                                        <AccordionItem
+                                            key={i}
+                                            value={`${course.slug}-faq-${i}`}>
+                                            <AccordionTrigger className='text-sm text-left'>
+                                                {item.q}
+                                            </AccordionTrigger>
+                                            <AccordionContent className='text-sm leading-relaxed'>
+                                                {item.a}
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    ))}
+                                </Accordion>
+                            </div>
+                        </div>
+
+                        <Separator />
+                    </>
+                )}
 
                 <button
                     type='button'
