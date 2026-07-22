@@ -751,8 +751,19 @@ export default function HomeClient() {
                                     const workbookCourse = courses.find(
                                         c => c.slug === "hair-growth-workbook",
                                     );
+                                    const miniCourse = courses.find(
+                                        c =>
+                                            c.slug ===
+                                            "hair-growth-foundations-mini-course",
+                                    );
+                                    const growthEditCourse = courses.find(
+                                        c => c.slug === "hair-growth-edit",
+                                    );
 
-                                    if (coursesLoading || !bundleCourse) {
+                                    if (
+                                        coursesLoading ||
+                                        courses.length === 0
+                                    ) {
                                         return (
                                             <Card className='rounded-3xl'>
                                                 <CardContent className='pt-6 text-sm'>
@@ -763,15 +774,6 @@ export default function HomeClient() {
                                             </Card>
                                         );
                                     }
-
-                                    const miniCourse = courses.find(
-                                        c =>
-                                            c.slug ===
-                                            "hair-growth-foundations-mini-course",
-                                    );
-                                    const growthEditCourse = courses.find(
-                                        c => c.slug === "hair-growth-edit",
-                                    );
 
                                     return (
                                         <div className='space-y-10'>
@@ -854,35 +856,37 @@ export default function HomeClient() {
                                                         }
                                                     />
                                                 )}
-                                                <CourseCard
-                                                    course={bundleCourse}
-                                                    owned={ownedCourseIds.has(
-                                                        bundleCourse.id,
-                                                    )}
-                                                    priceText={
-                                                        prices[
-                                                            bundleCourse.id
-                                                        ] ?? null
-                                                    }
-                                                    stats={null}
-                                                    buying={
-                                                        buying ===
-                                                        bundleCourse.slug
-                                                    }
-                                                    buyError={
-                                                        buyErrors[
-                                                            bundleCourse.id
-                                                        ] ?? null
-                                                    }
-                                                    onBuy={onBuy}
-                                                    splitImages={[
-                                                        miniCourse?.cover_image_url ??
-                                                            null,
-                                                        workbookCourse?.cover_image_url ??
-                                                            null,
-                                                    ]}
-                                                    savingsBadge='Save 10%'
-                                                />
+                                                {bundleCourse && (
+                                                    <CourseCard
+                                                        course={bundleCourse}
+                                                        owned={ownedCourseIds.has(
+                                                            bundleCourse.id,
+                                                        )}
+                                                        priceText={
+                                                            prices[
+                                                                bundleCourse.id
+                                                            ] ?? null
+                                                        }
+                                                        stats={null}
+                                                        buying={
+                                                            buying ===
+                                                            bundleCourse.slug
+                                                        }
+                                                        buyError={
+                                                            buyErrors[
+                                                                bundleCourse.id
+                                                            ] ?? null
+                                                        }
+                                                        onBuy={onBuy}
+                                                        splitImages={[
+                                                            miniCourse?.cover_image_url ??
+                                                                null,
+                                                            workbookCourse?.cover_image_url ??
+                                                                null,
+                                                        ]}
+                                                        savingsBadge='Save 10%'
+                                                    />
+                                                )}
                                                 {miniCourse && (
                                                     <CourseCard
                                                         course={miniCourse}
