@@ -1,10 +1,10 @@
-import { QUESTIONS, type Dimension } from '../data/questions.ts';
+import { QUESTIONS, type Dimension } from '../data/questions';
 import {
   buildPaidRoutine,
   selectFoundationRecommendations,
   type Diagnosis,
   type ProductRecommendation,
-} from '../data/recommendations.ts';
+} from '../data/recommendations';
 
 export type AnswerMap = Record<string, number>; // questionId -> option index
 
