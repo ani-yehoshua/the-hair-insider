@@ -1,6 +1,6 @@
 # The Hair Insider
 
-**[thehairinsider.com](https://the-hair-insider.com)**
+**[the-hair-insider.com](https://the-hair-insider.com)**
 
 Education-first hair care from licensed cosmetologist Lauren Jackson. The
 Hair Insider teaches the *why* behind hair health, rather than selling a
