@@ -245,7 +245,7 @@ export function Results({
           {STRIPE_PAYMENT_LINK ? (
             <a
               href={STRIPE_PAYMENT_LINK}
-              className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+              className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
             >
               Unlock The Growth Edit — $59
               <ArrowRight size={14} />
@@ -254,7 +254,7 @@ export function Results({
             <button
               type="button"
               disabled
-              className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground opacity-60 sm:w-auto pill-cta"
+              className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground opacity-60 sm:w-auto pill-cta"
               title="Add the Stripe Payment Link in Results.tsx"
             >
               Unlock The Growth Edit — $59

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { QUESTIONS } from './data/questions';
 import { calculateResults } from './lib/scoring';
-import { Header } from './components/Header';
+import { Navbar } from '@/components/site/navbar';
 import { Quiz } from './components/Quiz';
 import { Results } from './components/Results';
 import { ProgressView } from './components/ProgressView';
@@ -132,7 +132,7 @@ export default function GrowthEditClient() {
 
   return (
     <div className="min-h-[100dvh] bg-paper text-foreground">
-      <Header onProgressClick={openProgress} />
+      <Navbar />
 
       {effectiveView === 'home' && (
         <main className="mx-auto w-full max-w-5xl px-6 pb-24 pt-12 md:pt-20 slide-up">
@@ -154,7 +154,7 @@ export default function GrowthEditClient() {
               <div className="mt-10">
                 <button
                   onClick={handleStart}
-                  className="inline-flex w-full items-center justify-center gap-4 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                  className="inline-flex w-full items-center justify-center gap-4 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                 >
                   Begin Assessment <ArrowRight size={14} />
                 </button>

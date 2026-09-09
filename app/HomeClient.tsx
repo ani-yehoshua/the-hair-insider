@@ -324,6 +324,8 @@ function WorkbookCard({
     buyCta = "Get the digital workbook",
     detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
     promoCode,
+    hidePrice = false,
+    buyAsLink = false,
 }: {
     course: Course;
     owned: boolean;
@@ -336,6 +338,8 @@ function WorkbookCard({
     buyCta?: string;
     detailNote?: string;
     promoCode?: string;
+    hidePrice?: boolean;
+    buyAsLink?: boolean;
 }) {
     const [open, setOpen] = React.useState(false);
     const [faqOpen, setFaqOpen] = React.useState(false);
@@ -382,7 +386,7 @@ function WorkbookCard({
                     />
                 )}
 
-                {course.stripe_price_id && !owned && (
+                {course.stripe_price_id && !owned && !hidePrice && (
                     <p className='text-3xl font-semibold tracking-tight'>
                         {priceText ?? "$–"}
                     </p>
@@ -394,11 +398,11 @@ function WorkbookCard({
                     </p>
                 )}
 
-                {owned ? (
+                {owned || buyAsLink ? (
                     <Button
                         asChild
                         className='w-full h-11'>
-                        <Link href={href}>{ownedCta}</Link>
+                        <Link href={href}>{owned ? ownedCta : buyCta}</Link>
                     </Button>
                 ) : (
                     <Button
@@ -753,7 +757,9 @@ export default function HomeClient() {
                                                         onBuy={onBuy}
                                                         href='/hair-growth-edit'
                                                         ownedCta='Open The Growth Edit →'
-                                                        buyCta='Get Your Growth Edit'
+                                                        buyCta='Take the free quiz'
+                                                        hidePrice
+                                                        buyAsLink
                                                         detailNote='Find your hair type and get a matched, salon-grade product routine, with professional picks and an affordable match for every step.'
                                                         promoCode={
                                                             PRODUCT_PROMO_CODES[
