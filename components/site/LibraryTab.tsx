@@ -232,7 +232,7 @@ export function LibraryTab() {
     }, [router]);
 
     return (
-        <div>
+        <div className="bg-background/50 rounded-3xl p-4">
             {loading ? (
                 <p className='text-sm'>Loading your library…</p>
             ) : cards.length === 0 ? (
