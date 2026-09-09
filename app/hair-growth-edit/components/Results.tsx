@@ -139,11 +139,11 @@ export function Results({
                 <p className="mt-3 text-sm leading-relaxed text-foreground/80">
                   <strong>How to use:</strong> {getFoundationInstructions(prod)}
                 </p>
-                <a 
-                  href={prod.link} 
-                  target="_blank" 
+                <a
+                  href={prod.link}
+                  target="_blank"
                   rel="noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
+                  className="mt-6 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
                 >
                   View Details
                 </a>
@@ -175,24 +175,32 @@ export function Results({
           <ol className="mt-8 space-y-4">
             {paidRoutine.map((step) => (
               <li key={step.product.id} className="panel-outline rounded-2xl bg-paper px-6 py-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+                  <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-3 sm:h-32 sm:w-32">
+                    <img
+                      src={step.product.image}
+                      alt={`${step.product.name} by ${step.product.brand}`}
+                      className="h-full w-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
                     <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                       Step {step.order} · {step.timing}
                     </span>
                     <h3 className="mt-1 font-serif text-lg text-foreground">{step.product.name}</h3>
                     <p className="mt-1 text-xs font-medium text-foreground/60">{step.product.brand}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/80">{step.instruction}</p>
+                    <a
+                      href={step.product.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-4 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
+                    >
+                      View Details
+                    </a>
                   </div>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-foreground/80">{step.instruction}</p>
-                <a
-                  href={step.product.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
-                >
-                  View Details
-                </a>
               </li>
             ))}
           </ol>
