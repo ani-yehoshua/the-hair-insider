@@ -175,7 +175,7 @@ export default function GrowthEditClient() {
             <div className="order-1 flex items-center justify-center md:order-2">
               <div className="panel-outline w-full max-w-[260px] overflow-hidden bg-paper-dark p-2 md:max-w-[340px] rounded-2xl">
                 <img
-                  src="/thi-braided-pony.jpeg"
+                  src="/braided_pony_double_bow.jpeg"
                   alt="Editorial back view of blonde braided ponytail with ribbon"
                   className="aspect-[4/5] w-full object-cover rounded-xl grayscale-[0.2] contrast-[0.9]"
                 />
