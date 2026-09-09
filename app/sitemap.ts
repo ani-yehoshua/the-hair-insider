@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${siteUrl}/meet-your-educator`, lastModified: new Date() },
         { url: `${siteUrl}/faq`, lastModified: new Date() },
         { url: `${siteUrl}/about`, lastModified: new Date() },
+        { url: `${siteUrl}/hair-growth-edit`, lastModified: new Date() },
         { url: `${siteUrl}/support`, lastModified: new Date() },
         { url: `${siteUrl}/privacy`, lastModified: new Date() },
         { url: `${siteUrl}/terms`, lastModified: new Date() },
