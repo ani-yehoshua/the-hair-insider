@@ -1,11 +1,11 @@
-export type AppView = 'home' | 'quiz' | 'email' | 'results' | 'progress';
+export type AppView = 'home' | 'quiz' | 'auth' | 'results' | 'progress';
 
 export function canViewResults(
   answers: Record<string, number>,
   requiredQuestionIds: string[],
-  emailUnlocked: boolean,
+  signedIn: boolean,
 ): boolean {
-  return emailUnlocked && requiredQuestionIds.every(questionId => answers[questionId] !== undefined);
+  return signedIn && requiredQuestionIds.every(questionId => answers[questionId] !== undefined);
 }
 
 export function resolveProgressReturnView(
@@ -15,5 +15,5 @@ export function resolveProgressReturnView(
 ): Exclude<AppView, 'progress'> {
   if (priorView !== 'results') return priorView;
   if (resultsAllowed) return 'results';
-  return assessmentComplete ? 'email' : 'quiz';
+  return assessmentComplete ? 'auth' : 'quiz';
 }

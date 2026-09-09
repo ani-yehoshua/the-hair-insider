@@ -10,12 +10,14 @@ interface ResultsProps {
   observations: string[];
   product1: ProductResult | null;
   product2: ProductResult | null;
+  product3: ProductResult | null;
   behaviorToStop: string;
   hasSevereRedFlag: boolean;
   hasMinorRedFlag: boolean;
   shouldShampooTwice: boolean;
   paidRoutine: RoutineStep[];
   supportingNeeds: string[];
+  unlocked: boolean;
   onReset: () => void;
   onOpenProgress: () => void;
 }
@@ -25,12 +27,14 @@ export function Results({
   observations,
   product1,
   product2,
+  product3,
   behaviorToStop,
   hasSevereRedFlag,
   hasMinorRedFlag,
   shouldShampooTwice,
   paidRoutine,
   supportingNeeds,
+  unlocked,
   onReset,
   onOpenProgress,
 }: ResultsProps) {
@@ -103,16 +107,18 @@ export function Results({
           </p>
         </div>
 
-        {/* Free showcase products */}
+        {/* Foundation / top-priority products */}
         {!hasSevereRedFlag && product1 && product2 && <div className="border-t border-foreground/15 pt-10">
           <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-            03 / Foundation Steps
+            03 / {unlocked ? 'Your Top 3 Priorities' : 'Foundation Steps'}
           </span>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
-            These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine.
+            {unlocked
+              ? 'These are your top 3 buying priorities, in order. The complete routine below shows how everything else fits around them.'
+              : 'These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine.'}
           </p>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            {[product1, product2].map((prod) => (
+          <div className={`mt-8 grid gap-6 sm:grid-cols-2 ${unlocked && product3 ? 'lg:grid-cols-3' : ''}`}>
+            {(unlocked && product3 ? [product1, product2, product3] : [product1, product2]).map((prod) => (
               <div key={prod.id} className="panel-outline rounded-2xl bg-paper px-6 py-8">
                 <div className="mb-6 flex h-56 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-4">
                   <img
@@ -156,8 +162,54 @@ export function Results({
         )}
       </div>
 
+      {/* Complete routine, revealed once the Growth Edit is unlocked */}
+      {!hasSevereRedFlag && unlocked && (
+        <div className="mt-24 border-t border-foreground/15 pt-10">
+          <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+            04 / Your Complete Routine
+          </span>
+          <h2 className="mt-3 font-serif text-2xl text-foreground">Full wash-day schedule</h2>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
+            Every step of your routine, in order, with timing and how to use it.
+          </p>
+          <ol className="mt-8 space-y-4">
+            {paidRoutine.map((step) => (
+              <li key={step.product.id} className="panel-outline rounded-2xl bg-paper px-6 py-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+                      Step {step.order} · {step.timing}
+                    </span>
+                    <h3 className="mt-1 font-serif text-lg text-foreground">{step.product.name}</h3>
+                    <p className="mt-1 text-xs font-medium text-foreground/60">{step.product.brand}</p>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/80">{step.instruction}</p>
+                <a
+                  href={step.product.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
+                >
+                  View Details
+                </a>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-12 text-center">
+            <button
+              onClick={onOpenProgress}
+              className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+            >
+              View Progress Preview
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Paid complete guide */}
-      {!hasSevereRedFlag && <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
+      {!hasSevereRedFlag && !unlocked && <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
         <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
           Your Complete Growth Plan
         </span>
