@@ -54,10 +54,10 @@ export const PRODUCT_FAQS: Record<string, { q: string; a: string }[]> = {
         },
     ],
     'hair-growth-edit': [
-        {
-            q: 'Is the quiz included?',
-            a: "Yes. Purchase first, then you'll answer a few quick questions to unlock your personalized routine, exact products, and how to use them.",
-        },
+        // {
+        //     q: 'Is the quiz included?',
+        //     a: "Yes. Purchase first, then you'll answer a few quick questions to unlock your personalized routine, exact products, and how to use them.",
+        // },
         {
             q: 'How fast do I get access?',
             a: "Immediately. As soon as you check out, you'll be redirected to your library where you can go straight into the quiz.",
