@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Overlay } from "@/components/site/Overlay";
 import { Navbar } from "@/components/site/navbar";
+import { PENDING_ANSWERS_KEY } from "@/app/hair-growth-edit/lib/assessmentStore";
 
 type Step = "email" | "code";
 type Status = "idle" | "sending" | "success" | "error";
@@ -65,6 +66,35 @@ export default function SignInClient() {
 
     const context = getContext(destination);
 
+    // Stashes a just-completed Growth Edit quiz (sitting in this tab's
+    // sessionStorage) server-side, keyed by the email the visitor is about
+    // to sign in with. This runs on whatever device sends the code/link --
+    // always the same device that just took the quiz -- so the result can
+    // still be claimed at sign-in even if the confirmation itself happens
+    // on a different device. Best-effort; never blocks sign-in.
+    async function stashPendingAssessment(forEmail: string) {
+        if (!destination.startsWith("/hair-growth-edit")) return;
+        let answers: string | null = null;
+        try {
+            answers = sessionStorage.getItem(PENDING_ANSWERS_KEY);
+        } catch {
+            return;
+        }
+        if (!answers) return;
+        try {
+            await fetch("/api/hair-growth-edit/save-pending", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: forEmail,
+                    answers: JSON.parse(answers),
+                }),
+            });
+        } catch (e) {
+            console.error("Stash pending assessment error:", e);
+        }
+    }
+
     async function sendCode(e: React.FormEvent) {
         e.preventDefault();
         if (!isValidEmail(email)) {
@@ -74,6 +104,7 @@ export default function SignInClient() {
         }
         setStatus("sending");
         setMessage("");
+        await stashPendingAssessment(email.trim());
         const { error } = await supabase.auth.signInWithOtp({
             email: email.trim(),
             options: {
@@ -140,6 +171,7 @@ export default function SignInClient() {
     async function resendCode() {
         setStatus("sending");
         setMessage("");
+        await stashPendingAssessment(email.trim());
         const { error } = await supabase.auth.signInWithOtp({
             email: email.trim(),
             options: {

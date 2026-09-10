@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { claimPendingEntitlements } from '@/lib/entitlements/claimPending';
+import { claimPendingAssessment } from '@/lib/growthEdit/claimPendingAssessment';
 import { enrollInResendWelcome } from '@/lib/email/resendWelcome';
 
 export async function GET(req: Request) {
@@ -30,11 +31,18 @@ export async function GET(req: Request) {
             ).catch(e =>
                 console.error('Claim pending entitlements error:', e),
             );
+            // Awaited: the redirect below can land straight on
+            // /hair-growth-edit, which needs the assessment row to already
+            // exist to show results immediately rather than the quiz intro.
+            await claimPendingAssessment(
+                data.session.user.id,
+                data.session.user.email,
+            ).catch(e => console.error('Claim pending assessment error:', e));
 
             // Same-device confirmation actually has a session now, so send
             // them straight to whatever they were doing (e.g. back to
-            // /hair-growth-edit to pick up quiz answers waiting in
-            // sessionStorage) instead of the generic "you're confirmed" page.
+            // /hair-growth-edit to pick up their claimed assessment) instead
+            // of the generic "you're confirmed" page.
             if (next) {
                 return NextResponse.redirect(new URL(next, url.origin));
             }

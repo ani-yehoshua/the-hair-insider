@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { claimPendingEntitlements } from '@/lib/entitlements/claimPending';
+import { claimPendingAssessment } from '@/lib/growthEdit/claimPendingAssessment';
 
 const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,6 +31,12 @@ export async function POST(req: Request) {
         const claimed = await claimPendingEntitlements(
             userData.user.id,
             userData.user.email,
+        );
+        // Awaited (not fire-and-forget): the caller redirects to
+        // /hair-growth-edit right after this resolves and needs the
+        // assessment row to already exist by then.
+        await claimPendingAssessment(userData.user.id, userData.user.email).catch(
+            e => console.error('Claim pending assessment error:', e),
         );
         return NextResponse.json({ claimed });
     } catch (e) {
