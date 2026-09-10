@@ -50,6 +50,10 @@
 }
 
 :root {
+    /* The site has no dark theme -- this stops the OS/browser dark
+       preference from punching through into native UI (form controls,
+       scrollbars, the pre-paint background) regardless of device setting. */
+    color-scheme: light only;
     --radius: 0.625rem;
     --home-bg: url("/bg_logo.png");
     --background: #ddd9d5;

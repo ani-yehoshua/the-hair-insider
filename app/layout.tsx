@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // import Script from "next/script";
 import ExternalReturnReload from "./_components/ExternalReturnReload";
 import { Bodoni_Moda, Luxurious_Script } from "next/font/google";
@@ -18,6 +18,10 @@ const luxuriousScript = Luxurious_Script({
 
 const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://the-hair-insider.com";
+
+export const viewport: Viewport = {
+    colorScheme: "light",
+};
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
