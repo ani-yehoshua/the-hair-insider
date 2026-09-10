@@ -6,6 +6,7 @@ import { enrollInResendWelcome } from '@/lib/email/resendWelcome';
 export async function GET(req: Request) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
+    const next = url.searchParams.get('next');
 
     if (code) {
         const supabase = await createSupabaseServerClient();
@@ -29,8 +30,18 @@ export async function GET(req: Request) {
             ).catch(e =>
                 console.error('Claim pending entitlements error:', e),
             );
+
+            // Same-device confirmation actually has a session now, so send
+            // them straight to whatever they were doing (e.g. back to
+            // /hair-growth-edit to pick up quiz answers waiting in
+            // sessionStorage) instead of the generic "you're confirmed" page.
+            if (next) {
+                return NextResponse.redirect(new URL(next, url.origin));
+            }
         }
     }
 
-    return NextResponse.redirect(new URL('/auth/confirmed', url.origin));
+    const confirmedUrl = new URL('/auth/confirmed', url.origin);
+    if (next) confirmedUrl.searchParams.set('next', next);
+    return NextResponse.redirect(confirmedUrl);
 }

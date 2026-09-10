@@ -78,7 +78,7 @@ export default function SignInClient() {
             email: email.trim(),
             options: {
                 shouldCreateUser: true,
-                emailRedirectTo: `${window.location.origin}/auth/callback`,
+                emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
             },
         });
         if (error) {
@@ -144,7 +144,7 @@ export default function SignInClient() {
             email: email.trim(),
             options: {
                 shouldCreateUser: true,
-                emailRedirectTo: `${window.location.origin}/auth/callback`,
+                emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
             },
         });
         if (error) {

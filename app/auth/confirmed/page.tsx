@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/card";
 
 export default function EmailConfirmedPage() {
+    const [signInHref, setSignInHref] = React.useState("/signin");
+
+    React.useEffect(() => {
+        const next = new URLSearchParams(window.location.search).get("next");
+        if (next) setSignInHref(`/signin?next=${encodeURIComponent(next)}`);
+    }, []);
+
     React.useEffect(() => {
         // If a session exists (same-device confirmation), run side effects.
         // Cross-device: no session here; side effects run on sign-in instead.
@@ -61,7 +68,7 @@ export default function EmailConfirmedPage() {
                             <Button
                                 asChild
                                 className='w-full'>
-                                <Link href='/signin'>Sign in</Link>
+                                <Link href={signInHref}>Sign in</Link>
                             </Button>
                         </CardContent>
                     </Card>
