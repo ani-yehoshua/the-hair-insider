@@ -21,6 +21,7 @@ import { PENDING_ANSWERS_KEY } from "@/app/hair-growth-edit/lib/assessmentStore"
 
 type Step = "email" | "code";
 type Status = "idle" | "sending" | "success" | "error";
+const RESEND_COOLDOWN = 30;
 
 type SignInContext = { eyebrow: string; reason: string };
 
@@ -55,9 +56,17 @@ function isValidEmail(email: string) {
 export default function SignInClient() {
     const [step, setStep] = React.useState<Step>("email");
     const [email, setEmail] = React.useState("");
-    const [code, setCode] = React.useState("");
+    const [digits, setDigits] = React.useState<string[]>(Array(6).fill(""));
     const [status, setStatus] = React.useState<Status>("idle");
     const [message, setMessage] = React.useState("");
+    const [cooldown, setCooldown] = React.useState(0);
+    const digitRefs = React.useRef<Array<HTMLInputElement | null>>([]);
+
+    React.useEffect(() => {
+        if (cooldown <= 0) return;
+        const t = setTimeout(() => setCooldown(c => c - 1), 1000);
+        return () => clearTimeout(t);
+    }, [cooldown]);
 
     const destination =
         typeof window !== "undefined"
@@ -119,25 +128,24 @@ export default function SignInClient() {
         }
         setStatus("idle");
         setStep("code");
+        setCooldown(RESEND_COOLDOWN);
+        setTimeout(() => digitRefs.current[0]?.focus(), 50);
     }
 
-    async function verifyCode(e: React.FormEvent) {
-        e.preventDefault();
-        if (code.trim().length !== 6) {
-            setStatus("error");
-            setMessage("Please enter the 6-digit code from your email.");
-            return;
-        }
+    async function submitCode(codeStr: string) {
+        if (codeStr.length !== 6) return;
         setStatus("sending");
         setMessage("");
         const { data, error } = await supabase.auth.verifyOtp({
             email: email.trim(),
-            token: code.trim(),
+            token: codeStr,
             type: "email",
         });
         if (error) {
             setStatus("error");
             setMessage("Code is invalid or expired. Request a new one.");
+            setDigits(Array(6).fill(""));
+            digitRefs.current[0]?.focus();
             return;
         }
         const token = data.session?.access_token;
@@ -185,6 +193,38 @@ export default function SignInClient() {
         } else {
             setStatus("idle");
             setMessage("New code sent. Check your inbox.");
+            setCooldown(RESEND_COOLDOWN);
+        }
+    }
+
+    function handleDigitChange(i: number, value: string) {
+        const v = value.replace(/\D/g, "");
+        if (!v) {
+            const next = [...digits];
+            next[i] = "";
+            setDigits(next);
+            return;
+        }
+        // paste-to-fill: a multi-digit value landing in one box spreads forward
+        if (v.length > 1) {
+            const next = [...digits];
+            for (let j = 0; j < v.length && i + j < 6; j++) next[i + j] = v[j];
+            setDigits(next);
+            const lastIdx = Math.min(i + v.length, 5);
+            digitRefs.current[lastIdx]?.focus();
+            if (next.every(d => d)) submitCode(next.join(""));
+            return;
+        }
+        const next = [...digits];
+        next[i] = v;
+        setDigits(next);
+        if (i < 5) digitRefs.current[i + 1]?.focus();
+        if (next.every(d => d)) submitCode(next.join(""));
+    }
+
+    function handleDigitKeyDown(i: number, e: React.KeyboardEvent) {
+        if (e.key === "Backspace" && !digits[i] && i > 0) {
+            digitRefs.current[i - 1]?.focus();
         }
     }
 
@@ -263,51 +303,39 @@ export default function SignInClient() {
                                         </Button>
                                     </form>
                                 ) : (
-                                    <form
-                                        onSubmit={verifyCode}
-                                        className='space-y-4'>
-                                        <div className='space-y-2'>
-                                            <Label htmlFor='code'>
-                                                6-digit code
-                                            </Label>
-                                            <Input
-                                                id='code'
-                                                type='text'
-                                                inputMode='numeric'
-                                                autoComplete='one-time-code'
-                                                placeholder='XXXXXX'
-                                                maxLength={6}
-                                                value={code}
-                                                onChange={e =>
-                                                    setCode(
-                                                        e.target.value.replace(
-                                                            /\D/g,
-                                                            "",
-                                                        ),
-                                                    )
-                                                }
-                                                disabled={status === "sending"}
-                                                className='text-center tracking-[0.4em] text-lg'
-                                            />
+                                    <div className='space-y-4'>
+                                        <div className='flex justify-center gap-2'>
+                                            {digits.map((d, i) => (
+                                                <Input
+                                                    key={i}
+                                                    ref={el => {
+                                                        digitRefs.current[i] = el;
+                                                    }}
+                                                    value={d}
+                                                    onChange={e =>
+                                                        handleDigitChange(
+                                                            i,
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    onKeyDown={e =>
+                                                        handleDigitKeyDown(i, e)
+                                                    }
+                                                    inputMode='numeric'
+                                                    autoComplete='one-time-code'
+                                                    maxLength={6}
+                                                    disabled={status === "sending"}
+                                                    className='h-[52px] w-11 text-center text-lg'
+                                                />
+                                            ))}
                                         </div>
-                                        <Button
-                                            type='submit'
-                                            className='w-full'
-                                            disabled={
-                                                status === "sending" ||
-                                                code.trim().length !== 6
-                                            }>
-                                            {status === "sending"
-                                                ? "Verifying…"
-                                                : "Sign in"}
-                                        </Button>
                                         <div className='flex items-center justify-between text-sm'>
                                             <button
                                                 type='button'
                                                 className='underline underline-offset-4'
                                                 onClick={() => {
                                                     setStep("email");
-                                                    setCode("");
+                                                    setDigits(Array(6).fill(""));
                                                     setStatus("idle");
                                                     setMessage("");
                                                 }}>
@@ -315,10 +343,15 @@ export default function SignInClient() {
                                             </button>
                                             <button
                                                 type='button'
-                                                className='underline underline-offset-4'
+                                                className='underline underline-offset-4 disabled:opacity-50 disabled:no-underline'
                                                 onClick={resendCode}
-                                                disabled={status === "sending"}>
-                                                Resend code
+                                                disabled={
+                                                    status === "sending" ||
+                                                    cooldown > 0
+                                                }>
+                                                {cooldown > 0
+                                                    ? `Resend code in ${cooldown}s`
+                                                    : "Resend code"}
                                             </button>
                                         </div>
                                         <p className='text-xs text-muted-foreground leading-5 border-t pt-3'>
@@ -331,7 +364,7 @@ export default function SignInClient() {
                                                 className='underline underline-offset-2'
                                                 onClick={() => {
                                                     setStep("email");
-                                                    setCode("");
+                                                    setDigits(Array(6).fill(""));
                                                     setStatus("idle");
                                                     setMessage("");
                                                 }}>
@@ -339,7 +372,7 @@ export default function SignInClient() {
                                             </button>
                                             .
                                         </p>
-                                    </form>
+                                    </div>
                                 )}
 
                                 {message && (
