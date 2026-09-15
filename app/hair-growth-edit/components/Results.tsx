@@ -45,7 +45,7 @@ export function Results({
   };
   
   const disclaimer = hasSevereRedFlag
-    ? "Your answers include a change best assessed by a dermatologist, GP, or qualified trichology professional. This quiz cannot diagnose it. Please seek professional care."
+    ? "Your answers include a change best assessed by a dermatologist, GP, or qualified trichology professional. The gentle product suggestions below can support your hair in the meantime, but they are not a diagnosis or substitute for professional care."
     : hasMinorRedFlag
     ? "This assessment is educational guidance, not a medical diagnosis. Since you noted some scalp or hair changes, we advise professional review if they are persistent or worsening."
     : "This assessment is educational guidance, not a medical diagnosis. The recommendations below reflect the strongest patterns in your answers.";
@@ -75,11 +75,11 @@ export function Results({
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
             Your strongest pattern points to <strong>{primaryCause}</strong>, supported by the presence of {observations[0]} and {observations[1]}. 
-            {hasSevereRedFlag && " Because of the severe symptoms you noted, prioritize a professional consultation before adopting new routines."}
+            {hasSevereRedFlag && " Because of the change you noted, use the recommendations below as gentle interim support while arranging a professional consultation."}
           </p>
         </div>
 
-        {supportingNeeds.length > 0 && !hasSevereRedFlag && (
+        {supportingNeeds.length > 0 && (
           <div className="border-t border-foreground/15 pt-10">
             <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
               How your answers shaped the routine
@@ -108,17 +108,19 @@ export function Results({
         </div>
 
         {/* Foundation / top-priority products */}
-        {!hasSevereRedFlag && product1 && product2 && <div className="border-t border-foreground/15 pt-10">
+        {product1 && product2 && <div className="border-t border-foreground/15 pt-10">
           <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-            03 / {unlocked ? 'Your Top 3 Priorities' : 'Foundation Steps'}
+            {hasSevereRedFlag ? '03 / Gentle Support for Now' : `03 / ${unlocked ? 'Your Top 3 Priorities' : 'Foundation Steps'}`}
           </span>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
-            {unlocked
+            {hasSevereRedFlag
+              ? 'These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment.'
+              : unlocked
               ? 'These are your top 3 buying priorities, in order. The complete routine below shows how everything else fits around them.'
               : 'These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine.'}
           </p>
-          <div className={`mt-8 grid gap-6 sm:grid-cols-2 ${unlocked && product3 ? 'lg:grid-cols-3' : ''}`}>
-            {(unlocked && product3 ? [product1, product2, product3] : [product1, product2]).map((prod) => (
+          <div className={`mt-8 grid gap-6 sm:grid-cols-2 ${!hasSevereRedFlag && unlocked && product3 ? 'lg:grid-cols-3' : ''}`}>
+            {(!hasSevereRedFlag && unlocked && product3 ? [product1, product2, product3] : [product1, product2]).map((prod) => (
               <div key={prod.id} className="panel-outline rounded-2xl bg-paper px-6 py-8">
                 <div className="mb-6 flex h-56 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-4">
                   <img
@@ -151,15 +153,6 @@ export function Results({
             ))}
           </div>
         </div>}
-        {hasSevereRedFlag && (
-          <div className="border-t border-foreground/15 pt-10">
-            <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">03 / Referral First</span>
-            <h2 className="mt-3 font-serif text-2xl text-foreground">Pause product changes for now</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-              Your answers need professional assessment before a new product routine. No products are being recommended from this result.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Complete routine, revealed once the Growth Edit is unlocked */}

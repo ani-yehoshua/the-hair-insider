@@ -94,9 +94,6 @@ export function calculateResults(answers: AnswerMap) {
 
   let primaryCause = "";
   let isHealthyFallback = false;
-  let product1: ProductResult | null;
-  let product2: ProductResult | null;
-  let product3: ProductResult | null;
   let behaviorToStop = "over-handling your hair";
   
   let validCauses: {dim: Diagnosis, norm: number, name: string}[] = [];
@@ -223,7 +220,7 @@ export function calculateResults(answers: AnswerMap) {
     irritatedScalp: scNorm >= 0.4 || answers.scalp === 3 || answers.scalp === 4,
   } as const;
   const paidRoutine = buildPaidRoutine(profile);
-  [product1, product2, product3] = selectFoundationRecommendations(profile, paidRoutine);
+  const [product1, product2, product3] = selectFoundationRecommendations(profile, paidRoutine);
 
   const supportingNeeds: string[] = [];
   if (positiveProteinResponse) {
@@ -262,13 +259,15 @@ export function calculateResults(answers: AnswerMap) {
 
   // Red flags
   const redFlagScore = scores['RF'];
-  const hasSevereRedFlag = redFlagScore >= 3;
-  const hasMinorRedFlag = redFlagScore > 0 && redFlagScore < 3;
-  if (hasSevereRedFlag) {
-    product1 = null;
-    product2 = null;
-    product3 = null;
-  }
+  const selectedRedFlagValues = QUESTIONS.flatMap((question) => {
+    const optionIndex = answers[question.id];
+    const option = optionIndex === undefined ? undefined : question.options[optionIndex];
+    return option?.scores.RF ? [option.scores.RF] : [];
+  });
+  // Mild signals should not combine into a severe referral. Reserve that
+  // status for an answer that is independently high-risk.
+  const hasSevereRedFlag = selectedRedFlagValues.some((value) => value >= 3);
+  const hasMinorRedFlag = redFlagScore > 0 && !hasSevereRedFlag;
 
   // Shampoo rule
   const shampooFreqIdx = answers['shampooFrequency'];
@@ -284,8 +283,8 @@ export function calculateResults(answers: AnswerMap) {
     product1,
     product2,
     product3,
-    paidRoutine: hasSevereRedFlag ? [] : paidRoutine,
-    supportingNeeds: hasSevereRedFlag ? [] : supportingNeeds,
+    paidRoutine,
+    supportingNeeds,
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
