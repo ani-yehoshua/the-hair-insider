@@ -10,14 +10,12 @@ interface ResultsProps {
   observations: string[];
   product1: ProductResult | null;
   product2: ProductResult | null;
-  product3: ProductResult | null;
   behaviorToStop: string;
   hasSevereRedFlag: boolean;
   hasMinorRedFlag: boolean;
   shouldShampooTwice: boolean;
   paidRoutine: RoutineStep[];
   supportingNeeds: string[];
-  unlocked: boolean;
   onReset: () => void;
   onOpenProgress: () => void;
 }
@@ -27,14 +25,12 @@ export function Results({
   observations,
   product1,
   product2,
-  product3,
   behaviorToStop,
   hasSevereRedFlag,
   hasMinorRedFlag,
   shouldShampooTwice,
   paidRoutine,
   supportingNeeds,
-  unlocked,
   onReset,
   onOpenProgress,
 }: ResultsProps) {
@@ -45,7 +41,7 @@ export function Results({
   };
   
   const disclaimer = hasSevereRedFlag
-    ? "Your answers include a change best assessed by a dermatologist, GP, or qualified trichology professional. This quiz cannot diagnose it. Please seek professional care."
+    ? "Your answers include a change best assessed by a dermatologist, GP, or qualified trichology professional. The gentle product suggestions below can support your hair in the meantime, but they are not a diagnosis or substitute for professional care."
     : hasMinorRedFlag
     ? "This assessment is educational guidance, not a medical diagnosis. Since you noted some scalp or hair changes, we advise professional review if they are persistent or worsening."
     : "This assessment is educational guidance, not a medical diagnosis. The recommendations below reflect the strongest patterns in your answers.";
@@ -75,11 +71,11 @@ export function Results({
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
             Your strongest pattern points to <strong>{primaryCause}</strong>, supported by the presence of {observations[0]} and {observations[1]}. 
-            {hasSevereRedFlag && " Because of the severe symptoms you noted, prioritize a professional consultation before adopting new routines."}
+            {hasSevereRedFlag && " Because of the change you noted, use the recommendations below as gentle interim support while arranging a professional consultation."}
           </p>
         </div>
 
-        {supportingNeeds.length > 0 && !hasSevereRedFlag && (
+        {supportingNeeds.length > 0 && (
           <div className="border-t border-foreground/15 pt-10">
             <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
               How your answers shaped the routine
@@ -107,18 +103,18 @@ export function Results({
           </p>
         </div>
 
-        {/* Foundation / top-priority products */}
-        {!hasSevereRedFlag && product1 && product2 && <div className="border-t border-foreground/15 pt-10">
+        {/* Free showcase products */}
+        {product1 && product2 && <div className="border-t border-foreground/15 pt-10">
           <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-            03 / {unlocked ? 'Your Top 3 Priorities' : 'Foundation Steps'}
+            {hasSevereRedFlag ? "03 / Gentle Support for Now" : "03 / Foundation Steps"}
           </span>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
-            {unlocked
-              ? 'These are your top 3 buying priorities, in order. The complete routine below shows how everything else fits around them.'
-              : 'These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine.'}
+            {hasSevereRedFlag
+              ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
+              : "These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine."}
           </p>
-          <div className={`mt-8 grid gap-6 sm:grid-cols-2 ${unlocked && product3 ? 'lg:grid-cols-3' : ''}`}>
-            {(unlocked && product3 ? [product1, product2, product3] : [product1, product2]).map((prod) => (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            {[product1, product2].map((prod) => (
               <div key={prod.id} className="panel-outline rounded-2xl bg-paper px-6 py-8">
                 <div className="mb-6 flex h-56 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-4">
                   <img
@@ -139,11 +135,11 @@ export function Results({
                 <p className="mt-3 text-sm leading-relaxed text-foreground/80">
                   <strong>How to use:</strong> {getFoundationInstructions(prod)}
                 </p>
-                <a
-                  href={prod.link}
-                  target="_blank"
+                <a 
+                  href={prod.link} 
+                  target="_blank" 
                   rel="noreferrer"
-                  className="mt-6 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
+                  className="mt-6 inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
                 >
                   View Details
                 </a>
@@ -151,73 +147,10 @@ export function Results({
             ))}
           </div>
         </div>}
-        {hasSevereRedFlag && (
-          <div className="border-t border-foreground/15 pt-10">
-            <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">03 / Referral First</span>
-            <h2 className="mt-3 font-serif text-2xl text-foreground">Pause product changes for now</h2>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-              Your answers need professional assessment before a new product routine. No products are being recommended from this result.
-            </p>
-          </div>
-        )}
       </div>
 
-      {/* Complete routine, revealed once the Growth Edit is unlocked */}
-      {!hasSevereRedFlag && unlocked && (
-        <div className="mt-24 border-t border-foreground/15 pt-10">
-          <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-            04 / Your Complete Routine
-          </span>
-          <h2 className="mt-3 font-serif text-2xl text-foreground">Full wash-day schedule</h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-            Every step of your routine, in order, with timing and how to use it.
-          </p>
-          <ol className="mt-8 space-y-4">
-            {paidRoutine.map((step) => (
-              <li key={step.product.id} className="panel-outline rounded-2xl bg-paper px-6 py-6">
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-                  <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-3 sm:h-32 sm:w-32">
-                    <img
-                      src={step.product.image}
-                      alt={`${step.product.name} by ${step.product.brand}`}
-                      className="h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                      Step {step.order} · {step.timing}
-                    </span>
-                    <h3 className="mt-1 font-serif text-lg text-foreground">{step.product.name}</h3>
-                    <p className="mt-1 text-xs font-medium text-foreground/60">{step.product.brand}</p>
-                    <p className="mt-3 text-sm leading-relaxed text-foreground/80">{step.instruction}</p>
-                    <a
-                      href={step.product.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-4 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
-                    >
-                      View Details
-                    </a>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-12 text-center">
-            <button
-              onClick={onOpenProgress}
-              className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
-            >
-              View Progress Preview
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Paid complete guide */}
-      {!hasSevereRedFlag && !unlocked && <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
+      <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
         <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
           Your Complete Growth Plan
         </span>
@@ -253,7 +186,7 @@ export function Results({
           {STRIPE_PAYMENT_LINK ? (
             <a
               href={STRIPE_PAYMENT_LINK}
-              className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+              className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
             >
               Unlock The Growth Edit — $59
               <ArrowRight size={14} />
@@ -262,7 +195,7 @@ export function Results({
             <button
               type="button"
               disabled
-              className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground opacity-60 sm:w-auto pill-cta"
+              className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground opacity-60 sm:w-auto pill-cta"
               title="Add the Stripe Payment Link in Results.tsx"
             >
               Unlock The Growth Edit — $59
@@ -276,7 +209,7 @@ export function Results({
             View Progress Preview
           </button>
         </div>
-      </div>}
+      </div>
 
       <div className="mt-20 text-center">
         <button

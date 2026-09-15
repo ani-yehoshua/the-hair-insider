@@ -262,13 +262,15 @@ export function calculateResults(answers: AnswerMap) {
 
   // Red flags
   const redFlagScore = scores['RF'];
-  const hasSevereRedFlag = redFlagScore >= 3;
-  const hasMinorRedFlag = redFlagScore > 0 && redFlagScore < 3;
-  if (hasSevereRedFlag) {
-    product1 = null;
-    product2 = null;
-    product3 = null;
-  }
+  const selectedRedFlagValues = QUESTIONS.flatMap((question) => {
+    const optionIndex = answers[question.id];
+    const option = optionIndex === undefined ? undefined : question.options[optionIndex];
+    return option?.scores.RF ? [option.scores.RF] : [];
+  });
+  // Mild signals should not combine into a severe referral. Reserve that
+  // status for an answer that is independently high-risk.
+  const hasSevereRedFlag = selectedRedFlagValues.some((value) => value >= 3);
+  const hasMinorRedFlag = redFlagScore > 0 && !hasSevereRedFlag;
 
   // Shampoo rule
   const shampooFreqIdx = answers['shampooFrequency'];
@@ -284,8 +286,8 @@ export function calculateResults(answers: AnswerMap) {
     product1,
     product2,
     product3,
-    paidRoutine: hasSevereRedFlag ? [] : paidRoutine,
-    supportingNeeds: hasSevereRedFlag ? [] : supportingNeeds,
+    paidRoutine,
+    supportingNeeds,
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
