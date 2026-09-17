@@ -760,7 +760,7 @@ export default function HomeClient() {
                                                         buyCta='Take the free quiz'
                                                         hidePrice
                                                         buyAsLink
-                                                        detailNote='Get your personalized Top 3 buying priorities, a complete product routine matched to your exact hair type, a wash-day schedule built around how often you actually wash, and clear, step-by-step instructions for using every recommendation the right way.'
+                                                        detailNote="Not sure where to start? Take the quiz first — you'll see two of your matched products free before deciding to unlock the rest."
                                                         promoCode={
                                                             PRODUCT_PROMO_CODES[
                                                                 "hair-growth-edit"
