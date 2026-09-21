@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 // import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import ExternalReturnReload from "./_components/ExternalReturnReload";
 import { Bodoni_Moda, Luxurious_Script } from "next/font/google";
 import "./globals.css";
@@ -118,6 +119,7 @@ export default function RootLayout({
             `}>
                 <ExternalReturnReload />
                 {children}
+                <Analytics />
             </body>
         </html>
     );
