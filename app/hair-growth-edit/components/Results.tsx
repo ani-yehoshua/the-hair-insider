@@ -271,6 +271,56 @@ export function Results({
         </div>
       </div>}
 
+      {/* Softened, disclaimer-forward offer for severe cases: still buyable,
+          but the copy leads with "this won't fix it, see a professional"
+          rather than the standard upsell framing. */}
+      {hasSevereRedFlag && !unlocked && (
+        <div className="mt-24 rounded-2xl border border-foreground/25 bg-paper px-6 py-12 text-center md:px-12 md:py-16">
+          <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+            Please Read Before Purchasing
+          </span>
+          <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-4xl">
+            These Products Are Not A Treatment
+          </h2>
+          <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+            Based on what you shared, please see a dermatologist, GP, or qualified trichology professional.{' '}
+            <strong>No product routine, including this one, will resolve the underlying change you noted.</strong>{' '}
+            If you would still like gentle, conservative product guidance to use alongside professional care,
+            it is available below.
+          </p>
+          <p className="mt-5 font-serif text-2xl text-foreground">$59</p>
+          <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+            One-time purchase · Not a substitute for medical care
+          </p>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            {STRIPE_PAYMENT_LINK ? (
+              <a
+                href={STRIPE_PAYMENT_LINK}
+                className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+              >
+                Get Gentle Support Guide — $59
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground opacity-60 sm:w-auto pill-cta"
+                title="Add the Stripe Payment Link in Results.tsx"
+              >
+                Get Gentle Support Guide — $59
+              </button>
+            )}
+            <button
+              onClick={onOpenProgress}
+              className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+            >
+              View Progress Preview
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mt-20 text-center">
         <button
           onClick={onReset}

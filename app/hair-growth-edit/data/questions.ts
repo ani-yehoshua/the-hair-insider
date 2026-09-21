@@ -126,7 +126,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { label: "No", scores: {} },
       { label: "Gradually more", scores: { SH: 2 } },
-      { label: "Suddenly much more", scores: { SH: 3, RF: 3 } },
+      { label: "Suddenly much more", scores: { SH: 3, RF: 2 } },
       { label: "Unsure", scores: {} }
     ]
   },
