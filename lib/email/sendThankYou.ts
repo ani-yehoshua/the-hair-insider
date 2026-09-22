@@ -16,6 +16,11 @@ const SLUG_TO_SUBJECT: Record<string, string> = {
     'hair-growth-edit': 'Your Growth Edit is ready, start here',
 };
 
+// Temporarily paused while this specific email gets a content pass --
+// entitlement granting and everything else in the purchase flow is
+// unaffected either way. Remove once the copy is finalized.
+const TEMPORARILY_DISABLED_SLUGS = new Set(['hair-growth-edit']);
+
 export async function sendThankYouEmail({
     email,
     firstName,
@@ -25,6 +30,8 @@ export async function sendThankYouEmail({
     firstName: string;
     courseSlug: string;
 }) {
+    if (TEMPORARILY_DISABLED_SLUGS.has(courseSlug)) return;
+
     const templateFile = SLUG_TO_TEMPLATE[courseSlug];
     if (!templateFile) return;
 

@@ -324,8 +324,8 @@ export function Results({
                                 {[
                                     "Your top 3 buying priorities + the remaining products for your routine",
                                     "Direct links to shop each product",
-                                    "Usage timing and schedule tailoring (Coming soon)",
-                                    "Private progress journal and photos (Coming soon)",
+                                    "Usage timing and schedule tailoring\n(Coming soon)",
+                                    "Private progress journal and photos\n(Coming soon)",
                                     shouldShampooTwice
                                         ? "Includes why almost everyone should shampoo twice (and how to do it)"
                                         : "Includes your single-pass gentle cleanse instructions",
