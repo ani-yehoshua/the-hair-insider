@@ -141,6 +141,14 @@ export function Navbar() {
                                                                 Products
                                                             </Link>
                                                         </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            asChild
+                                                            variant='destructive'>
+                                                            <Link href='/admin/delete-test-user'>
+                                                                Delete Test User
+                                                            </Link>
+                                                        </DropdownMenuItem>
                                                     </DropdownMenuSubContent>
                                                 </DropdownMenuPortal>
                                             </DropdownMenuSub>
@@ -263,6 +271,16 @@ export function Navbar() {
                                                         className='justify-start'>
                                                         <Link href='/admin/products'>
                                                             Products
+                                                        </Link>
+                                                    </Button>
+                                                </SheetClose>
+                                                <SheetClose asChild>
+                                                    <Button
+                                                        variant='ghost'
+                                                        asChild
+                                                        className='justify-start text-destructive hover:text-destructive'>
+                                                        <Link href='/admin/delete-test-user'>
+                                                            Delete Test User
                                                         </Link>
                                                     </Button>
                                                 </SheetClose>

@@ -23,6 +23,12 @@ const ADMIN_SECTIONS = [
         description: "Manage the ShopMy product catalog and links.",
         badge: null,
     },
+    {
+        title: "Delete Test User",
+        href: "/admin/delete-test-user",
+        description: "Wipe a test account from Supabase, Stripe, and Resend in one shot.",
+        badge: "Destructive",
+    },
 ];
 
 export default function AdminClient() {
