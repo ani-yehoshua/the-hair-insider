@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { ProductResult } from '../lib/scoring';
 import type { RoutineStep } from '../data/recommendations';
 import { ArrowRight, Check } from 'lucide-react';
+import { CheckoutSheet } from './CheckoutSheet';
 
-// Paste your Stripe Payment Link here when it is ready.
-const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/00wbJ2aP1g7E5LEcyD4c802';
+const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface ResultsProps {
   primaryCause: string;
@@ -18,6 +19,8 @@ interface ResultsProps {
   paidRoutine: RoutineStep[];
   supportingNeeds: string[];
   unlocked: boolean;
+  signedIn: boolean;
+  onRequireAuth: () => void;
   onReset: () => void;
   onOpenProgress: () => void;
 }
@@ -35,9 +38,19 @@ export function Results({
   paidRoutine,
   supportingNeeds,
   unlocked,
+  signedIn,
+  onRequireAuth,
   onReset,
   onOpenProgress,
 }: ResultsProps) {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [purchaseComplete, setPurchaseComplete] = useState(false);
+
+  const handleCheckoutComplete = () => {
+    setCheckoutOpen(false);
+    setPurchaseComplete(true);
+  };
+
   const getFoundationInstructions = (product: ProductResult) => {
     const matchingStep = paidRoutine.find((step) => step.product.id === product.id);
     if (matchingStep) return `${matchingStep.timing}. ${matchingStep.instruction}`;
@@ -52,6 +65,21 @@ export function Results({
 
   return (
     <div className="mx-auto w-full max-w-4xl px-5 pb-32 pt-12 md:px-8 md:pt-20 slide-up" data-testid="section-results">
+      {!signedIn && (
+        <div className="mb-12 flex flex-col items-center gap-4 rounded-2xl border border-foreground/15 bg-sage/25 px-6 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-sm leading-relaxed text-foreground/80">
+            These results are not saved yet. Sign in to keep them and come back to this page anytime.
+          </p>
+          <button
+            type="button"
+            onClick={onRequireAuth}
+            className="inline-flex shrink-0 items-center justify-center gap-2 bg-foreground px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
+          >
+            Sign In
+          </button>
+        </div>
+      )}
+
       <div className="mb-16 text-center">
         <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
           Your Initial Read
@@ -211,64 +239,78 @@ export function Results({
 
       {/* Paid complete guide */}
       {!hasSevereRedFlag && !unlocked && <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
-        <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-          Your Complete Growth Plan
-        </span>
-        <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-          Unlock The Growth Edit
-        </h2>
-        <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
-          Get your personalized Top 3 buying priorities, complete product routine, wash-day schedule, and clear instructions for using every recommendation.
-        </p>
-        <p className="mt-5 font-serif text-3xl text-foreground">$59</p>
-        <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-          One-time purchase
-        </p>
-
-        <div className="mx-auto mt-10 max-w-md space-y-3 text-left">
-          {[
-            "Your top 3 buying priorities, then the remaining routine",
-            "Usage timing and schedule tailoring",
-            "Saved products, daily hair tips, and sale alerts",
-            "Private progress journal and photos",
-            shouldShampooTwice 
-              ? "Includes why almost everyone should shampoo twice (and how to do it)"
-              : "Includes your single-pass gentle cleanse instructions"
-          ].map((feature, i) => (
-            <div key={i} className="flex items-start gap-3">
-              <Check className="mt-0.5 shrink-0 text-foreground/60" size={16} />
-              <span className="text-sm text-foreground/80">{feature}</span>
+        {purchaseComplete ? (
+          <>
+            <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+              You&apos;re All Set
+            </span>
+            <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+              Thanks For Your Purchase
+            </h2>
+            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+              Sign in with the same email you just paid with to unlock your full plan on this page.
+            </p>
+            <div className="mt-10">
+              <button
+                type="button"
+                onClick={onRequireAuth}
+                className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+              >
+                Sign In <ArrowRight size={14} />
+              </button>
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+              Your Complete Growth Plan
+            </span>
+            <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+              Unlock The Growth Edit
+            </h2>
+            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+              Get your personalized Top 3 buying priorities, complete product routine, wash-day schedule, and clear instructions for using every recommendation.
+            </p>
+            <p className="mt-5 font-serif text-3xl text-foreground">$59</p>
+            <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+              One-time purchase
+            </p>
 
-        <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          {STRIPE_PAYMENT_LINK ? (
-            <a
-              href={STRIPE_PAYMENT_LINK}
-              className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-            >
-              Unlock The Growth Edit — $59
-              <ArrowRight size={14} />
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground opacity-60 sm:w-auto pill-cta"
-              title="Add the Stripe Payment Link in Results.tsx"
-            >
-              Unlock The Growth Edit — $59
-              <ArrowRight size={14} />
-            </button>
-          )}
-          <button
-            onClick={onOpenProgress}
-            className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
-          >
-            View Progress Preview
-          </button>
-        </div>
+            <div className="mx-auto mt-10 max-w-md space-y-3 text-left">
+              {[
+                "Your top 3 buying priorities, then the remaining routine",
+                "Usage timing and schedule tailoring",
+                "Saved products, daily hair tips, and sale alerts",
+                "Private progress journal and photos",
+                shouldShampooTwice
+                  ? "Includes why almost everyone should shampoo twice (and how to do it)"
+                  : "Includes your single-pass gentle cleanse instructions"
+              ].map((feature, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <Check className="mt-0.5 shrink-0 text-foreground/60" size={16} />
+                  <span className="text-sm text-foreground/80">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setCheckoutOpen(true)}
+                className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+              >
+                Unlock The Growth Edit — $59
+                <ArrowRight size={14} />
+              </button>
+              <button
+                onClick={onOpenProgress}
+                className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+              >
+                View Progress Preview
+              </button>
+            </div>
+          </>
+        )}
       </div>}
 
       {/* Softened, disclaimer-forward offer for severe cases: still buyable,
@@ -276,48 +318,64 @@ export function Results({
           rather than the standard upsell framing. */}
       {hasSevereRedFlag && !unlocked && (
         <div className="mt-24 rounded-2xl border border-foreground/25 bg-paper px-6 py-12 text-center md:px-12 md:py-16">
-          <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-            Please Read Before Purchasing
-          </span>
-          <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-4xl">
-            These Products Are Not A Treatment
-          </h2>
-          <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
-            Based on what you shared, please see a dermatologist, GP, or qualified trichology professional.{' '}
-            <strong>No product routine, including this one, will resolve the underlying change you noted.</strong>{' '}
-            If you would still like gentle, conservative product guidance to use alongside professional care,
-            it is available below.
-          </p>
-          <p className="mt-5 font-serif text-2xl text-foreground">$59</p>
-          <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-            One-time purchase · Not a substitute for medical care
-          </p>
+          {purchaseComplete ? (
+            <>
+              <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+                You&apos;re All Set
+              </span>
+              <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-4xl">
+                Thanks For Your Purchase
+              </h2>
+              <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+                Sign in with the same email you just paid with to view your gentle support guide. And please
+                do not delay seeing a dermatologist, GP, or qualified trichology professional.
+              </p>
+              <div className="mt-10">
+                <button
+                  type="button"
+                  onClick={onRequireAuth}
+                  className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+                >
+                  Sign In
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+                Please Read Before Purchasing
+              </span>
+              <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-4xl">
+                These Products Are Not A Treatment
+              </h2>
+              <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+                Based on what you shared, please see a dermatologist, GP, or qualified trichology professional.{' '}
+                <strong>No product routine, including this one, will resolve the underlying change you noted.</strong>{' '}
+                If you would still like gentle, conservative product guidance to use alongside professional care,
+                it is available below.
+              </p>
+              <p className="mt-5 font-serif text-2xl text-foreground">$59</p>
+              <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+                One-time purchase · Not a substitute for medical care
+              </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            {STRIPE_PAYMENT_LINK ? (
-              <a
-                href={STRIPE_PAYMENT_LINK}
-                className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
-              >
-                Get Gentle Support Guide — $59
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex w-full cursor-not-allowed items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground opacity-60 sm:w-auto pill-cta"
-                title="Add the Stripe Payment Link in Results.tsx"
-              >
-                Get Gentle Support Guide — $59
-              </button>
-            )}
-            <button
-              onClick={onOpenProgress}
-              className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
-            >
-              View Progress Preview
-            </button>
-          </div>
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => setCheckoutOpen(true)}
+                  className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+                >
+                  Get Gentle Support Guide — $59
+                </button>
+                <button
+                  onClick={onOpenProgress}
+                  className="inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
+                >
+                  View Progress Preview
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -329,6 +387,13 @@ export function Results({
           Retake Assessment
         </button>
       </div>
+
+      <CheckoutSheet
+        open={checkoutOpen}
+        courseSlug={GROWTH_EDIT_SLUG}
+        onClose={() => setCheckoutOpen(false)}
+        onComplete={handleCheckoutComplete}
+      />
     </div>
   );
 }

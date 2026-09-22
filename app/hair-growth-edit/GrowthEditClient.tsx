@@ -8,7 +8,7 @@ import { Navbar } from '@/components/site/navbar';
 import { Quiz } from './components/Quiz';
 import { Results } from './components/Results';
 import { ProgressView } from './components/ProgressView';
-import { canViewResults, resolveProgressReturnView, type AppView } from './lib/navigation';
+import { resolveProgressReturnView, type AppView } from './lib/navigation';
 import { useAuth } from '@/lib/auth/useAuth';
 import {
   PENDING_ANSWERS_KEY,
@@ -26,10 +26,36 @@ export default function GrowthEditClient() {
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [unlocked, setUnlocked] = useState(false);
   const [bootstrapping, setBootstrapping] = useState(true);
+  const [redirectPurchaseComplete, setRedirectPurchaseComplete] = useState(false);
   const didBootstrap = useRef(false);
 
   useEffect(() => {
     document.title = 'The Growth Edit — The Hair Insider';
+  }, []);
+
+  // Handles the one path that still leaves the page: a payment method that
+  // required a redirect (Klarna, Amazon Pay, etc. -- card completes inline
+  // and never hits this). All other quiz/results state is gone after the
+  // reload, since the buyer was never signed in at checkout, so this is a
+  // dedicated screen rather than trying to route into the normal views.
+  // Read via window.location directly (not useSearchParams) so this page
+  // can stay statically rendered rather than needing a Suspense boundary.
+  useEffect(() => {
+    const sessionId = new URLSearchParams(window.location.search).get('checkout_session_id');
+    if (!sessionId) return;
+
+    window.history.replaceState(null, '', '/hair-growth-edit');
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/checkout/embedded/status?session_id=${encodeURIComponent(sessionId)}`);
+        const data = (await res.json()) as { status?: string };
+        if (data.status === 'complete') setRedirectPurchaseComplete(true);
+      } catch {
+        // Not fatal -- the webhook still grants the entitlement regardless
+        // of whether this status check succeeds.
+      }
+    })();
   }, []);
 
   // Runs once auth state resolves: recovers a just-completed quiz that was
@@ -75,12 +101,12 @@ export default function GrowthEditClient() {
   }, [authLoading, signedIn]);
 
   const assessmentComplete = QUESTIONS.every(question => answers[question.id] !== undefined);
-  const resultsAllowed = canViewResults(answers, QUESTIONS.map(question => question.id), signedIn);
 
-  // Derived, not stored: if `view` claims 'results' but the visitor no
-  // longer qualifies (e.g. signed out), fall back without a setState-in-effect.
-  const effectiveView: AppView =
-    view === 'results' && !resultsAllowed ? (assessmentComplete ? 'auth' : 'quiz') : view;
+  // Derived, not stored: if `view` claims 'results' but the assessment
+  // somehow isn't actually complete, fall back without a setState-in-effect.
+  // Results are shown to signed-out visitors too -- signing in is prompted
+  // inside the results page itself, not as a wall before it.
+  const effectiveView: AppView = view === 'results' && !assessmentComplete ? 'quiz' : view;
 
   const openProgress = () => {
     if (view !== 'progress') setProgressReturnView(view);
@@ -112,12 +138,19 @@ export default function GrowthEditClient() {
     if (signedIn) {
       await saveAssessment(answers);
       setUnlocked(await checkGrowthEditEntitlement());
-      setView('results');
-    } else {
-      sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
-      setView('auth');
     }
+    // Signed-out visitors see their results immediately, unsaved -- no wall
+    // between finishing the assessment and seeing what it found.
+    setView('results');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Used both by the results page's "sign in to save" banner and by the
+  // paid CTA when clicked signed-out (an account is still required to
+  // attach an entitlement to, just no longer required to see free results).
+  const handleRequireAuth = () => {
+    sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
+    window.location.href = `/signin?next=${encodeURIComponent('/hair-growth-edit')}`;
   };
 
   const results = calculateResults(answers);
@@ -126,6 +159,31 @@ export default function GrowthEditClient() {
     return (
       <div className="flex min-h-[100dvh] items-center justify-center bg-paper text-foreground/60">
         <p className="text-xs font-medium uppercase tracking-widest">Loading your assessment…</p>
+      </div>
+    );
+  }
+
+  if (redirectPurchaseComplete) {
+    return (
+      <div className="min-h-[100dvh] bg-paper text-foreground">
+        <Navbar />
+        <main className="mx-auto w-full max-w-2xl px-6 pb-24 pt-16 md:pt-24 slide-up text-center">
+          <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
+            You&apos;re All Set
+          </span>
+          <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-5xl">
+            Thanks For Your Purchase
+          </h1>
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-foreground/80">
+            Sign in with the same email you just paid with to unlock your full plan.
+          </p>
+          <a
+            href={`/signin?next=${encodeURIComponent('/hair-growth-edit')}`}
+            className="mx-auto mt-10 inline-flex w-full max-w-md items-center justify-center gap-3 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
+          >
+            Sign In <ArrowRight size={14} />
+          </a>
+        </main>
       </div>
     );
   }
@@ -196,32 +254,12 @@ export default function GrowthEditClient() {
         />
       )}
 
-      {effectiveView === 'auth' && (
-        <main className="mx-auto w-full max-w-2xl px-6 pb-24 pt-16 md:pt-24 slide-up text-center">
-          <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-            Assessment Complete
-          </span>
-          <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-5xl">
-            Save Your Results
-          </h1>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-foreground/80">
-            Create an account or sign in to view your primary damage pattern, immediate edit, and
-            two foundation products. Your results are saved so you can return to them anytime.
-          </p>
-
-          <a
-            href={`/signin?next=${encodeURIComponent('/hair-growth-edit')}`}
-            className="mx-auto mt-10 inline-flex w-full max-w-md items-center justify-center gap-3 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
-          >
-            Continue to Sign In <ArrowRight size={14} />
-          </a>
-        </main>
-      )}
-
-      {effectiveView === 'results' && resultsAllowed && (
+      {effectiveView === 'results' && (
         <Results
           {...results}
           unlocked={unlocked}
+          signedIn={signedIn}
+          onRequireAuth={handleRequireAuth}
           onReset={() => {
             setView('home');
             setAnswers({});
@@ -234,7 +272,7 @@ export default function GrowthEditClient() {
 
       {effectiveView === 'progress' && (
         <ProgressView
-          onBack={() => setView(resolveProgressReturnView(progressReturnView, assessmentComplete, resultsAllowed))}
+          onBack={() => setView(resolveProgressReturnView(progressReturnView, assessmentComplete))}
         />
       )}
 

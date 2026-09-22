@@ -151,5 +151,7 @@
 .growth-edit-quiz .pill-cta { border-radius: 9999px; }
 .growth-edit-quiz .fade-in { animation: growthEditFadeIn 0.4s ease-out forwards; }
 .growth-edit-quiz .slide-up { animation: growthEditSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.growth-edit-quiz .sheet-slide-up { animation: growthEditSheetSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes growthEditFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes growthEditSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes growthEditSheetSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
