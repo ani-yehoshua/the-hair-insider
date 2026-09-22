@@ -18,7 +18,6 @@ interface ResultsProps {
     paidRoutine: RoutineStep[];
     supportingNeeds: string[];
     unlocked: boolean;
-    signedIn: boolean;
     onRequireAuth: () => void;
     onReset: () => void;
     onOpenGuide: () => void;
@@ -36,7 +35,6 @@ export function Results({
     paidRoutine,
     supportingNeeds,
     unlocked,
-    signedIn,
     onRequireAuth,
     onReset,
     onOpenGuide,
@@ -69,22 +67,6 @@ export function Results({
             className="mx-auto w-full max-w-4xl px-5 pb-32 pt-12 md:px-8 md:pt-20 slide-up"
             data-testid="section-results"
         >
-            {!signedIn && (
-                <div className="mb-12 flex flex-col items-center gap-4 rounded-2xl border border-foreground/15 bg-sage/25 px-6 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
-                    <p className="text-sm leading-relaxed text-foreground/80">
-                        These results are not saved yet. Sign in to keep them
-                        and come back to this page anytime.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={onRequireAuth}
-                        className="inline-flex shrink-0 items-center justify-center gap-2 bg-foreground px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
-                    >
-                        Sign In
-                    </button>
-                </div>
-            )}
-
             <div className="mb-16 text-center">
                 <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
                     Your Initial Read
@@ -273,10 +255,11 @@ export function Results({
                                 recommendation.
                             </p>
                             <p className="mt-5 font-serif text-3xl text-foreground">
-                                $59
+                                One-time $59
                             </p>
-                            <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                                One-time purchase
+                            <p className="mt-1 text-sm text-foreground/70">
+                                Most people spend $150+ a month testing random
+                                products.
                             </p>
                             <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
                                 The $59 purchase includes your personalized
@@ -313,16 +296,29 @@ export function Results({
                                 ))}
                             </div>
 
-                            <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                            <p className="mx-auto mt-8 max-w-md text-sm font-medium leading-relaxed text-foreground">
+                                Based on your {primaryCause} and{" "}
+                                {observations[0]}, the guide maps the exact
+                                order, products, and timing for your
+                                routine — nothing generic.
+                            </p>
+                            <p className="mt-2 text-xs uppercase tracking-widest text-foreground/50">
+                                Instant access after checkout · No waiting
+                            </p>
+
+                            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                                 <button
                                     type="button"
                                     onClick={() => setCheckoutOpen(true)}
                                     className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
-                                    Unlock The Growth Edit — $59
+                                    Unlock My Full Routine — $59
                                     <ArrowRight size={14} />
                                 </button>
                             </div>
+                            <p className="mt-4 text-[0.65rem] uppercase tracking-widest text-foreground/50">
+                                Apple Pay · Google Pay · Card
+                            </p>
                         </>
                     )}
                 </div>

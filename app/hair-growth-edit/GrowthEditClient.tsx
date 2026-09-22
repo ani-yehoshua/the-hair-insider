@@ -289,7 +289,6 @@ export default function GrowthEditClient() {
                 <Results
                     {...results}
                     unlocked={unlocked}
-                    signedIn={signedIn}
                     onRequireAuth={handleRequireAuth}
                     onReset={() => {
                         setView("home");
