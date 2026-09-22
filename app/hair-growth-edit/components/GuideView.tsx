@@ -68,9 +68,9 @@ function getRoutineBenefit(step: RoutineStep): string {
   return `This fills the ${normalizedCategory} role in your sequence so each product has one clear job and the routine stays focused rather than repetitive.`;
 }
 
-export function GuideView({ 
-  onBack, 
-  paidRoutine, 
+export function GuideView({
+  onBack,
+  paidRoutine,
   shouldShampooTwice,
   primaryCause,
   behaviorToStop,
@@ -99,7 +99,7 @@ export function GuideView({
   }, [savedProducts]);
 
   const toggleSave = (id: string) => {
-    setSavedProducts(prev => 
+    setSavedProducts(prev =>
       prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
     );
   };
@@ -143,9 +143,9 @@ export function GuideView({
     curled: 'your curled or waved finish',
     protective: 'your protective style',
   }[stylePreference];
-  
-  const displayedRoutine = showSavedOnly 
-    ? paidRoutine.filter(step => savedProducts.includes(step.product.id)) 
+
+  const displayedRoutine = showSavedOnly
+    ? paidRoutine.filter(step => savedProducts.includes(step.product.id))
     : paidRoutine;
 
   return (
@@ -334,7 +334,7 @@ export function GuideView({
         <h2 className="mt-3 font-serif text-3xl text-foreground">
           Premium Guidance
         </h2>
-        
+
         <div className="mt-10">
           {/* Where to spend first */}
           <div>
@@ -438,7 +438,7 @@ export function GuideView({
               <h3 className="mt-2 font-serif text-2xl">Cleansing instructions</h3>
             </div>
             <p className="mt-5 text-sm leading-relaxed text-foreground/80 md:mt-0">
-              {shouldShampooTwice 
+              {shouldShampooTwice
                 ? "Use two gentle shampoo passes on wash day. The first loosens surface oil and product residue; the second completes the cleanse. Focus both passes at the scalp and rinse thoroughly between them."
                 : "Use one gentle shampoo pass on wash day. Focus the lather at the scalp and let the rinse water carry it through the lengths rather than scrubbing the ends."}
             </p>
@@ -457,11 +457,11 @@ export function GuideView({
               The Complete Routine
             </h2>
           </div>
-          <button 
+          <button
             onClick={() => setShowSavedOnly(!showSavedOnly)}
             className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
-              showSavedOnly 
-                ? 'border-foreground bg-foreground text-background' 
+              showSavedOnly
+                ? 'border-foreground bg-foreground text-background'
                 : 'border-foreground/20 text-foreground hover:bg-foreground/5'
             }`}
             data-testid="filter-saved-products"
@@ -481,8 +481,8 @@ export function GuideView({
           {displayedRoutine.map((step, index) => {
             const isSaved = savedProducts.includes(step.product.id);
             return (
-              <div 
-                key={`${step.product.id}-${index}`} 
+              <div
+                key={`${step.product.id}-${index}`}
                 className="group flex flex-col gap-8 rounded-3xl border border-foreground/15 bg-paper p-6 md:flex-row md:p-8"
                 data-testid={`routine-step-${step.product.id}`}
               >
@@ -514,10 +514,10 @@ export function GuideView({
                       {step.timing}
                     </span>
                   </div>
-                  
+
                   <h3 className="font-serif text-2xl leading-tight text-foreground">{step.product.name}</h3>
                   <p className="mt-1 text-xs font-medium text-foreground/60">{step.product.brand}</p>
-                  
+
                   <div className="mt-6 grid gap-6 md:grid-cols-2">
                     <div className="space-y-4">
                       <p className="text-sm leading-relaxed text-foreground/80">
@@ -536,9 +536,9 @@ export function GuideView({
                   </div>
 
                   <div className="mt-auto pt-8">
-                    <a 
-                      href={step.product.link} 
-                      target="_blank" 
+                    <a
+                      href={step.product.link}
+                      target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
                     >
