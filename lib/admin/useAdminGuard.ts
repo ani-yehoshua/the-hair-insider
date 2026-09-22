@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase/client';
 export function useAdminGuard() {
     const router = useRouter();
     const [ready, setReady] = React.useState(false);
+    const [unauthorized, setUnauthorized] = React.useState(false);
 
     React.useEffect(() => {
         const run = async () => {
@@ -14,9 +15,8 @@ export function useAdminGuard() {
             const token = data.session?.access_token;
 
             if (!token) {
-                router.replace(
-                    `/signin?next=${encodeURIComponent('/admin/courses/new')}`,
-                );
+                const next = window.location.pathname + window.location.search;
+                router.replace(`/signin?next=${encodeURIComponent(next)}`);
                 return;
             }
 
@@ -26,7 +26,11 @@ export function useAdminGuard() {
 
             const json = await res.json();
             if (!res.ok || !json.isAdmin) {
-                router.replace('/');
+                // Surface this instead of silently bouncing to "/" -- a
+                // signed-in-but-not-admin visitor otherwise sees the admin
+                // page flash blank and land back on the homepage with zero
+                // explanation of what happened.
+                setUnauthorized(true);
                 return;
             }
 
@@ -36,5 +40,5 @@ export function useAdminGuard() {
         run();
     }, [router]);
 
-    return { ready };
+    return { ready, unauthorized };
 }

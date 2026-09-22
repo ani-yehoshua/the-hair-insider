@@ -26,12 +26,27 @@ const ADMIN_SECTIONS = [
 ];
 
 export default function AdminClient() {
-    const { ready } = useAdminGuard();
+    const { ready, unauthorized } = useAdminGuard();
 
     const { ref: pageRef, inView: pageIn } = useInView({
         triggerOnce: true,
         threshold: 0.1,
     });
+
+    if (unauthorized) {
+        return (
+            <div className='relative min-h-[100dvh] text-foreground'>
+                <Overlay />
+                <Navbar />
+                <div className='mx-auto max-w-2xl px-6 pt-24 pb-16 text-center'>
+                    <h1 className='text-2xl font-semibold tracking-tight mb-3'>Access Denied</h1>
+                    <p className='text-sm text-foreground/70'>
+                        You&apos;re signed in, but this account isn&apos;t on the admin list.
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     if (!ready) return null;
 
