@@ -11,7 +11,6 @@ interface ResultsProps {
     observations: string[];
     product1: ProductResult | null;
     product2: ProductResult | null;
-    product3: ProductResult | null;
     behaviorToStop: string;
     hasSevereRedFlag: boolean;
     hasMinorRedFlag: boolean;
@@ -22,7 +21,7 @@ interface ResultsProps {
     signedIn: boolean;
     onRequireAuth: () => void;
     onReset: () => void;
-    onOpenProgress: () => void;
+    onOpenGuide: () => void;
 }
 
 export function Results({
@@ -30,7 +29,6 @@ export function Results({
     observations,
     product1,
     product2,
-    product3,
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
@@ -41,7 +39,7 @@ export function Results({
     signedIn,
     onRequireAuth,
     onReset,
-    onOpenProgress,
+    onOpenGuide,
 }: ResultsProps) {
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
@@ -155,21 +153,15 @@ export function Results({
                         <span className='text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50'>
                             {hasSevereRedFlag
                                 ? "03 / Gentle Support for Now"
-                                : `03 / ${unlocked ? "Your Top 3 Priorities" : "Foundation Steps"}`}
+                                : "03 / Foundation Steps"}
                         </span>
                         <p className='mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70'>
                             {hasSevereRedFlag
                                 ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
-                                : unlocked
-                                  ? "These are your top 3 buying priorities, in order. The complete routine below shows how everything else fits around them."
-                                  : "These two products are your starting point. The complete guide prioritizes the third essential and shows how to build the rest of your routine."}
+                                : "These two recommendations address part of your pattern. The complete guide shows where they belong, what supports them, what to avoid combining, and how often each step should be used."}
                         </p>
-                        <div
-                            className={`mt-8 grid gap-6 sm:grid-cols-2 ${!hasSevereRedFlag && unlocked && product3 ? "lg:grid-cols-3" : ""}`}>
-                            {(!hasSevereRedFlag && unlocked && product3
-                                ? [product1, product2, product3]
-                                : [product1, product2]
-                            ).map(prod => (
+                        <div className='mt-8 grid gap-6 sm:grid-cols-2'>
+                            {[product1, product2].map(prod => (
                                 <div
                                     key={prod.id}
                                     className='panel-outline rounded-2xl bg-paper px-6 py-8'>
@@ -212,66 +204,24 @@ export function Results({
                 )}
             </div>
 
-            {/* Complete routine, revealed once the Growth Edit is unlocked */}
+            {/* Purchased guide */}
             {!hasSevereRedFlag && unlocked && (
-                <div className='mt-24 border-t border-foreground/15 pt-10'>
-                    <span className='text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50'>
-                        04 / Your Complete Routine
+                <div className='mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16'>
+                    <span className='text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55'>
+                        Your Complete Growth Plan
                     </span>
-                    <h2 className='mt-3 font-serif text-2xl text-foreground'>
-                        Full wash-day schedule
+                    <h2 className='mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl'>
+                        The Growth Edit Is Ready
                     </h2>
-                    <p className='mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80'>
-                        Every step of your routine, in order, with timing and
-                        how to use it.
+                    <p className='mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base'>
+                        Open your personalized action plan, buying priorities, complete routine, progress checkpoints, and troubleshooting guidance.
                     </p>
-                    <ol className='mt-8 space-y-4'>
-                        {paidRoutine.map(step => (
-                            <li
-                                key={step.product.id}
-                                className='panel-outline rounded-2xl bg-paper px-6 py-6'>
-                                <div className='flex flex-col gap-5 sm:flex-row sm:items-start'>
-                                    <div className='flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-3 sm:h-32 sm:w-32'>
-                                        <img
-                                            src={step.product.image}
-                                            alt={`${step.product.name} by ${step.product.brand}`}
-                                            className='h-full w-full object-contain'
-                                            loading='lazy'
-                                        />
-                                    </div>
-                                    <div className='min-w-0 flex-1'>
-                                        <span className='text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50'>
-                                            Step {step.order} · {step.timing}
-                                        </span>
-                                        <h3 className='mt-1 font-serif text-lg text-foreground'>
-                                            {step.product.name}
-                                        </h3>
-                                        <p className='mt-1 text-xs font-medium text-foreground/60'>
-                                            {step.product.brand}
-                                        </p>
-                                        <p className='mt-3 text-sm leading-relaxed text-foreground/80'>
-                                            {step.instruction}
-                                        </p>
-                                        <a
-                                            href={step.product.link}
-                                            target='_blank'
-                                            rel='noreferrer'
-                                            className='mt-4 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta'>
-                                            View Details
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
-
-                    <div className='mt-12 text-center'>
-                        <button
-                            onClick={onOpenProgress}
-                            className='inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta'>
-                            View Progress Preview
-                        </button>
-                    </div>
+                    <button
+                        type='button'
+                        onClick={onOpenGuide}
+                        className='mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta'>
+                        Open The Growth Edit <ArrowRight size={14} />
+                    </button>
                 </div>
             )}
 
@@ -319,16 +269,22 @@ export function Results({
                             <p className='mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50'>
                                 One-time purchase
                             </p>
+                            <p className='mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60'>
+                                The $59 purchase includes your personalized digital guide only. Recommended physical products are not included and are sold separately.
+                            </p>
 
                             <div className='mx-auto mt-10 max-w-md space-y-3 text-left'>
                                 {[
-                                    "Your top 3 buying priorities + the remaining products for your routine",
-                                    "Direct links to shop each product",
-                                    "Usage timing and schedule tailoring\n(Coming soon)",
-                                    "Private progress journal and photos\n(Coming soon)",
+                                    "Complete ordered product routine",
+                                    "Why, Benefit, How, and Timing for every step",
+                                    "Personalized weekly schedule and first 30-day action plan",
+                                    "Progress checkpoints and troubleshooting guidance",
+                                    "Saved product organization",
+                                    "Daily length-retention tip",
+                                    "Guidance on where to spend first, what to skip, and what not to combine",
                                     shouldShampooTwice
-                                        ? "Includes why almost everyone should shampoo twice (and how to do it)"
-                                        : "Includes your single-pass gentle cleanse instructions",
+                                        ? "Your personalized double-cleanse instructions"
+                                        : "Your single-pass gentle cleanse instructions",
                                 ].map((feature, i) => (
                                     <div
                                         key={i}
@@ -351,11 +307,6 @@ export function Results({
                                     className='inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta'>
                                     Unlock The Growth Edit — $59
                                     <ArrowRight size={14} />
-                                </button>
-                                <button
-                                    onClick={onOpenProgress}
-                                    className='inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta'>
-                                    View Progress Preview
                                 </button>
                             </div>
                         </>
@@ -425,11 +376,6 @@ export function Results({
                                     onClick={() => setCheckoutOpen(true)}
                                     className='inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta'>
                                     Get Gentle Support Guide — $59
-                                </button>
-                                <button
-                                    onClick={onOpenProgress}
-                                    className='inline-flex w-full items-center justify-center gap-3 border border-foreground/20 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta'>
-                                    View Progress Preview
                                 </button>
                             </div>
                         </>

@@ -3,6 +3,7 @@ import {
   buildPaidRoutine,
   selectFoundationRecommendations,
   type Diagnosis,
+  type HairProfile,
   type ProductRecommendation,
 } from '../data/recommendations';
 
@@ -186,14 +187,14 @@ export function calculateResults(answers: AnswerMap) {
   const pattern = answers.pattern === 1 ? 'wavy' : answers.pattern === 2 ? 'curly' : answers.pattern === 3 ? 'coily' : 'straight';
   const density = answers.density === 0 || answers.density === 3 ? 'low' : answers.density === 2 ? 'high' : 'medium';
   const colour = answers.chemical === 2 ? 'blonde' : answers.chemical === 1 || answers.chemical === 3 || answers.chemical === 4 ? 'colour' : 'natural';
-  const stylePreference = answers.usualStyle === 1
+  const stylePreference: HairProfile['stylePreference'] = answers.usualStyle === 1
     ? 'blowout'
     : answers.usualStyle === 2
       ? 'straightened'
       : answers.usualStyle === 3
         ? 'curled'
         : answers.usualStyle === 4 ? 'protective' : 'natural';
-  const washFrequency = answers.shampooFrequency === 0
+  const washFrequency: HairProfile['washFrequency'] = answers.shampooFrequency === 0
     ? 'daily'
     : answers.shampooFrequency === 1
       ? 'severalWeekly'
@@ -288,6 +289,8 @@ export function calculateResults(answers: AnswerMap) {
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
-    shouldShampooTwice
+    shouldShampooTwice,
+    washFrequency,
+    stylePreference,
   };
 }

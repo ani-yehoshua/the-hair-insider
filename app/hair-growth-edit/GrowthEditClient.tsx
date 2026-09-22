@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { QUESTIONS } from './data/questions';
 import { calculateResults } from './lib/scoring';
 import { Navbar } from '@/components/site/navbar';
 import { Quiz } from './components/Quiz';
 import { Results } from './components/Results';
-import { ProgressView } from './components/ProgressView';
-import { resolveProgressReturnView, type AppView } from './lib/navigation';
+import { GuideView } from './components/GuideView';
+import { resolveGuideReturnView, type AppView } from './lib/navigation';
 import { useAuth } from '@/lib/auth/useAuth';
 import {
   PENDING_ANSWERS_KEY,
@@ -21,7 +21,7 @@ import {
 export default function GrowthEditClient() {
   const { signedIn, loading: authLoading } = useAuth();
   const [view, setView] = useState<AppView>('home');
-  const [progressReturnView, setProgressReturnView] = useState<Exclude<AppView, 'progress'>>('home');
+  const [guideReturnView, setGuideReturnView] = useState<Exclude<AppView, 'guide'>>('home');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [unlocked, setUnlocked] = useState(false);
@@ -108,9 +108,16 @@ export default function GrowthEditClient() {
   // inside the results page itself, not as a wall before it.
   const effectiveView: AppView = view === 'results' && !assessmentComplete ? 'quiz' : view;
 
-  const openProgress = () => {
-    if (view !== 'progress') setProgressReturnView(view);
-    setView('progress');
+  useLayoutEffect(() => {
+    if (effectiveView === 'guide') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [effectiveView]);
+
+  const openGuide = () => {
+    if (!assessmentComplete || !unlocked) return;
+    if (view !== 'guide') setGuideReturnView(view);
+    setView('guide');
   };
 
   const handleStart = () => {
@@ -266,13 +273,21 @@ export default function GrowthEditClient() {
             setStep(0);
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          onOpenProgress={openProgress}
+          onOpenGuide={openGuide}
         />
       )}
 
-      {effectiveView === 'progress' && (
-        <ProgressView
-          onBack={() => setView(resolveProgressReturnView(progressReturnView, assessmentComplete))}
+      {effectiveView === 'guide' && unlocked && assessmentComplete && !results.hasSevereRedFlag && (
+        <GuideView
+          onBack={() => setView(resolveGuideReturnView(guideReturnView, assessmentComplete))}
+          paidRoutine={results.paidRoutine}
+          shouldShampooTwice={results.shouldShampooTwice}
+          primaryCause={results.primaryCause}
+          behaviorToStop={results.behaviorToStop}
+          observations={results.observations}
+          supportingNeeds={results.supportingNeeds}
+          washFrequency={results.washFrequency}
+          stylePreference={results.stylePreference}
         />
       )}
 

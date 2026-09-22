@@ -1,9 +1,9 @@
-export type AppView = 'home' | 'quiz' | 'results' | 'progress';
+export type AppView = 'home' | 'quiz' | 'results' | 'guide';
 
-export function resolveProgressReturnView(
-  priorView: Exclude<AppView, 'progress'>,
+export function resolveGuideReturnView(
+  priorView: Exclude<AppView, 'guide'>,
   assessmentComplete: boolean,
-): Exclude<AppView, 'progress'> {
+): Exclude<AppView, 'guide'> {
   if (priorView !== 'results') return priorView;
   return assessmentComplete ? 'results' : 'quiz';
 }
