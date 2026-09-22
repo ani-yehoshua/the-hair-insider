@@ -706,14 +706,12 @@ export default function HomeClient() {
                                                     Learn it. Then live it.
                                                 </h2>
                                                 <p className='text-lg max-w-2xl'>
-                                                    The mini course teaches you
-                                                    the science behind your
-                                                    hair. The digital workbook
-                                                    puts it into practice,
-                                                    daily guided journaling,
-                                                    habit tracking, and progress
-                                                    reviews. Get both together
-                                                    at a discount.
+                                                    Start with The Growth Edit
+                                                    — a short assessment that
+                                                    maps a personalized,
+                                                    step-by-step routine for
+                                                    your length-retention
+                                                    goals.
                                                 </p>
                                                 <p className='text-sm'>
                                                     Not sure yet?{" "}
@@ -756,7 +754,7 @@ export default function HomeClient() {
                                                         }
                                                         onBuy={onBuy}
                                                         href='/hair-growth-edit'
-                                                        ownedCta='Open The Growth Edit →'
+                                                        ownedCta='View My Routine →'
                                                         buyCta='Take the free quiz'
                                                         hidePrice
                                                         buyAsLink
