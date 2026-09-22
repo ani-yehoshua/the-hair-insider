@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://the-hair-insider.com';
 
         const session = await stripe.checkout.sessions.create({
-            ui_mode: 'embedded',
+            ui_mode: 'embedded_page',
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
             // 'if_required' keeps card completing inline (no navigation),
