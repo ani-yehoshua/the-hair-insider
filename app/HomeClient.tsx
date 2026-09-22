@@ -79,71 +79,69 @@ function CourseCard({
     const faqs = PRODUCT_FAQS[course.slug];
 
     return (
-        <Card
-            id={course.slug}
-            className='rounded-3xl overflow-hidden p-0'>
+        <Card id={course.slug} className="rounded-3xl overflow-hidden p-0">
             {splitImages ? (
-                <div className='relative aspect-[16/10] w-full flex overflow-hidden'>
-                    <div className='relative w-1/2 h-full'>
+                <div className="relative aspect-[16/10] w-full flex overflow-hidden">
+                    <div className="relative w-1/2 h-full">
                         {splitImages[0] ? (
                             <Image
                                 src={splitImages[0]}
-                                alt='Mini course cover'
+                                alt="Mini course cover"
                                 fill
-                                className='object-cover'
+                                className="object-cover"
                                 priority
                             />
                         ) : (
-                            <div className='w-full h-full bg-muted' />
+                            <div className="w-full h-full bg-muted" />
                         )}
                     </div>
-                    <div className='relative w-1/2 h-full'>
+                    <div className="relative w-1/2 h-full">
                         {splitImages[1] ? (
                             <Image
                                 src={splitImages[1]}
-                                alt='Workbook cover'
+                                alt="Workbook cover"
                                 fill
-                                className='object-cover'
+                                className="object-cover"
                                 priority
                             />
                         ) : (
-                            <div className='w-full h-full bg-muted/60' />
+                            <div className="w-full h-full bg-muted/60" />
                         )}
                     </div>
                 </div>
             ) : course.cover_image_url ? (
-                <div className='relative aspect-[16/10] w-full'>
+                <div className="relative aspect-[16/10] w-full">
                     <Image
                         src={course.cover_image_url}
                         alt={`${course.title} cover`}
                         fill
-                        className='object-cover'
+                        className="object-cover"
                         priority
                     />
                 </div>
             ) : (
-                <div className='flex aspect-[16/10] items-center justify-center bg-muted'>
-                    <p className='text-sm'>Cover image</p>
+                <div className="flex aspect-[16/10] items-center justify-center bg-muted">
+                    <p className="text-sm">Cover image</p>
                 </div>
             )}
 
-            <CardContent className='px-5 pb-1 space-y-4'>
-                <div className='flex items-start justify-between gap-3'>
-                    <div className='space-y-1'>
-                        <h2 className='text-lg font-semibold leading-snug tracking-tight'>
+            <CardContent className="px-5 pb-1 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                        <h2 className="text-lg font-semibold leading-snug tracking-tight">
                             {course.title}
                         </h2>
                         {course.subtitle && (
-                            <p className='text-sm'>{course.subtitle}</p>
+                            <p className="text-sm">{course.subtitle}</p>
                         )}
                     </div>
                     {owned && (
-                        <Badge className='shrink-0 bg-neutral-500'>Owned</Badge>
+                        <Badge className="shrink-0 bg-neutral-500">Owned</Badge>
                     )}
                 </div>
 
                 {stats && (
-                    <div className='flex items-center gap-4 text-xs'>
+                    <div className="flex items-center gap-4 text-xs">
                         <span>{stats.lessonsCount} lessons</span>
                         <span>·</span>
                         <span>{formatDuration(stats.durationSeconds)}</span>
@@ -151,12 +149,12 @@ function CourseCard({
                 )}
 
                 {course.stripe_price_id && !owned && (
-                    <div className='flex items-center gap-3'>
-                        <p className='text-3xl font-semibold tracking-tight'>
+                    <div className="flex items-center gap-3">
+                        <p className="text-3xl font-semibold tracking-tight">
                             {priceText ?? "$–"}
                         </p>
                         {savingsBadge && (
-                            <span className='rounded-full bg-rose-500 text-white text-xs font-semibold px-3 py-1'>
+                            <span className="rounded-full bg-rose-500 text-white text-xs font-semibold px-3 py-1">
                                 {savingsBadge}
                             </span>
                         )}
@@ -164,32 +162,31 @@ function CourseCard({
                 )}
 
                 {owned && (
-                    <p className='text-sm font-medium'>
+                    <p className="text-sm font-medium">
                         You already own this course.
                     </p>
                 )}
 
-                <div className='flex flex-col gap-2'>
+                <div className="flex flex-col gap-2">
                     {owned ? (
-                        <Button
-                            asChild
-                            className='w-full h-11'>
+                        <Button asChild className="w-full h-11">
                             <Link href={`/library/${course.slug}`}>
                                 Go to course
                             </Link>
                         </Button>
                     ) : (
                         <Button
-                            className='w-full h-11'
+                            className="w-full h-11"
                             onClick={() => onBuy(course.slug)}
-                            disabled={buying || !course.stripe_price_id}>
+                            disabled={buying || !course.stripe_price_id}
+                        >
                             {buying ? "Redirecting…" : "Buy Now"}
                         </Button>
                     )}
                 </div>
 
                 {buyError && (
-                    <p className='text-sm text-destructive'>{buyError}</p>
+                    <p className="text-sm text-destructive">{buyError}</p>
                 )}
 
                 <Separator />
@@ -197,14 +194,15 @@ function CourseCard({
                 {faqs && faqs.length > 0 && (
                     <>
                         <button
-                            type='button'
-                            onClick={() => setFaqOpen(v => !v)}
-                            className='flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium'>
+                            type="button"
+                            onClick={() => setFaqOpen((v) => !v)}
+                            className="flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium"
+                        >
                             FAQ
                             {faqOpen ? (
-                                <ChevronUp className='h-4 w-4' />
+                                <ChevronUp className="h-4 w-4" />
                             ) : (
-                                <ChevronDown className='h-4 w-4' />
+                                <ChevronDown className="h-4 w-4" />
                             )}
                         </button>
 
@@ -214,20 +212,23 @@ function CourseCard({
                                 faqOpen
                                     ? "grid-rows-[1fr] opacity-100"
                                     : "grid-rows-[0fr] opacity-0",
-                            ].join(" ")}>
-                            <div className='overflow-hidden'>
+                            ].join(" ")}
+                        >
+                            <div className="overflow-hidden">
                                 <Accordion
-                                    type='single'
+                                    type="single"
                                     collapsible
-                                    className='-mb-3'>
+                                    className="-mb-3"
+                                >
                                     {faqs.map((item, i) => (
                                         <AccordionItem
                                             key={i}
-                                            value={`${course.slug}-faq-${i}`}>
-                                            <AccordionTrigger className='text-sm text-left'>
+                                            value={`${course.slug}-faq-${i}`}
+                                        >
+                                            <AccordionTrigger className="text-sm text-left">
                                                 {item.q}
                                             </AccordionTrigger>
-                                            <AccordionContent className='text-sm leading-relaxed'>
+                                            <AccordionContent className="text-sm leading-relaxed">
                                                 {item.a}
                                             </AccordionContent>
                                         </AccordionItem>
@@ -241,14 +242,15 @@ function CourseCard({
                 )}
 
                 <button
-                    type='button'
-                    onClick={() => setOpen(v => !v)}
-                    className='flex w-full items-center justify-between text-sm font-medium'>
+                    type="button"
+                    onClick={() => setOpen((v) => !v)}
+                    className="flex w-full items-center justify-between text-sm font-medium"
+                >
                     Product details
                     {open ? (
-                        <ChevronUp className='h-4 w-4' />
+                        <ChevronUp className="h-4 w-4" />
                     ) : (
-                        <ChevronDown className='h-4 w-4' />
+                        <ChevronDown className="h-4 w-4" />
                     )}
                 </button>
 
@@ -258,15 +260,16 @@ function CourseCard({
                         open
                             ? "grid-rows-[1fr] opacity-100"
                             : "grid-rows-[0fr] opacity-0",
-                    ].join(" ")}>
-                    <div className='overflow-hidden'>
-                        <div className='space-y-4 py-1'>
+                    ].join(" ")}
+                >
+                    <div className="overflow-hidden">
+                        <div className="space-y-4 py-1">
                             {course.overview_video_url && (
-                                <div className='rounded-2xl overflow-hidden aspect-video'>
+                                <div className="rounded-2xl overflow-hidden aspect-video">
                                     <iframe
                                         src={course.overview_video_url}
-                                        className='w-full h-full'
-                                        allow='autoplay; fullscreen; picture-in-picture'
+                                        className="w-full h-full"
+                                        allow="autoplay; fullscreen; picture-in-picture"
                                         allowFullScreen
                                         title={`${course.title} overview`}
                                     />
@@ -274,28 +277,28 @@ function CourseCard({
                             )}
 
                             {course.description && (
-                                <p className='text-sm leading-7'>
+                                <p className="text-sm leading-7">
                                     {course.description}
                                 </p>
                             )}
 
-                            <div className='grid gap-3 sm:grid-cols-2 pb-3'>
-                                <div className='rounded-2xl bg-muted p-4 space-y-2'>
-                                    <p className='text-xs font-medium'>
+                            <div className="grid gap-3 sm:grid-cols-2 pb-3">
+                                <div className="rounded-2xl bg-muted p-4 space-y-2">
+                                    <p className="text-xs font-medium">
                                         What you get
                                     </p>
-                                    <ul className='space-y-1.5 text-xs'>
+                                    <ul className="space-y-1.5 text-xs">
                                         <li>High-end industry knowledge</li>
                                         <li>Clear routine guidance</li>
                                         <li>Interactive digital guide</li>
                                         <li>Lifetime access</li>
                                     </ul>
                                 </div>
-                                <div className='rounded-2xl bg-muted p-4 space-y-2'>
-                                    <p className='text-xs font-medium'>
+                                <div className="rounded-2xl bg-muted p-4 space-y-2">
+                                    <p className="text-xs font-medium">
                                         Who it&apos;s for
                                     </p>
-                                    <ul className='space-y-1.5 text-xs'>
+                                    <ul className="space-y-1.5 text-xs">
                                         <li>People tired of guessing</li>
                                         <li>Anyone wanting healthier length</li>
                                         <li>
@@ -346,75 +349,72 @@ function WorkbookCard({
     const faqs = PRODUCT_FAQS[course.slug];
 
     return (
-        <Card
-            id={course.slug}
-            className='rounded-3xl overflow-hidden p-0'>
+        <Card id={course.slug} className="rounded-3xl overflow-hidden p-0">
             {course.cover_image_url ? (
-                <div className='relative aspect-[16/10] w-full'>
+                <div className="relative aspect-[16/10] w-full">
                     <Image
                         src={course.cover_image_url}
                         alt={`${course.title} cover`}
                         fill
-                        className='object-cover'
+                        className="object-cover"
                         priority
                     />
                 </div>
             ) : (
-                <div className='flex aspect-[16/10] items-center justify-center bg-muted'>
-                    <p className='text-sm'>Cover image</p>
+                <div className="flex aspect-[16/10] items-center justify-center bg-muted">
+                    <p className="text-sm">Cover image</p>
                 </div>
             )}
-            <CardContent className='px-5 pb-3 space-y-4'>
-                <div className='flex items-start justify-between gap-3'>
-                    <div className='space-y-1'>
-                        <h3 className='text-lg font-semibold leading-snug'>
+            <CardContent className="px-5 pb-3 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                        <h3 className="text-lg font-semibold leading-snug">
                             {course.title}
                         </h3>
                         {course.subtitle && (
-                            <p className='text-sm'>{course.subtitle}</p>
+                            <p className="text-sm">{course.subtitle}</p>
                         )}
                     </div>
                     {owned && (
-                        <Badge className='shrink-0 bg-neutral-500'>Owned</Badge>
+                        <Badge className="shrink-0 bg-neutral-500">Owned</Badge>
                     )}
                 </div>
 
                 {promoCode && !owned && (
                     <CountdownCouponBanner
                         code={promoCode}
-                        className='text-xs px-3 py-2'
+                        className="text-xs px-3 py-2"
                     />
                 )}
 
                 {course.stripe_price_id && !owned && !hidePrice && (
-                    <p className='text-3xl font-semibold tracking-tight'>
+                    <p className="text-3xl font-semibold tracking-tight">
                         {priceText ?? "$–"}
                     </p>
                 )}
 
                 {owned && (
-                    <p className='text-sm font-medium'>
+                    <p className="text-sm font-medium">
                         You already own this item.
                     </p>
                 )}
 
                 {owned || buyAsLink ? (
-                    <Button
-                        asChild
-                        className='w-full h-11'>
+                    <Button asChild className="w-full h-11">
                         <Link href={href}>{owned ? ownedCta : buyCta}</Link>
                     </Button>
                 ) : (
                     <Button
-                        className='w-full h-11'
+                        className="w-full h-11"
                         onClick={() => onBuy(course.slug)}
-                        disabled={buying || !course.stripe_price_id}>
+                        disabled={buying || !course.stripe_price_id}
+                    >
                         {buying ? "Redirecting…" : buyCta}
                     </Button>
                 )}
 
                 {buyError && (
-                    <p className='text-sm text-destructive'>{buyError}</p>
+                    <p className="text-sm text-destructive">{buyError}</p>
                 )}
 
                 <Separator />
@@ -422,14 +422,15 @@ function WorkbookCard({
                 {faqs && faqs.length > 0 && (
                     <>
                         <button
-                            type='button'
-                            onClick={() => setFaqOpen(v => !v)}
-                            className='flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium'>
+                            type="button"
+                            onClick={() => setFaqOpen((v) => !v)}
+                            className="flex w-full -mb-1 pb-2 items-center justify-between text-sm font-medium"
+                        >
                             FAQ
                             {faqOpen ? (
-                                <ChevronUp className='h-4 w-4' />
+                                <ChevronUp className="h-4 w-4" />
                             ) : (
-                                <ChevronDown className='h-4 w-4' />
+                                <ChevronDown className="h-4 w-4" />
                             )}
                         </button>
 
@@ -439,20 +440,23 @@ function WorkbookCard({
                                 faqOpen
                                     ? "grid-rows-[1fr] opacity-100"
                                     : "grid-rows-[0fr] opacity-0",
-                            ].join(" ")}>
-                            <div className='overflow-hidden'>
+                            ].join(" ")}
+                        >
+                            <div className="overflow-hidden">
                                 <Accordion
-                                    type='single'
+                                    type="single"
                                     collapsible
-                                    className='-mb-3'>
+                                    className="-mb-3"
+                                >
                                     {faqs.map((item, i) => (
                                         <AccordionItem
                                             key={i}
-                                            value={`${course.slug}-faq-${i}`}>
-                                            <AccordionTrigger className='text-sm text-left'>
+                                            value={`${course.slug}-faq-${i}`}
+                                        >
+                                            <AccordionTrigger className="text-sm text-left">
                                                 {item.q}
                                             </AccordionTrigger>
-                                            <AccordionContent className='text-sm leading-relaxed'>
+                                            <AccordionContent className="text-sm leading-relaxed">
                                                 {item.a}
                                             </AccordionContent>
                                         </AccordionItem>
@@ -466,14 +470,15 @@ function WorkbookCard({
                 )}
 
                 <button
-                    type='button'
-                    onClick={() => setOpen(v => !v)}
-                    className='flex w-full items-center justify-between text-sm font-medium'>
+                    type="button"
+                    onClick={() => setOpen((v) => !v)}
+                    className="flex w-full items-center justify-between text-sm font-medium"
+                >
                     Product details
                     {open ? (
-                        <ChevronUp className='h-4 w-4' />
+                        <ChevronUp className="h-4 w-4" />
                     ) : (
-                        <ChevronDown className='h-4 w-4' />
+                        <ChevronDown className="h-4 w-4" />
                     )}
                 </button>
 
@@ -483,15 +488,16 @@ function WorkbookCard({
                         open
                             ? "grid-rows-[1fr] opacity-100"
                             : "grid-rows-[0fr] opacity-0",
-                    ].join(" ")}>
-                    <div className='overflow-hidden'>
-                        <div className='space-y-4 py-1'>
+                    ].join(" ")}
+                >
+                    <div className="overflow-hidden">
+                        <div className="space-y-4 py-1">
                             {course.description && (
-                                <p className='text-sm leading-7'>
+                                <p className="text-sm leading-7">
                                     {course.description}
                                 </p>
                             )}
-                            <p className='text-xs'>{detailNote}</p>
+                            <p className="text-xs">{detailNote}</p>
                         </div>
                     </div>
                 </div>
@@ -545,13 +551,13 @@ export default function HomeClient() {
             if (!coursesRes.error && coursesRes.data) {
                 setCourses(coursesRes.data);
 
-                coursesRes.data.forEach(async c => {
+                coursesRes.data.forEach(async (c) => {
                     const statsRes = await fetch(
                         `/api/courses/${encodeURIComponent(c.slug)}/stats`,
                     );
                     if (statsRes.ok) {
                         const json = await statsRes.json();
-                        setStats(prev => ({ ...prev, [c.id]: json }));
+                        setStats((prev) => ({ ...prev, [c.id]: json }));
                     }
 
                     if (c.stripe_price_id) {
@@ -572,7 +578,7 @@ export default function HomeClient() {
                                         currency: json.currency.toUpperCase(),
                                     },
                                 ).format(json.unitAmount / 100);
-                                setPrices(prev => ({
+                                setPrices((prev) => ({
                                     ...prev,
                                     [c.id]: formatted,
                                 }));
@@ -590,7 +596,7 @@ export default function HomeClient() {
                     .eq("user_id", userId)
                     .eq("status", "active");
                 if (ents)
-                    setOwnedCourseIds(new Set(ents.map(e => e.course_id)));
+                    setOwnedCourseIds(new Set(ents.map((e) => e.course_id)));
             }
 
             setCoursesLoading(false);
@@ -600,10 +606,10 @@ export default function HomeClient() {
     }, []);
 
     async function onBuy(slug: string) {
-        const course = courses.find(c => c.slug === slug);
+        const course = courses.find((c) => c.slug === slug);
         if (!course) return;
 
-        setBuyErrors(prev => {
+        setBuyErrors((prev) => {
             const n = { ...prev };
             delete n[course.id];
             return n;
@@ -613,7 +619,7 @@ export default function HomeClient() {
         try {
             await startCheckout(slug);
         } catch (err) {
-            setBuyErrors(prev => ({
+            setBuyErrors((prev) => ({
                 ...prev,
                 [course.id]:
                     err instanceof Error ? err.message : "Checkout failed.",
@@ -644,14 +650,14 @@ export default function HomeClient() {
         <>
             <OrgJsonLd />
 
-            <div className='relative min-h-[100dvh] text-foreground'>
+            <div className="relative min-h-[100dvh] text-foreground">
                 <Overlay />
                 <Navbar />
                 {PRODUCT_PROMO_CODES["hair-growth-edit"] && (
-                    <div className='mx-auto max-w-6xl px-6 pt-4'>
+                    <div className="mx-auto max-w-6xl px-6 pt-4">
                         <CountdownCouponBanner
                             code={PRODUCT_PROMO_CODES["hair-growth-edit"]}
-                            productName='The Growth Edit'
+                            productName="The Growth Edit"
                         />
                     </div>
                 )}
@@ -661,26 +667,26 @@ export default function HomeClient() {
                     {/* Products */}
                     <section
                         ref={shopRef}
-                        id='shop'
-                        className='min-h-[100dvh] flex flex-col justify-center'>
-                        <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
-                            <FadeIn
-                                inView={shopIn}
-                                delayMs={150}>
+                        id="shop"
+                        className="min-h-[100dvh] flex flex-col justify-center"
+                    >
+                        <div className="mx-auto max-w-6xl px-6 py-20 w-full">
+                            <FadeIn inView={shopIn} delayMs={150}>
                                 {(() => {
                                     const bundleCourse = courses.find(
-                                        c => c.slug === "hair-growth-bundle",
+                                        (c) => c.slug === "hair-growth-bundle",
                                     );
                                     const workbookCourse = courses.find(
-                                        c => c.slug === "hair-growth-workbook",
+                                        (c) =>
+                                            c.slug === "hair-growth-workbook",
                                     );
                                     const miniCourse = courses.find(
-                                        c =>
+                                        (c) =>
                                             c.slug ===
                                             "hair-growth-foundations-mini-course",
                                     );
                                     const growthEditCourse = courses.find(
-                                        c => c.slug === "hair-growth-edit",
+                                        (c) => c.slug === "hair-growth-edit",
                                     );
 
                                     if (
@@ -688,8 +694,8 @@ export default function HomeClient() {
                                         courses.length === 0
                                     ) {
                                         return (
-                                            <Card className='rounded-3xl'>
-                                                <CardContent className='pt-6 text-sm'>
+                                            <Card className="rounded-3xl">
+                                                <CardContent className="pt-6 text-sm">
                                                     {coursesLoading
                                                         ? "Loading…"
                                                         : "Nothing available yet."}
@@ -699,27 +705,27 @@ export default function HomeClient() {
                                     }
 
                                     return (
-                                        <div className='space-y-10'>
+                                        <div className="space-y-10">
                                             {/* Header */}
-                                            <div className='space-y-3 bg-background/50 rounded-3xl p-6'>
-                                                <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+                                            <div className="space-y-3 bg-background/50 rounded-3xl p-6">
+                                                <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                                                     Learn it. Then live it.
                                                 </h2>
-                                                <p className='text-lg max-w-2xl'>
-                                                    Start with The Growth Edit
-                                                    — a short assessment that
-                                                    maps a personalized,
-                                                    step-by-step routine for
-                                                    your length-retention
-                                                    goals.
+                                                <p className="text-lg max-w-2xl">
+                                                    Start with The Growth Edit —
+                                                    a short assessment that maps
+                                                    a personalized, step-by-step
+                                                    routine for your
+                                                    length-retention goals.
                                                 </p>
-                                                <p className='text-sm'>
+                                                <p className="text-sm">
                                                     Not sure yet?{" "}
                                                     <a
-                                                        href='https://www.tiktok.com/@lifewith.laurenj'
-                                                        target='_blank'
-                                                        rel='noreferrer'
-                                                        className='underline underline-offset-4 hover:opacity-70 transition-opacity'>
+                                                        href="https://www.tiktok.com/@lifewith.laurenj"
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="underline underline-offset-4 hover:opacity-70 transition-opacity"
+                                                    >
                                                         See Lauren&apos;s
                                                         content on TikTok →
                                                     </a>
@@ -727,7 +733,7 @@ export default function HomeClient() {
                                             </div>
 
                                             {/* Cards row */}
-                                            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start'>
+                                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start">
                                                 {growthEditCourse && (
                                                     <WorkbookCard
                                                         course={
@@ -753,9 +759,9 @@ export default function HomeClient() {
                                                             ] ?? null
                                                         }
                                                         onBuy={onBuy}
-                                                        href='/hair-growth-edit'
-                                                        ownedCta='View My Routine →'
-                                                        buyCta='Take the free quiz'
+                                                        href="/hair-growth-edit"
+                                                        ownedCta="View My Routine →"
+                                                        buyCta="Unlock My Full Routine →"
                                                         hidePrice
                                                         buyAsLink
                                                         detailNote="Not sure where to start? Take the quiz first — you'll see two of your matched products free before deciding to unlock the rest."
@@ -794,7 +800,7 @@ export default function HomeClient() {
                                                             workbookCourse?.cover_image_url ??
                                                                 null,
                                                         ]}
-                                                        savingsBadge='Save 10%'
+                                                        savingsBadge="Save 10%"
                                                     />
                                                 )}
                                                 {miniCourse && (
@@ -858,26 +864,27 @@ export default function HomeClient() {
                         </div>
                     </section>
 
-
                     {/* Hero */}
                     <section
                         ref={heroRef}
-                        className='flex flex-col min-h-[calc(100dvh-64px)] border-t'>
-                        <div className='flex-1 flex items-center mx-auto w-full max-w-6xl px-6 py-16'>
+                        className="flex flex-col min-h-[calc(100dvh-64px)] border-t"
+                    >
+                        <div className="flex-1 flex items-center mx-auto w-full max-w-6xl px-6 py-16">
                             <FadeIn
                                 inView={heroIn}
                                 delayMs={100}
-                                className='w-full'>
-                                <div className='grid gap-10 md:grid-cols-2 md:items-center'>
-                                    <div className='space-y-6 bg-background/50 rounded-3xl p-8'>
-                                        <p className='text-xs font-semibold uppercase tracking-widest'>
+                                className="w-full"
+                            >
+                                <div className="grid gap-10 md:grid-cols-2 md:items-center">
+                                    <div className="space-y-6 bg-background/50 rounded-3xl p-8">
+                                        <p className="text-xs font-semibold uppercase tracking-widest">
                                             Education-first hair care
                                         </p>
-                                        <h1 className='text-4xl font-semibold tracking-tight sm:text-5xl'>
+                                        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
                                             The Education Your Salon Appointment
                                             Never Came With.
                                         </h1>
-                                        <p className='max-w-xl text-lg leading-8'>
+                                        <p className="max-w-xl text-lg leading-8">
                                             The Hair Insider is a private course
                                             library that teaches you the{" "}
                                             <em>why</em> behind your hair, so
@@ -885,9 +892,9 @@ export default function HomeClient() {
                                             build a routine that works.
                                         </p>
 
-                                        <ul className='space-y-2 text-sm'>
-                                            <li className='flex items-start gap-2'>
-                                                <span className='mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground' />
+                                        <ul className="space-y-2 text-sm">
+                                            <li className="flex items-start gap-2">
+                                                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                                                 <span>
                                                     Understand porosity,
                                                     breakage, shedding, and
@@ -897,17 +904,17 @@ export default function HomeClient() {
                                                     you.
                                                 </span>
                                             </li>
-                                            <li className='flex items-start gap-2'>
-                                                <span className='mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground' />
+                                            <li className="flex items-start gap-2">
+                                                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                                                 <span>
                                                     Build a simple, repeatable
                                                     routine with what you
-                                                    already own, no new
-                                                    products required.
+                                                    already own, no new products
+                                                    required.
                                                 </span>
                                             </li>
-                                            <li className='flex items-start gap-2'>
-                                                <span className='mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground' />
+                                            <li className="flex items-start gap-2">
+                                                <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                                                 <span>
                                                     Know how to troubleshoot
                                                     when something changes,
@@ -917,37 +924,39 @@ export default function HomeClient() {
                                             </li>
                                         </ul>
 
-                                        <div className='flex flex-col gap-3 sm:flex-row'>
+                                        <div className="flex flex-col gap-3 sm:flex-row">
                                             <Button
                                                 asChild
-                                                className='h-12 px-6'>
-                                                <Link href='/#shop'>Shop</Link>
+                                                className="h-12 px-6"
+                                            >
+                                                <Link href="/#shop">Shop</Link>
                                             </Button>
                                             <Button
                                                 asChild
-                                                variant='secondary'
-                                                className='h-12 px-6'>
-                                                <Link href='/7-day-moisture-reset'>
+                                                variant="secondary"
+                                                className="h-12 px-6"
+                                            >
+                                                <Link href="/7-day-moisture-reset">
                                                     Start the free digital guide
                                                 </Link>
                                             </Button>
                                         </div>
                                     </div>
 
-                                    <Card className='rounded-3xl'>
-                                        <CardHeader className='flex-row items-center justify-between'>
-                                            <CardTitle className='text-base'>
+                                    <Card className="rounded-3xl">
+                                        <CardHeader className="flex-row items-center justify-between">
+                                            <CardTitle className="text-base">
                                                 Included In The Course
                                             </CardTitle>
                                         </CardHeader>
-                                        <CardContent className='space-y-4'>
-                                            <ul className='space-y-4 text-sm'>
+                                        <CardContent className="space-y-4">
+                                            <ul className="space-y-4 text-sm">
                                                 <li>
-                                                    <p className='font-medium text-foreground'>
+                                                    <p className="font-medium text-foreground">
                                                         The &ldquo;aha&rdquo;
                                                         moment
                                                     </p>
-                                                    <p className='mt-1'>
+                                                    <p className="mt-1">
                                                         Finally understand why
                                                         your hair does what it
                                                         does, not just what to
@@ -955,11 +964,11 @@ export default function HomeClient() {
                                                     </p>
                                                 </li>
                                                 <li>
-                                                    <p className='font-medium text-foreground'>
+                                                    <p className="font-medium text-foreground">
                                                         A routine you&apos;ll
                                                         actually stick to
                                                     </p>
-                                                    <p className='mt-1'>
+                                                    <p className="mt-1">
                                                         Simple, repeatable, and
                                                         built around your life,
                                                         not an influencer&apos;s
@@ -967,7 +976,7 @@ export default function HomeClient() {
                                                     </p>
                                                 </li>
                                                 <li>
-                                                    <p className='font-medium text-foreground'>
+                                                    <p className="font-medium text-foreground">
                                                         Workbook that comes home
                                                         with you
                                                     </p>
@@ -976,11 +985,11 @@ export default function HomeClient() {
 
                                             <Separator />
 
-                                            <div className='rounded-2xl bg-muted p-4'>
-                                                <p className='text-xs font-medium'>
+                                            <div className="rounded-2xl bg-muted p-4">
+                                                <p className="text-xs font-medium">
                                                     Your stylist knows this.
                                                 </p>
-                                                <p className='mt-1 text-sm text-foreground'>
+                                                <p className="mt-1 text-sm text-foreground">
                                                     Now you will too.
                                                 </p>
                                             </div>
@@ -991,16 +1000,16 @@ export default function HomeClient() {
                         </div>
 
                         {/* Bottom trust strip */}
-                        <div className='bg-background/50'>
-                            <div className='mx-auto max-w-6xl px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm font-semibold'>
+                        <div className="bg-background/50">
+                            <div className="mx-auto max-w-6xl px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm font-semibold">
                                 <span>One purchase</span>
-                                <span className='hidden sm:inline'>·</span>
+                                <span className="hidden sm:inline">·</span>
                                 <span>Lifetime access</span>
-                                <span className='hidden sm:inline'>·</span>
+                                <span className="hidden sm:inline">·</span>
                                 <span>Instant unlock</span>
-                                <span className='hidden sm:inline'>·</span>
+                                <span className="hidden sm:inline">·</span>
                                 <span>No subscription</span>
-                                <span className='hidden sm:inline'>·</span>
+                                <span className="hidden sm:inline">·</span>
                                 <span>7-day money-back guarantee</span>
                             </div>
                         </div>
@@ -1009,24 +1018,23 @@ export default function HomeClient() {
                     {/* Manifesto */}
                     <section
                         ref={manifestoRef}
-                        className='min-h-[100dvh] flex flex-col justify-center border-t'>
-                        <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
-                            <FadeIn
-                                inView={manifestoIn}
-                                delayMs={150}>
-                                <div className='bg-background/50 p-6 mb-6 rounded-3xl'>
-                                    <p className='text-sm font-semibold uppercase tracking-widest mb-4'>
+                        className="min-h-[100dvh] flex flex-col justify-center border-t"
+                    >
+                        <div className="mx-auto max-w-6xl px-6 py-20 w-full">
+                            <FadeIn inView={manifestoIn} delayMs={150}>
+                                <div className="bg-background/50 p-6 mb-6 rounded-3xl">
+                                    <p className="text-sm font-semibold uppercase tracking-widest mb-4">
                                         Why it exists
                                     </p>
 
-                                    <p className='text-3xl sm:text-4xl font-semibold italic leading-tight max-w-3xl'>
+                                    <p className="text-3xl sm:text-4xl font-semibold italic leading-tight max-w-3xl">
                                         &ldquo;The hair industry runs on what
                                         you don&apos;t know. We&apos;re closing
                                         that gap.&rdquo;
                                     </p>
                                 </div>
 
-                                <div className='grid gap-4 md:grid-cols-3'>
+                                <div className="grid gap-4 md:grid-cols-3">
                                     {[
                                         {
                                             stat: "01",
@@ -1043,35 +1051,37 @@ export default function HomeClient() {
                                             claim: "Simple routines work. Complicated ones don\u2019t.",
                                             detail: "Consistency beats complexity every time. The 10-step routine is a product company\u2019s dream. A 3-step routine you actually do is yours.",
                                         },
-                                    ].map(item => (
+                                    ].map((item) => (
                                         <Card
                                             key={item.stat}
-                                            className='rounded-3xl'>
+                                            className="rounded-3xl"
+                                        >
                                             <CardHeader>
-                                                <p className='text-xs font-medium'>
+                                                <p className="text-xs font-medium">
                                                     {item.stat}
                                                 </p>
-                                                <CardTitle className='text-lg leading-snug'>
+                                                <CardTitle className="text-lg leading-snug">
                                                     {item.claim}
                                                 </CardTitle>
                                             </CardHeader>
-                                            <CardContent className='text-sm leading-relaxed'>
+                                            <CardContent className="text-sm leading-relaxed">
                                                 {item.detail}
                                             </CardContent>
                                         </Card>
                                     ))}
                                 </div>
 
-                                <div className='mt-12 flex flex-col sm:flex-row sm:items-center gap-6'>
+                                <div className="mt-12 flex flex-col sm:flex-row sm:items-center gap-6">
                                     <Button
                                         asChild
-                                        variant='default'
-                                        className='h-12 px-6'>
-                                        <Link href='/what-is-it'>
+                                        variant="default"
+                                        className="h-12 px-6"
+                                    >
+                                        <Link href="/what-is-it">
                                             Learn more
                                         </Link>
                                     </Button>
-                                    <p className='text-sm font-semibold bg-background/50 rounded-xl p-3'>
+                                    <p className="text-sm font-semibold bg-background/50 rounded-xl p-3">
                                         Education-first &middot; Product-neutral
                                         &middot; Built by a licensed stylist
                                     </p>
@@ -1083,44 +1093,43 @@ export default function HomeClient() {
                     {/* Educator */}
                     <section
                         ref={educatorRef}
-                        id='educator'
-                        className='min-h-[100dvh] flex items-center border-t'>
-                        <div className='mx-auto max-w-6xl px-6 py-20 w-full'>
-                            <FadeIn
-                                inView={educatorIn}
-                                delayMs={200}>
-                                <div className='grid gap-10 md:grid-cols-2 md:items-stretch'>
-                                    <div className='space-y-6 bg-background/50 rounded-3xl p-8 flex flex-col justify-between'>
-                                        <div className='space-y-5'>
-                                            <p className='text-sm font-semibold uppercase tracking-widest'>
+                        id="educator"
+                        className="min-h-[100dvh] flex items-center border-t"
+                    >
+                        <div className="mx-auto max-w-6xl px-6 py-20 w-full">
+                            <FadeIn inView={educatorIn} delayMs={200}>
+                                <div className="grid gap-10 md:grid-cols-2 md:items-stretch">
+                                    <div className="space-y-6 bg-background/50 rounded-3xl p-8 flex flex-col justify-between">
+                                        <div className="space-y-5">
+                                            <p className="text-sm font-semibold uppercase tracking-widest">
                                                 Meet your educator
                                             </p>
-                                            <h2 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+                                            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                                                 Lauren Jackson
                                             </h2>
-                                            <p className='text-xl leading-8 italic font-medium'>
+                                            <p className="text-xl leading-8 italic font-medium">
                                                 &ldquo;I was a licensed stylist,
                                                 and I still didn&apos;t know how
                                                 to grow my own hair.&rdquo;
                                             </p>
-                                            <p className='text-base leading-8'>
+                                            <p className="text-base leading-8">
                                                 Lauren is a licensed
                                                 cosmetologist with 8 years
                                                 behind the chair. She built The
                                                 Hair Insider because she kept
                                                 watching clients leave salons
-                                                confused, with instructions,
-                                                but no understanding.
+                                                confused, with instructions, but
+                                                no understanding.
                                             </p>
-                                            <p className='text-base leading-8'>
+                                            <p className="text-base leading-8">
                                                 What she saw over and over
                                                 wasn&apos;t a product problem.
                                                 It was a clarity problem.
                                             </p>
                                         </div>
 
-                                        <div className='space-y-6'>
-                                            <div className='grid grid-cols-2 gap-3'>
+                                        <div className="space-y-6">
+                                            <div className="grid grid-cols-2 gap-3">
                                                 {[
                                                     {
                                                         label: "Specialty",
@@ -1138,14 +1147,15 @@ export default function HomeClient() {
                                                         label: "Focus",
                                                         value: "Health + length retention",
                                                     },
-                                                ].map(item => (
+                                                ].map((item) => (
                                                     <div
                                                         key={item.label}
-                                                        className='rounded-2xl bg-muted p-4'>
-                                                        <p className='text-xs font-medium'>
+                                                        className="rounded-2xl bg-muted p-4"
+                                                    >
+                                                        <p className="text-xs font-medium">
                                                             {item.label}
                                                         </p>
-                                                        <p className='mt-1 text-sm'>
+                                                        <p className="mt-1 text-sm">
                                                             {item.value}
                                                         </p>
                                                     </div>
@@ -1154,49 +1164,52 @@ export default function HomeClient() {
 
                                             <Button
                                                 asChild
-                                                className='h-12 px-6'>
-                                                <Link href='/meet-your-educator'>
+                                                className="h-12 px-6"
+                                            >
+                                                <Link href="/meet-your-educator">
                                                     Her Story
                                                 </Link>
                                             </Button>
                                         </div>
                                     </div>
 
-                                    <div className='rounded-3xl border bg-card shadow-sm overflow-hidden flex flex-col'>
-                                        <div className='relative flex-1 min-h-[400px]'>
+                                    <div className="rounded-3xl border bg-card shadow-sm overflow-hidden flex flex-col">
+                                        <div className="relative flex-1 min-h-[400px]">
                                             <Image
-                                                src='/Lauren_headshot.jpg'
-                                                alt='Lauren Jackson, founder of The Hair Insider'
+                                                src="/Lauren_headshot.jpg"
+                                                alt="Lauren Jackson, founder of The Hair Insider"
                                                 fill
-                                                className='object-cover'
-                                                sizes='(min-width: 768px) 520px, 100vw'
+                                                className="object-cover"
+                                                sizes="(min-width: 768px) 520px, 100vw"
                                                 priority={false}
                                             />
                                         </div>
 
-                                        <div className='p-6 space-y-2'>
-                                            <p className='text-sm font-semibold'>
+                                        <div className="p-6 space-y-2">
+                                            <p className="text-sm font-semibold">
                                                 Lauren Jackson
                                             </p>
-                                            <p className='text-xs'>
+                                            <p className="text-xs">
                                                 Founder &amp; Educator, The Hair
                                                 Insider
                                             </p>
-                                            <div className='flex flex-wrap gap-3 pt-1'>
+                                            <div className="flex flex-wrap gap-3 pt-1">
                                                 <a
-                                                    href='https://www.tiktok.com/@lifewith.laurenj'
-                                                    target='_blank'
-                                                    rel='noreferrer'
-                                                    className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
-                                                    <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                                    href="https://www.tiktok.com/@lifewith.laurenj"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity"
+                                                >
+                                                    <TikTokIcon className="h-3.5 w-3.5 shrink-0" />
                                                     @lifewith.laurenj
                                                 </a>
                                                 <a
-                                                    href='https://www.tiktok.com/@thehairinsider'
-                                                    target='_blank'
-                                                    rel='noreferrer'
-                                                    className='inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity'>
-                                                    <TikTokIcon className='h-3.5 w-3.5 shrink-0' />
+                                                    href="https://www.tiktok.com/@thehairinsider"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4 hover:opacity-70 transition-opacity"
+                                                >
+                                                    <TikTokIcon className="h-3.5 w-3.5 shrink-0" />
                                                     @thehairinsider
                                                 </a>
                                             </div>
