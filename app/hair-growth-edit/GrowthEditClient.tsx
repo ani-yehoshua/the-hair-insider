@@ -8,6 +8,7 @@ import { Navbar } from "@/components/site/navbar";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
 import { GuideView } from "./components/GuideView";
+import { BackToTopButton } from "./components/BackToTopButton";
 import { resolveGuideReturnView, type AppView } from "./lib/navigation";
 import { useAuth } from "@/lib/auth/useAuth";
 import {

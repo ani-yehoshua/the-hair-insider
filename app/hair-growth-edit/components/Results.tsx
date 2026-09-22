@@ -198,7 +198,7 @@ export function Results({
                         Your Complete Growth Plan
                     </span>
                     <h2 className="mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                        The Growth Edit Is Ready
+                        Your Routine Is Ready
                     </h2>
                     <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
                         Open your personalized action plan, buying priorities,
@@ -210,7 +210,7 @@ export function Results({
                         onClick={onOpenGuide}
                         className="mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                     >
-                        Open The Growth Edit <ArrowRight size={14} />
+                        View My Routine <ArrowRight size={14} />
                     </button>
                 </div>
             )}
