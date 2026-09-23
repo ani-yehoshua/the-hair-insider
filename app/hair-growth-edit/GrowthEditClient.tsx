@@ -336,7 +336,6 @@ export default function GrowthEditClient() {
                         setStep(0);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    onOpenGuide={openGuide}
                 />
             )}
 

@@ -20,7 +20,6 @@ interface ResultsProps {
     unlocked: boolean;
     onRequireAuth: (nextView?: "guide" | "results") => void;
     onReset: () => void;
-    onOpenGuide: () => void;
 }
 
 export function Results({
@@ -37,7 +36,6 @@ export function Results({
     unlocked,
     onRequireAuth,
     onReset,
-    onOpenGuide,
 }: ResultsProps) {
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(false);
@@ -190,30 +188,6 @@ export function Results({
                     </div>
                 )}
             </div>
-
-            {/* Purchased guide */}
-            {!hasSevereRedFlag && unlocked && (
-                <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
-                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-                        Your Complete Growth Plan
-                    </span>
-                    <h2 className="mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                        Your Routine Is Ready
-                    </h2>
-                    <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                        Open your personalized action plan, buying priorities,
-                        complete routine, progress checkpoints, and
-                        troubleshooting guidance.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={onOpenGuide}
-                        className="mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                    >
-                        View My Routine <ArrowRight size={14} />
-                    </button>
-                </div>
-            )}
 
             {/* Paid complete guide */}
             {!hasSevereRedFlag && !unlocked && (
