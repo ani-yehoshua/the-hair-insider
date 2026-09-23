@@ -207,7 +207,7 @@ export function LibraryTab() {
                     badge: "The Growth Edit",
                     coverImage: growthEdit.cover_image_url,
                     href: "/hair-growth-edit",
-                    cta: "Open The Growth Edit →",
+                    cta: "View My Routine →",
                 });
             }
 
