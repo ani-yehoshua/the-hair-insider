@@ -220,7 +220,7 @@ export function Results({
                                 Your Complete Growth Plan
                             </span>
                             <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                                Unlock The Growth Edit
+                                Unlock Your Routine
                             </h2>
                             <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
                                 Get your personalized Top 3 buying priorities,
@@ -232,8 +232,7 @@ export function Results({
                                 One-time $59
                             </p>
                             <p className="mt-1 text-sm text-foreground/70">
-                                Most people spend $150+ a month testing random
-                                products.
+                                Stop spending $150+ testing random products. Get the plan first.
                             </p>
                             <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
                                 The $59 purchase includes your personalized

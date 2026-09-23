@@ -6,8 +6,8 @@ interface ViewTabsProps {
 }
 
 const TABS = [
-    { key: "results", label: "Results" },
-    { key: "guide", label: "Growth Edit" },
+    { key: "results", label: "Your Results" },
+    { key: "guide", label: "Your Routine" },
 ] as const;
 
 // Same pill-container shape as the /account page's Library/Profile tabs
