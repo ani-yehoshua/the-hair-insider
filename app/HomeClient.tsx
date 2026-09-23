@@ -323,6 +323,7 @@ function WorkbookCard({
     buyError,
     onBuy,
     href = "/workbook",
+    ownedHref = href,
     ownedCta = "Open digital workbook →",
     buyCta = "Get the digital workbook",
     detailNote = "Already own the mini course? Add the digital workbook to your toolkit, sold separately.",
@@ -337,6 +338,7 @@ function WorkbookCard({
     buyError: string | null;
     onBuy: (slug: string) => void;
     href?: string;
+    ownedHref?: string;
     ownedCta?: string;
     buyCta?: string;
     detailNote?: string;
@@ -401,7 +403,9 @@ function WorkbookCard({
 
                 {owned || buyAsLink ? (
                     <Button asChild className="w-full h-11">
-                        <Link href={href}>{owned ? ownedCta : buyCta}</Link>
+                        <Link href={owned ? ownedHref : href}>
+                            {owned ? ownedCta : buyCta}
+                        </Link>
                     </Button>
                 ) : (
                     <Button
@@ -760,6 +764,7 @@ export default function HomeClient() {
                                                         }
                                                         onBuy={onBuy}
                                                         href="/hair-growth-edit"
+                                                        ownedHref="/hair-growth-edit?view=guide"
                                                         ownedCta="View My Routine →"
                                                         buyCta="Unlock My Full Routine →"
                                                         hidePrice

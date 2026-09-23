@@ -18,7 +18,7 @@ interface ResultsProps {
     paidRoutine: RoutineStep[];
     supportingNeeds: string[];
     unlocked: boolean;
-    onRequireAuth: () => void;
+    onRequireAuth: (nextView?: "guide" | "results") => void;
     onReset: () => void;
     onOpenGuide: () => void;
 }
@@ -233,7 +233,7 @@ export function Results({
                             <div className="mt-10">
                                 <button
                                     type="button"
-                                    onClick={onRequireAuth}
+                                    onClick={() => onRequireAuth("guide")}
                                     className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
                                     Sign In <ArrowRight size={14} />
@@ -346,7 +346,7 @@ export function Results({
                             <div className="mt-10">
                                 <button
                                     type="button"
-                                    onClick={onRequireAuth}
+                                    onClick={() => onRequireAuth("results")}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
                                     Sign In

@@ -9,7 +9,8 @@ import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
 import { GuideView } from "./components/GuideView";
 import { BackToTopButton } from "./components/BackToTopButton";
-import { resolveGuideReturnView, type AppView } from "./lib/navigation";
+import { ViewTabs } from "./components/ViewTabs";
+import type { AppView } from "./lib/navigation";
 import { useAuth } from "@/lib/auth/useAuth";
 import {
     PENDING_ANSWERS_KEY,
@@ -22,8 +23,6 @@ import {
 export default function GrowthEditClient() {
     const { signedIn, loading: authLoading } = useAuth();
     const [view, setView] = useState<AppView>("home");
-    const [guideReturnView, setGuideReturnView] =
-        useState<Exclude<AppView, "guide">>("home");
     const [step, setStep] = useState(0);
     const [answers, setAnswers] = useState<AnswerMap>({});
     const [unlocked, setUnlocked] = useState(false);
@@ -73,6 +72,18 @@ export default function GrowthEditClient() {
         if (authLoading || didBootstrap.current) return;
         didBootstrap.current = true;
 
+        // Owners following a "View My Routine" link (from the homepage, or
+        // the post-purchase sign-in redirect) land straight on the guide
+        // instead of results, as long as they're actually entitled and their
+        // assessment isn't flagged severe (the guide never renders for that
+        // case). Read once and strip it so it doesn't stick on refresh.
+        const wantsGuide =
+            new URLSearchParams(window.location.search).get("view") ===
+            "guide";
+        if (wantsGuide) {
+            window.history.replaceState(null, "", "/hair-growth-edit");
+        }
+
         (async () => {
             if (!signedIn) {
                 setBootstrapping(false);
@@ -86,8 +97,15 @@ export default function GrowthEditClient() {
                     const pendingAnswers = JSON.parse(pendingRaw) as AnswerMap;
                     await saveAssessment(pendingAnswers);
                     setAnswers(pendingAnswers);
-                    setUnlocked(await checkGrowthEditEntitlement());
-                    setView("results");
+                    const entitled = await checkGrowthEditEntitlement();
+                    setUnlocked(entitled);
+                    setView(
+                        wantsGuide &&
+                            entitled &&
+                            !calculateResults(pendingAnswers).hasSevereRedFlag
+                            ? "guide"
+                            : "results",
+                    );
                     setBootstrapping(false);
                     return;
                 } catch {
@@ -102,7 +120,13 @@ export default function GrowthEditClient() {
             setUnlocked(entitled);
             if (saved) {
                 setAnswers(saved);
-                setView("results");
+                setView(
+                    wantsGuide &&
+                        entitled &&
+                        !calculateResults(saved).hasSevereRedFlag
+                        ? "guide"
+                        : "results",
+                );
             }
             setBootstrapping(false);
         })();
@@ -127,7 +151,6 @@ export default function GrowthEditClient() {
 
     const openGuide = () => {
         if (!assessmentComplete || !unlocked) return;
-        if (view !== "guide") setGuideReturnView(view);
         setView("guide");
     };
 
@@ -163,12 +186,16 @@ export default function GrowthEditClient() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Used both by the results page's "sign in to save" banner and by the
-    // paid CTA when clicked signed-out (an account is still required to
-    // attach an entitlement to, just no longer required to see free results).
-    const handleRequireAuth = () => {
+    // Used by the post-purchase "Sign In" buttons on the results page. Normal
+    // purchases land signed-in owners straight on the guide; the severe-flag
+    // case has no guide to land on, so it keeps going back to results.
+    const handleRequireAuth = (nextView: "guide" | "results" = "results") => {
         sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
-        window.location.href = `/signin?next=${encodeURIComponent("/hair-growth-edit")}`;
+        const next =
+            nextView === "guide"
+                ? "/hair-growth-edit?view=guide"
+                : "/hair-growth-edit";
+        window.location.href = `/signin?next=${encodeURIComponent(next)}`;
     };
 
     const results = calculateResults(answers);
@@ -199,7 +226,7 @@ export default function GrowthEditClient() {
                         your full plan.
                     </p>
                     <a
-                        href={`/signin?next=${encodeURIComponent("/hair-growth-edit")}`}
+                        href={`/signin?next=${encodeURIComponent("/hair-growth-edit?view=guide")}`}
                         className="mx-auto mt-10 inline-flex w-full max-w-md items-center justify-center gap-3 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
                     >
                         Sign In <ArrowRight size={14} />
@@ -286,6 +313,18 @@ export default function GrowthEditClient() {
                 />
             )}
 
+            {unlocked &&
+                assessmentComplete &&
+                !results.hasSevereRedFlag &&
+                (effectiveView === "results" || effectiveView === "guide") && (
+                    <ViewTabs
+                        active={effectiveView}
+                        onSelect={(next) =>
+                            next === "guide" ? openGuide() : setView("results")
+                        }
+                    />
+                )}
+
             {effectiveView === "results" && (
                 <Results
                     {...results}
@@ -306,14 +345,7 @@ export default function GrowthEditClient() {
                 assessmentComplete &&
                 !results.hasSevereRedFlag && (
                     <GuideView
-                        onBack={() =>
-                            setView(
-                                resolveGuideReturnView(
-                                    guideReturnView,
-                                    assessmentComplete,
-                                ),
-                            )
-                        }
+                        onBack={() => setView("results")}
                         paidRoutine={results.paidRoutine}
                         shouldShampooTwice={results.shouldShampooTwice}
                         primaryCause={results.primaryCause}
@@ -342,6 +374,8 @@ export default function GrowthEditClient() {
                     </p>
                 </div>
             </footer>
+
+            <BackToTopButton />
         </div>
     );
 }
