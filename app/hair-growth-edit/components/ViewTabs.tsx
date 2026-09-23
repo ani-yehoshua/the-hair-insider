@@ -18,7 +18,7 @@ const TABS = [
 export function ViewTabs({ active, onSelect }: ViewTabsProps) {
     return (
         <div className="mx-auto w-full max-w-4xl px-5 pt-8 md:px-8">
-            <div className="grid h-9 w-full grid-cols-2 gap-1 rounded-lg bg-background p-[3px]">
+            <div className="grid h-9 w-full grid-cols-2 gap-1 rounded-lg bg-muted-foreground/60 p-[3px]">
                 {TABS.map((tab) => (
                     <button
                         key={tab.key}
@@ -27,7 +27,7 @@ export function ViewTabs({ active, onSelect }: ViewTabsProps) {
                         className={`flex h-full items-center justify-center rounded-md text-sm font-medium transition-colors ${
                             active === tab.key
                                 ? "bg-foreground text-background shadow-sm"
-                                : "text-foreground/60 hover:text-foreground"
+                                : "text-background hover:text-foreground"
                         }`}
                     >
                         {tab.label}
