@@ -345,7 +345,6 @@ export default function GrowthEditClient() {
                 assessmentComplete &&
                 !results.hasSevereRedFlag && (
                     <GuideView
-                        onBack={() => setView("results")}
                         paidRoutine={results.paidRoutine}
                         shouldShampooTwice={results.shouldShampooTwice}
                         primaryCause={results.primaryCause}

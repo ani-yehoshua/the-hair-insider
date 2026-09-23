@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-    ArrowLeft,
     ArrowUpRight,
     Bookmark,
     BookmarkCheck,
@@ -10,7 +9,6 @@ import {
 import type { RoutineStep } from "../data/recommendations";
 
 interface GuideViewProps {
-    onBack: () => void;
     paidRoutine: RoutineStep[];
     shouldShampooTwice: boolean;
     primaryCause: string;
@@ -91,7 +89,6 @@ function getRoutineBenefit(step: RoutineStep): string {
 }
 
 export function GuideView({
-    onBack,
     paidRoutine,
     shouldShampooTwice,
     primaryCause,
@@ -192,13 +189,6 @@ export function GuideView({
             className="mx-auto w-full max-w-5xl px-5 pb-32 pt-12 md:px-8 md:pt-20 slide-up"
             data-testid="section-guide"
         >
-            <button
-                onClick={onBack}
-                className="mb-12 inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground/60 transition-colors hover:text-foreground"
-            >
-                <ArrowLeft size={14} /> Return to Results
-            </button>
-
             {/* Guide Header */}
             <div className="max-w-3xl">
                 <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
