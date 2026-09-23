@@ -15,8 +15,11 @@ import { useAuth } from "@/lib/auth/useAuth";
 import {
     PENDING_ANSWERS_KEY,
     checkGrowthEditEntitlement,
+    clearDraftAnswers,
+    loadDraftAnswers,
     loadSavedAssessment,
     saveAssessment,
+    saveDraftAnswers,
     type AnswerMap,
 } from "./lib/assessmentStore";
 
@@ -74,6 +77,16 @@ export default function GrowthEditClient() {
 
         (async () => {
             if (!signedIn) {
+                // A signed-out visitor who already finished the assessment
+                // and reloaded lands back on their results, not the quiz.
+                const draft = loadDraftAnswers();
+                if (
+                    draft &&
+                    QUESTIONS.every((question) => draft[question.id] !== undefined)
+                ) {
+                    setAnswers(draft);
+                    setView("results");
+                }
                 setBootstrapping(false);
                 return;
             }
@@ -88,6 +101,7 @@ export default function GrowthEditClient() {
                 try {
                     const pendingAnswers = JSON.parse(pendingRaw) as AnswerMap;
                     await saveAssessment(pendingAnswers);
+                    clearDraftAnswers();
                     setAnswers(pendingAnswers);
                     const entitled = await checkGrowthEditEntitlement();
                     setUnlocked(entitled);
@@ -146,6 +160,7 @@ export default function GrowthEditClient() {
     const handleStart = () => {
         setStep(0);
         setAnswers({});
+        clearDraftAnswers();
         setView("quiz");
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -168,6 +183,9 @@ export default function GrowthEditClient() {
         if (signedIn) {
             await saveAssessment(answers);
             setUnlocked(await checkGrowthEditEntitlement());
+            clearDraftAnswers();
+        } else {
+            saveDraftAnswers(answers);
         }
         // Signed-out visitors see their results immediately, unsaved -- no wall
         // between finishing the assessment and seeing what it found.
@@ -316,6 +334,7 @@ export default function GrowthEditClient() {
                     unlocked={unlocked}
                     onRequireAuth={handleRequireAuth}
                     onReset={() => {
+                        clearDraftAnswers();
                         setView("home");
                         setAnswers({});
                         setStep(0);
