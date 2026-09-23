@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase/client';
 
 export const PENDING_ANSWERS_KEY = 'ge_pending_answers';
 const DRAFT_ANSWERS_KEY = 'ge_draft_answers';
+const PURCHASE_PENDING_KEY = 'ge_purchase_pending_signin';
 
 export type AnswerMap = Record<string, number>;
 
@@ -84,4 +85,30 @@ export async function checkGrowthEditEntitlement(): Promise<boolean> {
     .maybeSingle();
 
   return !!entitlement;
+}
+
+// Remembers that a signed-out visitor has paid but not signed in yet, so a
+// reload shows "sign in" again instead of the offer (avoids double-purchase).
+export function markPurchasePendingSignIn(): void {
+  try {
+    localStorage.setItem(PURCHASE_PENDING_KEY, '1');
+  } catch {
+    // ignore
+  }
+}
+
+export function isPurchasePendingSignIn(): boolean {
+  try {
+    return localStorage.getItem(PURCHASE_PENDING_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function clearPurchasePendingSignIn(): void {
+  try {
+    localStorage.removeItem(PURCHASE_PENDING_KEY);
+  } catch {
+    // ignore
+  }
 }

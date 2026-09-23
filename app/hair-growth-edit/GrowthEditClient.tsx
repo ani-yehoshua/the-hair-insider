@@ -16,6 +16,7 @@ import {
     PENDING_ANSWERS_KEY,
     checkGrowthEditEntitlement,
     clearDraftAnswers,
+    clearPurchasePendingSignIn,
     loadDraftAnswers,
     loadSavedAssessment,
     saveAssessment,
@@ -90,6 +91,8 @@ export default function GrowthEditClient() {
                 setBootstrapping(false);
                 return;
             }
+
+            clearPurchasePendingSignIn();
 
             // Any owner landing here -- from the account library page, a
             // "View My Routine" link, or a post-purchase sign-in -- goes

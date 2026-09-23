@@ -3,6 +3,10 @@ import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, Check } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
+import {
+    isPurchasePendingSignIn,
+    markPurchasePendingSignIn,
+} from "../lib/assessmentStore";
 
 const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
@@ -38,9 +42,12 @@ export function Results({
     onReset,
 }: ResultsProps) {
     const [checkoutOpen, setCheckoutOpen] = useState(false);
-    const [purchaseComplete, setPurchaseComplete] = useState(false);
+    const [purchaseComplete, setPurchaseComplete] = useState(() =>
+        isPurchasePendingSignIn(),
+    );
 
     const handleCheckoutComplete = () => {
+        markPurchasePendingSignIn();
         setCheckoutOpen(false);
         setPurchaseComplete(true);
     };
