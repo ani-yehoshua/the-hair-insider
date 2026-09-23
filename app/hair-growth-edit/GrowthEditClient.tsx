@@ -72,24 +72,16 @@ export default function GrowthEditClient() {
         if (authLoading || didBootstrap.current) return;
         didBootstrap.current = true;
 
-        // Owners following a "View My Routine" link (from the homepage, or
-        // the post-purchase sign-in redirect) land straight on the guide
-        // instead of results, as long as they're actually entitled and their
-        // assessment isn't flagged severe (the guide never renders for that
-        // case). Read once and strip it so it doesn't stick on refresh.
-        const wantsGuide =
-            new URLSearchParams(window.location.search).get("view") ===
-            "guide";
-        if (wantsGuide) {
-            window.history.replaceState(null, "", "/hair-growth-edit");
-        }
-
         (async () => {
             if (!signedIn) {
                 setBootstrapping(false);
                 return;
             }
 
+            // Any owner landing here -- from the account library page, a
+            // "View My Routine" link, or a post-purchase sign-in -- goes
+            // straight to the guide. The severe-flag case has no guide to
+            // land on, so it still lands on results.
             const pendingRaw = sessionStorage.getItem(PENDING_ANSWERS_KEY);
             if (pendingRaw) {
                 sessionStorage.removeItem(PENDING_ANSWERS_KEY);
@@ -100,8 +92,7 @@ export default function GrowthEditClient() {
                     const entitled = await checkGrowthEditEntitlement();
                     setUnlocked(entitled);
                     setView(
-                        wantsGuide &&
-                            entitled &&
+                        entitled &&
                             !calculateResults(pendingAnswers).hasSevereRedFlag
                             ? "guide"
                             : "results",
@@ -121,9 +112,7 @@ export default function GrowthEditClient() {
             if (saved) {
                 setAnswers(saved);
                 setView(
-                    wantsGuide &&
-                        entitled &&
-                        !calculateResults(saved).hasSevereRedFlag
+                    entitled && !calculateResults(saved).hasSevereRedFlag
                         ? "guide"
                         : "results",
                 );
@@ -186,16 +175,12 @@ export default function GrowthEditClient() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Used by the post-purchase "Sign In" buttons on the results page. Normal
-    // purchases land signed-in owners straight on the guide; the severe-flag
-    // case has no guide to land on, so it keeps going back to results.
-    const handleRequireAuth = (nextView: "guide" | "results" = "results") => {
+    // Used by the post-purchase "Sign In" buttons on the results page. The
+    // bootstrap effect above already sends any signed-in, entitled owner
+    // straight to the guide, so this just needs to get them signed in.
+    const handleRequireAuth = () => {
         sessionStorage.setItem(PENDING_ANSWERS_KEY, JSON.stringify(answers));
-        const next =
-            nextView === "guide"
-                ? "/hair-growth-edit?view=guide"
-                : "/hair-growth-edit";
-        window.location.href = `/signin?next=${encodeURIComponent(next)}`;
+        window.location.href = `/signin?next=${encodeURIComponent("/hair-growth-edit")}`;
     };
 
     const results = calculateResults(answers);
@@ -226,7 +211,7 @@ export default function GrowthEditClient() {
                         your full plan.
                     </p>
                     <a
-                        href={`/signin?next=${encodeURIComponent("/hair-growth-edit?view=guide")}`}
+                        href={`/signin?next=${encodeURIComponent("/hair-growth-edit")}`}
                         className="mx-auto mt-10 inline-flex w-full max-w-md items-center justify-center gap-3 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
                     >
                         Sign In <ArrowRight size={14} />
