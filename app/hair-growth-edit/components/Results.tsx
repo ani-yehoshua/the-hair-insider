@@ -121,6 +121,80 @@ export function Results({
                     </div>
                 )}
 
+                {/* First decision point: sits directly under the answer chips so
+                    the buy is in the same eyeline as their inputs. */}
+                {!hasSevereRedFlag && !unlocked && (
+                    <div className="rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-8 text-center md:px-10">
+                        {purchaseComplete ? (
+                            <>
+                                <h2 className="font-serif text-2xl text-foreground md:text-3xl">
+                                    Thanks For Your Purchase
+                                </h2>
+                                <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground/80">
+                                    Sign in with the same email you just paid
+                                    with to unlock your full plan.
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={onRequireAuth}
+                                    className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                                >
+                                    Sign In <ArrowRight size={14} />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="mx-auto max-w-md text-sm font-medium leading-relaxed text-foreground">
+                                    Based on your {observations[0]} and{" "}
+                                    {observations[1]}, the guide maps the exact
+                                    order, products, and timing for your
+                                    routine.
+                                </p>
+                                <div className="mx-auto mt-5 max-w-md space-y-2 text-left">
+                                    {[
+                                        "Complete ordered routine",
+                                        "Why/How/Timing for every step",
+                                        "Weekly schedule + first 30-day plan",
+                                        "Troubleshooting checkpoints",
+                                        "What to skip and what not to combine",
+                                    ].map((feature) => (
+                                        <div
+                                            key={feature}
+                                            className="flex items-start gap-3"
+                                        >
+                                            <Check
+                                                className="mt-0.5 shrink-0 text-foreground/60"
+                                                size={16}
+                                            />
+                                            <span className="text-sm text-foreground/80">
+                                                {feature}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="mx-auto mt-5 max-w-md text-xs leading-relaxed text-foreground/60">
+                                    Includes your personalized digital guide
+                                    only. Recommended products sold separately.
+                                </p>
+                                <p className="mt-2 text-[0.65rem] uppercase tracking-widest text-foreground/50">
+                                    Instant access after checkout
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={() => setCheckoutOpen(true)}
+                                    className="mt-5 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                                >
+                                    Unlock My Full Routine — $59
+                                    <ArrowRight size={14} />
+                                </button>
+                                <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
+                                    Apple Pay · Google Pay · Card
+                                </p>
+                            </>
+                        )}
+                    </div>
+                )}
+
                 {/* Behavior Edit */}
                 <div className="border-t border-foreground/15 pt-10">
                     <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
