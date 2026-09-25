@@ -151,7 +151,36 @@ export function Results({
                             </>
                         ) : (
                             <>
-                                <p className="mx-auto max-w-md text-sm font-medium leading-relaxed text-foreground">
+                                <h2 className="font-serif text-2xl leading-tight text-foreground md:text-3xl">
+                                    Your Exact Routine Map for {primaryCause}
+                                </h2>
+                                {paidRoutine.length > 0 && (
+                                    <div
+                                        aria-hidden="true"
+                                        className="mx-auto mt-4 max-w-xs space-y-1.5 rounded-xl bg-paper px-4 py-3 text-left"
+                                    >
+                                        {paidRoutine.slice(0, 3).map((step) => (
+                                            <div
+                                                key={step.order}
+                                                className="flex items-center gap-3 text-xs text-foreground/70"
+                                            >
+                                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground text-[0.6rem] text-background">
+                                                    {step.order}
+                                                </span>
+                                                <span className="truncate">
+                                                    {step.product.category}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        {paidRoutine.length > 3 && (
+                                            <p className="pl-8 text-[0.65rem] uppercase tracking-widest text-foreground/40">
+                                                + {paidRoutine.length - 3} more
+                                                steps
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                                <p className="mx-auto mt-5 max-w-md text-sm font-medium leading-relaxed text-foreground">
                                     Based on your {observations[0]} and{" "}
                                     {observations[1]}, the guide maps the exact
                                     order, products, and timing for your
@@ -191,11 +220,23 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="mt-5 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
-                                    Unlock My Full Routine — $59
+                                    Generate My Routine — $59
                                     <ArrowRight size={14} />
                                 </button>
                                 <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
                                     Apple Pay · Google Pay · Card
+                                </p>
+                                <p className="mt-2 text-[0.65rem] text-foreground/50">
+                                    First-time purchases have a 7-day refund
+                                    window.{" "}
+                                    <a
+                                        href="/terms"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="underline"
+                                    >
+                                        See terms
+                                    </a>
                                 </p>
                             </>
                         )}
@@ -320,7 +361,7 @@ export function Results({
                                 One-time $59
                             </p>
                             <p className="mt-1 text-sm text-foreground/70">
-                                Stop spending $150+ testing random products. Get the plan first.
+                                One clear routine instead of another try-and-hope haul.
                             </p>
                             <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
                                 The $59 purchase includes your personalized
@@ -373,7 +414,7 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
-                                    Unlock My Full Routine — $59
+                                    Generate My Routine — $59
                                     <ArrowRight size={14} />
                                 </button>
                             </div>
