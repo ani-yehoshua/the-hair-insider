@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-    ArrowUpRight,
+    ExternalLink,
     Bookmark,
     BookmarkCheck,
     Calendar,
@@ -619,7 +619,7 @@ export function GuideView({
                                             className="mt-6 inline-flex items-center gap-2 self-start text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
                                         >
                                             View on Retailer{" "}
-                                            <ArrowUpRight size={12} />
+                                            <ExternalLink size={12} />
                                         </a>
                                     </div>
                                 </div>
@@ -872,7 +872,7 @@ export function GuideView({
                                             className="inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
                                         >
                                             View on Retailer{" "}
-                                            <ArrowUpRight size={12} />
+                                            <ExternalLink size={12} />
                                         </a>
                                     </div>
                                 </div>

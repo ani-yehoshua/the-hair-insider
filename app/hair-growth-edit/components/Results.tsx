@@ -2,7 +2,7 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
 import {
     isPurchasePendingSignIn,
@@ -193,6 +193,9 @@ export function Results({
                                         "Weekly schedule + first 30-day plan",
                                         "Troubleshooting checkpoints",
                                         "What to skip and what not to combine",
+                                        shouldShampooTwice
+                                            ? "Your personalized double-cleanse instructions"
+                                            : "Your single-pass gentle cleanse instructions",
                                     ].map((feature) => (
                                         <div
                                             key={feature}
@@ -209,16 +212,21 @@ export function Results({
                                     ))}
                                 </div>
                                 <p className="mx-auto mt-5 max-w-md text-xs leading-relaxed text-foreground/60">
-                                    Includes your personalized digital guide
-                                    only. Recommended products sold separately.
+                                    One-time payment. Includes your personalized
+                                    digital guide only. Recommended products
+                                    sold separately.
                                 </p>
                                 <p className="mt-2 text-[0.65rem] uppercase tracking-widest text-foreground/50">
                                     Instant access after checkout
                                 </p>
+                                <p className="mt-5 text-sm font-medium text-foreground">
+                                    One clear routine instead of another
+                                    try-and-hope haul.
+                                </p>
                                 <button
                                     type="button"
                                     onClick={() => openCheckout()}
-                                    className="mt-5 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                                    className="mt-3 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
                                     Generate My Routine — $59
                                     <ArrowRight size={14} />
@@ -310,6 +318,7 @@ export function Results({
                                         className="mt-6 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
                                     >
                                         View Details
+                                        <ExternalLink size={12} />
                                     </a>
                                 </div>
                             ))}
@@ -318,111 +327,25 @@ export function Results({
                 )}
             </div>
 
-            {/* Paid complete guide */}
-            {!hasSevereRedFlag && !unlocked && (
-                <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-12 text-center md:px-12 md:py-16">
-                    {purchaseComplete ? (
-                        <>
-                            <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-                                You&apos;re All Set
-                            </span>
-                            <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                                Thanks For Your Purchase
-                            </h2>
-                            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
-                                Sign in with the same email you just paid with
-                                to unlock your full plan on this page.
-                            </p>
-                            <div className="mt-10">
-                                <button
-                                    type="button"
-                                    onClick={onRequireAuth}
-                                    className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                                >
-                                    Sign In <ArrowRight size={14} />
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-                                Your Complete Growth Plan
-                            </span>
-                            <h2 className="font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                                Unlock Your Routine
-                            </h2>
-                            <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
-                                Get your personalized Top 3 buying priorities,
-                                complete product routine, wash-day schedule, and
-                                clear instructions for using every
-                                recommendation.
-                            </p>
-                            <p className="mt-5 font-serif text-3xl text-foreground">
-                                One-time $59
-                            </p>
-                            <p className="mt-1 text-sm text-foreground/70">
-                                One clear routine instead of another try-and-hope haul.
-                            </p>
-                            <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
-                                The $59 purchase includes your personalized
-                                digital guide only. Recommended physical
-                                products are not included and are sold
-                                separately.
-                            </p>
-
-                            <div className="mx-auto mt-10 max-w-md space-y-3 text-left">
-                                {[
-                                    "Complete ordered product routine",
-                                    "Why, Benefit, How, and Timing for every step",
-                                    "Personalized weekly schedule and first 30-day action plan",
-                                    "Progress checkpoints and troubleshooting guidance",
-                                    "Saved product organization",
-                                    "Daily length-retention tip",
-                                    "Guidance on where to spend first, what to skip, and what not to combine",
-                                    shouldShampooTwice
-                                        ? "Your personalized double-cleanse instructions"
-                                        : "Your single-pass gentle cleanse instructions",
-                                ].map((feature, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex items-start gap-3"
-                                    >
-                                        <Check
-                                            className="mt-0.5 shrink-0 text-foreground/60"
-                                            size={16}
-                                        />
-                                        <span className="text-sm text-foreground/80">
-                                            {feature}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <p className="mx-auto mt-8 max-w-md text-sm font-medium leading-relaxed text-foreground">
-                                Based on your {primaryCause} and{" "}
-                                {observations[0]}, the guide maps the exact
-                                order, products, and timing for your
-                                routine — nothing generic.
-                            </p>
-                            <p className="mt-2 text-xs uppercase tracking-widest text-foreground/50">
-                                Instant access after checkout · No waiting
-                            </p>
-
-                            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                                <button
-                                    type="button"
-                                    onClick={() => openCheckout()}
-                                    className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                                >
-                                    Generate My Routine — $59
-                                    <ArrowRight size={14} />
-                                </button>
-                            </div>
-                            <p className="mt-4 text-[0.65rem] uppercase tracking-widest text-foreground/50">
-                                Apple Pay · Google Pay · Card
-                            </p>
-                        </>
-                    )}
+            {/* Short repeat of the buy button for people who read to the end.
+                All the detail lives in the offer panel above. The post-purchase
+                state is shown there, so this hides once they've paid. */}
+            {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
+                <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-10 text-center md:px-12">
+                    <h2 className="font-serif text-2xl leading-tight tracking-tight text-foreground md:text-3xl">
+                        Ready When You Are
+                    </h2>
+                    <button
+                        type="button"
+                        onClick={() => openCheckout()}
+                        className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                    >
+                        Generate My Routine — $59
+                        <ArrowRight size={14} />
+                    </button>
+                    <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
+                        Apple Pay · Google Pay · Card
+                    </p>
                 </div>
             )}
 
