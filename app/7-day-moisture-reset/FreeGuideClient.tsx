@@ -2555,41 +2555,43 @@ export default function FreeGuideClient() {
                                 <span className='script'>Lock it in</span>
                                 <h2>Ready to keep your Day-7 results?</h2>
                                 <p className='lead'>
-                                    Get your hair type matched to the exact
-                                    products that grow it inside{" "}
-                                    <em>The Growth Edit</em>, unlimited access,
-                                    lifetime updates.
+                                    Take the 3-minute assessment inside{" "}
+                                    <em>The Growth Edit</em> to find what is
+                                    holding your length back and get a routine
+                                    built around your answers.
                                 </p>
 
                                 <div className='offer-card'>
                                     <div className='offer-card-body'>
                                         <h3>The Growth Edit</h3>
                                         <p className='lead'>
-                                            Find your hair type and get a
-                                            matched, salon-grade product
-                                            routine: professional Davines
-                                            picks with an honest, more
-                                            affordable match for every step.
+                                            A private 25-question assessment
+                                            that identifies your primary
+                                            length-retention pattern, then maps
+                                            the exact order, products, and
+                                            timing for your routine.
                                         </p>
                                         <ul className='offer-list'>
                                             <li>
-                                                Texture, density &amp; curl
-                                                pattern finder
+                                                Free results: your primary
+                                                pattern, a habit to stop, and
+                                                two matched products
                                             </li>
                                             <li>
-                                                Complete 9-step matched routine
+                                                Complete ordered routine with
+                                                why, how, and timing for every
+                                                step
                                             </li>
                                             <li>
-                                                Pro pick + budget-friendly
-                                                match for every step
+                                                Weekly schedule and first 30-day
+                                                plan
                                             </li>
                                             <li>
-                                                Save your list &amp;
-                                                repurchase reminders
+                                                Troubleshooting checkpoints,
+                                                what to skip, and what not to
+                                                combine
                                             </li>
-                                            <li>
-                                                Unlimited, lifetime access
-                                            </li>
+                                            <li>Instant access after checkout</li>
                                         </ul>
                                         <div className='offer-price-row'>
                                             <span className='price'>
@@ -2597,8 +2599,9 @@ export default function FreeGuideClient() {
                                             </span>
                                         </div>
                                         <div className='price-meta'>
-                                            One-time · Unlimited use ·
-                                            Lifetime access
+                                            One-time · Personalized digital
+                                            guide only · Recommended products
+                                            sold separately
                                         </div>
                                         <div className='offer-btn-row'>
                                             <button
@@ -2609,7 +2612,7 @@ export default function FreeGuideClient() {
                                                 className='btn btn-filled'>
                                                 {buying
                                                     ? "Redirecting…"
-                                                    : "Buy Now"}
+                                                    : "Take The Assessment"}
                                             </button>
                                             <a
                                                 href='/#shop'
