@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, Check } from "lucide-react";
@@ -46,7 +47,13 @@ export function Results({
         isPurchasePendingSignIn(),
     );
 
+    const openCheckout = () => {
+        track("checkout_opened", { severe: hasSevereRedFlag });
+        setCheckoutOpen(true);
+    };
+
     const handleCheckoutComplete = () => {
+        track("checkout_completed");
         markPurchasePendingSignIn();
         setCheckoutOpen(false);
         setPurchaseComplete(true);
@@ -181,7 +188,7 @@ export function Results({
                                 </p>
                                 <button
                                     type="button"
-                                    onClick={() => setCheckoutOpen(true)}
+                                    onClick={() => openCheckout()}
                                     className="mt-5 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
                                     Unlock My Full Routine — $59
@@ -363,7 +370,7 @@ export function Results({
                             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                                 <button
                                     type="button"
-                                    onClick={() => setCheckoutOpen(true)}
+                                    onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 bg-sage px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
                                     Unlock My Full Routine — $59
@@ -438,7 +445,7 @@ export function Results({
                             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                                 <button
                                     type="button"
-                                    onClick={() => setCheckoutOpen(true)}
+                                    onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
                                     Get Gentle Support Guide — $59

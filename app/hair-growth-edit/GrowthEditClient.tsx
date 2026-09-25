@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { track } from "@vercel/analytics";
 import { QUESTIONS } from "./data/questions";
 import { calculateResults } from "./lib/scoring";
 import { Navbar } from "@/components/site/navbar";
@@ -160,7 +161,16 @@ export default function GrowthEditClient() {
         setView("guide");
     };
 
+    useEffect(() => {
+        if (effectiveView === "results") {
+            track("results_viewed", { owner: unlocked });
+        } else if (effectiveView === "guide") {
+            track("guide_viewed");
+        }
+    }, [effectiveView, unlocked]);
+
     const handleStart = () => {
+        track("quiz_started");
         setStep(0);
         setAnswers({});
         clearDraftAnswers();
@@ -183,6 +193,7 @@ export default function GrowthEditClient() {
     };
 
     const handleQuizComplete = async () => {
+        track("quiz_completed", { signed_in: signedIn });
         if (signedIn) {
             await saveAssessment(answers);
             setUnlocked(await checkGrowthEditEntitlement());
