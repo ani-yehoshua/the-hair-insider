@@ -13,6 +13,7 @@ import { BackToTopButton } from "./components/BackToTopButton";
 import { ViewTabs } from "./components/ViewTabs";
 import type { AppView } from "./lib/navigation";
 import { useAuth } from "@/lib/auth/useAuth";
+import { supabase } from "@/lib/supabase/client";
 import {
     PENDING_ANSWERS_KEY,
     checkGrowthEditEntitlement,
@@ -34,7 +35,41 @@ export default function GrowthEditClient() {
     const [bootstrapping, setBootstrapping] = useState(true);
     const [redirectPurchaseComplete, setRedirectPurchaseComplete] =
         useState(false);
+    const [price, setPrice] = useState<string | null>(null);
     const didBootstrap = useRef(false);
+
+    // Reads the live Stripe price so the offer never drifts out of sync with
+    // what checkout actually charges -- change the price in Stripe and every
+    // button here updates on its own.
+    useEffect(() => {
+        (async () => {
+            const { data: course } = await supabase
+                .from("courses")
+                .select("stripe_price_id")
+                .eq("slug", "hair-growth-edit")
+                .maybeSingle();
+            if (!course?.stripe_price_id) return;
+
+            const res = await fetch("/api/stripe/price", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ priceId: course.stripe_price_id }),
+            });
+            if (!res.ok) return;
+
+            const json = await res.json();
+            if (json.unitAmount != null) {
+                setPrice(
+                    new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: (json.currency ?? "usd").toUpperCase(),
+                        minimumFractionDigits:
+                            json.unitAmount % 100 === 0 ? 0 : 2,
+                    }).format(json.unitAmount / 100),
+                );
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         document.title = "The Growth Edit — The Hair Insider";
@@ -346,6 +381,7 @@ export default function GrowthEditClient() {
                 <Results
                     {...results}
                     unlocked={unlocked}
+                    price={price}
                     onRequireAuth={handleRequireAuth}
                     onReset={() => {
                         clearDraftAnswers();

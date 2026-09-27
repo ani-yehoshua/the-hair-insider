@@ -23,6 +23,7 @@ interface ResultsProps {
     paidRoutine: RoutineStep[];
     supportingNeeds: string[];
     unlocked: boolean;
+    price: string | null;
     onRequireAuth: () => void;
     onReset: () => void;
 }
@@ -39,9 +40,14 @@ export function Results({
     paidRoutine,
     supportingNeeds,
     unlocked,
+    price,
     onRequireAuth,
     onReset,
 }: ResultsProps) {
+    // Placeholder until the live Stripe price loads, matching the dash used
+    // elsewhere on the site (e.g. the free guide's offer card) rather than a
+    // guessed price.
+    const displayPrice = price ?? "$–";
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
         isPurchasePendingSignIn(),
@@ -228,7 +234,7 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="mt-3 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
-                                    Generate My Routine — $59
+                                    Generate My Routine — {displayPrice}
                                     <ArrowRight size={14} />
                                 </button>
                                 <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
@@ -340,7 +346,7 @@ export function Results({
                         onClick={() => openCheckout()}
                         className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                     >
-                        Generate My Routine — $59
+                        Generate My Routine — {displayPrice}
                         <ArrowRight size={14} />
                     </button>
                     <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
@@ -399,7 +405,7 @@ export function Results({
                                 care, it is available below.
                             </p>
                             <p className="mt-5 font-serif text-2xl text-foreground">
-                                $59
+                                {displayPrice}
                             </p>
                             <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                                 One-time purchase · Not a substitute for medical
@@ -412,7 +418,7 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
-                                    Get Gentle Support Guide — $59
+                                    Get Gentle Support Guide — {displayPrice}
                                 </button>
                             </div>
                         </>
