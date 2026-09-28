@@ -380,6 +380,7 @@ export default function GrowthEditClient() {
             {effectiveView === "results" && (
                 <Results
                     {...results}
+                    shampooFrequencyAnswer={QUESTIONS.find((question) => question.id === "shampooFrequency")?.options[answers.shampooFrequency]?.label ?? null}
                     unlocked={unlocked}
                     price={price}
                     onRequireAuth={handleRequireAuth}
