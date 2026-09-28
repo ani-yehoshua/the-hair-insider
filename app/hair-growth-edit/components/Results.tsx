@@ -89,20 +89,20 @@ export function Results({
                 </span>
                 <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
                     You shampoo {shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.
-                    <span className="block">{hasSevereRedFlag ? "Please get this change checked." : "Now make each wash count."}</span>
+                    {hasSevereRedFlag && <span className="block">Please get this change checked.</span>}
                 </h1>
                 <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
                     {hasSevereRedFlag ? (
                         "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
                     ) : (
-                        <>Your answers point to <strong>{primaryCause}</strong>. Below are your two free starting products; the complete guide puts them in order with the rest of your routine.</>
+                        <>Your answers point to <strong>{primaryCause}</strong>. Your two free starting products are below; the complete guide shows what to add next.</>
                     )}
                 </p>
                 {(hasSevereRedFlag || hasMinorRedFlag) && (
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">{disclaimer}</p>
                 )}
                 {!hasSevereRedFlag && !unlocked && (
-                    <div className="mt-6 rounded-2xl border border-foreground/15 bg-blue px-5 py-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
+                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
                         {purchaseComplete ? (
                             <>
                                 <div>
@@ -119,11 +119,11 @@ export function Results({
                                 <div>
                                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
                                     <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">Stop guessing what to buy and when to use it.</h2>
-                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Your buying order, a routine for your wash days, and a manageable first 30 days. Start with what matters; you do not need to buy everything at once.</p>
+                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Your buying order, wash-day timing, and first 30 days—in one plan you can follow without buying everything today.</p>
                                 </div>
                                 <div className="mt-5 md:mt-0 md:min-w-56">
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
-                                        Get My Guide — {displayPrice} <ArrowRight size={14} />
+                                        Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
                                     </button>
                                     <p className="mt-2 text-center text-xs text-foreground/65">One-time digital guide. Products sold separately.</p>
                                     <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>

@@ -38,9 +38,8 @@ export default function GrowthEditClient() {
     const [price, setPrice] = useState<string | null>(null);
     const didBootstrap = useRef(false);
 
-    // Reads the live Stripe price so the offer never drifts out of sync with
-    // what checkout actually charges -- change the price in Stripe and every
-    // button here updates on its own.
+    // Reads the app-backed price so the amount shown stays aligned with checkout.
+    // Growth Edit currently has a code-controlled offer rather than the older catalog Price.
     useEffect(() => {
         (async () => {
             const { data: course } = await supabase
