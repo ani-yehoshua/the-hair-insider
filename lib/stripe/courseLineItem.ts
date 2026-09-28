@@ -24,7 +24,7 @@ export async function getCourseCheckoutLineItem(
             currency: 'usd',
             product,
             unit_amount: GROWTH_EDIT_PRICE_CENTS,
-            ...(catalogPrice.tax_behavior !== 'unspecified'
+            ...(catalogPrice.tax_behavior === 'inclusive' || catalogPrice.tax_behavior === 'exclusive'
                 ? { tax_behavior: catalogPrice.tax_behavior }
                 : {}),
         },
