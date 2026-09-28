@@ -118,8 +118,8 @@ export function Results({
                             <>
                                 <div>
                                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
-                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">Stop guessing what to buy and when to use it.</h2>
-                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Your buying order, wash-day timing, and first 30 days—in one plan you can follow without buying everything today.</p>
+                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">A plan for your wash days: {shampooFrequencyAnswer ?? "tailored to you"}</h2>
+                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Know what to buy first, when to use it, and how to build your first 30 days—without buying everything today.</p>
                                 </div>
                                 <div className="mt-5 md:mt-0 md:min-w-56">
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
