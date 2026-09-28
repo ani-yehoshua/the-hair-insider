@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { getCourseCheckoutLineItem } from '@/lib/stripe/courseLineItem';
 
 function getStripe() {
     const key = process.env.STRIPE_SECRET_KEY;
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
-            line_items: [{ price: course.stripe_price_id, quantity: 1 }],
+            line_items: [await getCourseCheckoutLineItem(stripe, course.slug, course.stripe_price_id)],
             success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${siteUrl}/#${course.slug}`,
             customer: stripeCustomerId,

@@ -4,12 +4,11 @@ import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, Check, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
+import { GROWTH_EDIT_SLUG } from "@/lib/pricing/growthEdit";
 import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
 } from "../lib/assessmentStore";
-
-const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
 interface ResultsProps {
     primaryCause: string;
@@ -44,9 +43,6 @@ export function Results({
     onRequireAuth,
     onReset,
 }: ResultsProps) {
-    // Placeholder until the live Stripe price loads, matching the dash used
-    // elsewhere on the site (e.g. the free guide's offer card) rather than a
-    // guessed price.
     const displayPrice = price ?? "$–";
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
@@ -157,8 +153,11 @@ export function Results({
                             </>
                         ) : (
                             <>
-                                <h2 className="font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                                    Your Exact Routine Map for {primaryCause}
+                                <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/60">
+                                    The Complete Growth Edit · {displayPrice} one time
+                                </span>
+                                <h2 className="mt-3 font-serif text-2xl leading-tight text-foreground md:text-3xl">
+                                    Your Routine for {primaryCause}
                                 </h2>
                                 {paidRoutine.length > 0 && (
                                     <div
@@ -187,21 +186,22 @@ export function Results({
                                     </div>
                                 )}
                                 <p className="mx-auto mt-5 max-w-md text-sm font-medium leading-relaxed text-foreground">
-                                    Based on your {observations[0]} and{" "}
-                                    {observations[1]}, the guide maps the exact
-                                    order, products, and timing for your
-                                    routine.
+                                    Your free results show your pattern and two
+                                    starting products. Based on your {observations[0]} and{" "}
+                                    {observations[1]}, the complete guide
+                                    shows what to buy first, when to use each
+                                    step, and how to build your first 30 days.
                                 </p>
                                 <div className="mx-auto mt-5 max-w-md space-y-2 text-left">
                                     {[
-                                        "Complete ordered routine",
-                                        "Why/How/Timing for every step",
-                                        "Weekly schedule + first 30-day plan",
-                                        "Troubleshooting checkpoints",
-                                        "What to skip and what not to combine",
+                                        "Your first three buying priorities, in order, and what can wait",
+                                        "The full routine, with why, how, and timing for each step",
+                                        "A weekly wash schedule tailored to your answers",
+                                        "A 30-day rollout and checkpoints to see what is helping",
+                                        "What to skip, what not to combine, and how to adjust",
                                         shouldShampooTwice
-                                            ? "Your personalized double-cleanse instructions"
-                                            : "Your single-pass gentle cleanse instructions",
+                                            ? "Cleansing instructions for your two-pass wash days"
+                                            : "Cleansing instructions for your single-pass wash days",
                                     ].map((feature) => (
                                         <div
                                             key={feature}
@@ -226,15 +226,15 @@ export function Results({
                                     Instant access after checkout
                                 </p>
                                 <p className="mt-5 text-sm font-medium text-foreground">
-                                    One clear routine instead of another
-                                    try-and-hope haul.
+                                    Start with the priorities. Add other steps
+                                    only when you need them.
                                 </p>
                                 <button
                                     type="button"
                                     onClick={() => openCheckout()}
                                     className="mt-3 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                                 >
-                                    Generate My Routine — {displayPrice}
+                                    Get My Complete Guide — {displayPrice}
                                     <ArrowRight size={14} />
                                 </button>
                                 <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
@@ -339,14 +339,17 @@ export function Results({
             {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
                 <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-10 text-center md:px-12">
                     <h2 className="font-serif text-2xl leading-tight tracking-tight text-foreground md:text-3xl">
-                        Ready When You Are
+                        Know What To Do Next
                     </h2>
+                    <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground/80">
+                        The complete guide shows where your two foundation products fit, what to add next, and how to use each step in your week.
+                    </p>
                     <button
                         type="button"
                         onClick={() => openCheckout()}
                         className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                     >
-                        Generate My Routine — {displayPrice}
+                        Get My Complete Guide — {displayPrice}
                         <ArrowRight size={14} />
                     </button>
                     <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">

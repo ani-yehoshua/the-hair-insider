@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
+import { GROWTH_EDIT_PRICE_CENTS, GROWTH_EDIT_SLUG } from '@/lib/pricing/growthEdit';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET_KEY!,
+);
 
 function isStripeProduct(
     p: Stripe.Product | Stripe.DeletedProduct,
@@ -24,7 +30,21 @@ export async function POST(req: Request) {
             expand: ['product'],
         });
 
-        const unitAmount = price.unit_amount ?? null;
+        const { data: growthEdit, error: courseError } = await admin
+            .from('courses')
+            .select('stripe_price_id')
+            .eq('slug', GROWTH_EDIT_SLUG)
+            .maybeSingle();
+        if (courseError) throw courseError;
+
+        const isGrowthEditPrice = growthEdit?.stripe_price_id === priceId;
+        if (isGrowthEditPrice && (price.currency !== 'usd' || price.type !== 'one_time')) {
+            throw new Error('The Growth Edit requires a one-time USD Stripe product.');
+        }
+        // Display the same $49 offer that both checkout routes actually charge.
+        const unitAmount = isGrowthEditPrice
+            ? GROWTH_EDIT_PRICE_CENTS
+            : price.unit_amount ?? null;
         const currency = price.currency ?? 'usd';
 
         const productName =
