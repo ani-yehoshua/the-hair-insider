@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { getCourseCheckoutLineItem } from '@/lib/stripe/courseLineItem';
 
 function getStripe() {
     const key = process.env.STRIPE_SECRET_KEY;
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
             mode: 'payment',
-            line_items: [{ price: course.stripe_price_id, quantity: 1 }],
+            line_items: [await getCourseCheckoutLineItem(stripe, courseSlug, course.stripe_price_id)],
             // 'if_required' keeps card completing inline (no navigation),
             // but still allows methods that can't complete without one
             // (Klarna, Amazon Pay, etc.) -- 'never' would silently drop

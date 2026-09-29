@@ -4,15 +4,15 @@ import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, Check, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
+import { GROWTH_EDIT_PRICE_CENTS, GROWTH_EDIT_SLUG } from "@/lib/pricing/growthEdit";
 import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
 } from "../lib/assessmentStore";
 
-const GROWTH_EDIT_SLUG = "hair-growth-edit";
-
 interface ResultsProps {
     primaryCause: string;
+    shampooFrequencyAnswer: string | null;
     observations: string[];
     product1: ProductResult | null;
     product2: ProductResult | null;
@@ -30,6 +30,7 @@ interface ResultsProps {
 
 export function Results({
     primaryCause,
+    shampooFrequencyAnswer,
     observations,
     product1,
     product2,
@@ -44,10 +45,7 @@ export function Results({
     onRequireAuth,
     onReset,
 }: ResultsProps) {
-    // Placeholder until the live Stripe price loads, matching the dash used
-    // elsewhere on the site (e.g. the free guide's offer card) rather than a
-    // guessed price.
-    const displayPrice = price ?? "$–";
+    const displayPrice = price ?? `$${GROWTH_EDIT_PRICE_CENTS / 100}`;
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
         isPurchasePendingSignIn(),
@@ -82,19 +80,61 @@ export function Results({
 
     return (
         <div
-            className="mx-auto w-full max-w-4xl px-5 pb-32 pt-12 md:px-8 md:pt-20 slide-up"
+            className="mx-auto w-full max-w-4xl px-5 pb-32 pt-8 md:px-8 md:pt-12 slide-up"
             data-testid="section-results"
         >
-            <div className="mb-16 text-center">
+            <div className="mb-10">
                 <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                    Your Initial Read
+                    Your Assessment · Your Wash Days
                 </span>
-                <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
-                    The Assessment
+                <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+                    You shampoo {shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.
+                    {hasSevereRedFlag && <span className="block">Please get this change checked.</span>}
                 </h1>
-                <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                    {disclaimer}
+                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+                    {hasSevereRedFlag ? (
+                        "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
+                    ) : (
+                        <>Your answers point to <strong>{primaryCause}</strong>. Your two free starting products are below; the complete guide shows what to add next.</>
+                    )}
                 </p>
+                {(hasSevereRedFlag || hasMinorRedFlag) && (
+                    <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">{disclaimer}</p>
+                )}
+                {!hasSevereRedFlag && !unlocked && (
+                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
+                        {purchaseComplete ? (
+                            <>
+                                <div>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">Purchase Complete</span>
+                                    <h2 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">Your complete guide is ready.</h2>
+                                    <p className="mt-3 text-sm text-foreground/75">Sign in with the email you used at checkout to open your guide.</p>
+                                </div>
+                                <button type="button" onClick={onRequireAuth} className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background md:mt-0 pill-cta">
+                                    Sign In <ArrowRight size={14} />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <div>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
+                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">A plan for your wash days: {shampooFrequencyAnswer ?? "tailored to you"}</h2>
+                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Know what to buy first, when to use it, and how to build your first 30 days—without buying everything today.</p>
+                                </div>
+                                <div className="mt-5 md:mt-0 md:min-w-56">
+                                    <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
+                                        Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
+                                    </button>
+                                    <p className="mt-2 text-center text-xs text-foreground/65">One-time digital guide. Products sold separately.</p>
+                                    <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+                {!hasSevereRedFlag && !hasMinorRedFlag && (
+                    <p className="mt-4 text-xs leading-relaxed text-foreground/60">{disclaimer}</p>
+                )}
             </div>
 
             <div className="space-y-12">
@@ -131,129 +171,6 @@ export function Results({
                                 </p>
                             ))}
                         </div>
-                    </div>
-                )}
-
-                {/* First decision point: sits directly under the answer chips so
-                    the buy is in the same eyeline as their inputs. */}
-                {!hasSevereRedFlag && !unlocked && (
-                    <div className="rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-8 text-center md:px-10">
-                        {purchaseComplete ? (
-                            <>
-                                <h2 className="font-serif text-2xl text-foreground md:text-3xl">
-                                    Thanks For Your Purchase
-                                </h2>
-                                <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground/80">
-                                    Sign in with the same email you just paid
-                                    with to unlock your full plan.
-                                </p>
-                                <button
-                                    type="button"
-                                    onClick={onRequireAuth}
-                                    className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                                >
-                                    Sign In <ArrowRight size={14} />
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <h2 className="font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                                    Your Exact Routine Map for {primaryCause}
-                                </h2>
-                                {paidRoutine.length > 0 && (
-                                    <div
-                                        aria-hidden="true"
-                                        className="mx-auto mt-4 max-w-xs space-y-1.5 rounded-xl bg-paper px-4 py-3 text-left"
-                                    >
-                                        {paidRoutine.slice(0, 3).map((step) => (
-                                            <div
-                                                key={step.order}
-                                                className="flex items-center gap-3 text-xs text-foreground/70"
-                                            >
-                                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground text-[0.6rem] text-background">
-                                                    {step.order}
-                                                </span>
-                                                <span className="truncate">
-                                                    {step.product.category}
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {paidRoutine.length > 3 && (
-                                            <p className="pl-8 text-[0.65rem] uppercase tracking-widest text-foreground/40">
-                                                + {paidRoutine.length - 3} more
-                                                steps
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
-                                <p className="mx-auto mt-5 max-w-md text-sm font-medium leading-relaxed text-foreground">
-                                    Based on your {observations[0]} and{" "}
-                                    {observations[1]}, the guide maps the exact
-                                    order, products, and timing for your
-                                    routine.
-                                </p>
-                                <div className="mx-auto mt-5 max-w-md space-y-2 text-left">
-                                    {[
-                                        "Complete ordered routine",
-                                        "Why/How/Timing for every step",
-                                        "Weekly schedule + first 30-day plan",
-                                        "Troubleshooting checkpoints",
-                                        "What to skip and what not to combine",
-                                        shouldShampooTwice
-                                            ? "Your personalized double-cleanse instructions"
-                                            : "Your single-pass gentle cleanse instructions",
-                                    ].map((feature) => (
-                                        <div
-                                            key={feature}
-                                            className="flex items-start gap-3"
-                                        >
-                                            <Check
-                                                className="mt-0.5 shrink-0 text-foreground/60"
-                                                size={16}
-                                            />
-                                            <span className="text-sm text-foreground/80">
-                                                {feature}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <p className="mx-auto mt-5 max-w-md text-xs leading-relaxed text-foreground/60">
-                                    One-time payment. Includes your personalized
-                                    digital guide only. Recommended products
-                                    sold separately.
-                                </p>
-                                <p className="mt-2 text-[0.65rem] uppercase tracking-widest text-foreground/50">
-                                    Instant access after checkout
-                                </p>
-                                <p className="mt-5 text-sm font-medium text-foreground">
-                                    One clear routine instead of another
-                                    try-and-hope haul.
-                                </p>
-                                <button
-                                    type="button"
-                                    onClick={() => openCheckout()}
-                                    className="mt-3 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                                >
-                                    Generate My Routine — {displayPrice}
-                                    <ArrowRight size={14} />
-                                </button>
-                                <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
-                                    Apple Pay · Google Pay · Card
-                                </p>
-                                <p className="mt-2 text-[0.65rem] text-foreground/50">
-                                    First-time purchases have a 7-day refund
-                                    window.{" "}
-                                    <a
-                                        href="/terms"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="underline"
-                                    >
-                                        See terms
-                                    </a>
-                                </p>
-                            </>
-                        )}
                     </div>
                 )}
 
@@ -339,14 +256,17 @@ export function Results({
             {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
                 <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-10 text-center md:px-12">
                     <h2 className="font-serif text-2xl leading-tight tracking-tight text-foreground md:text-3xl">
-                        Ready When You Are
+                        Know What To Do Next
                     </h2>
+                    <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground/80">
+                        The complete guide shows where your two foundation products fit, what to add next, and how to use each step in your week.
+                    </p>
                     <button
                         type="button"
                         onClick={() => openCheckout()}
                         className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                     >
-                        Generate My Routine — {displayPrice}
+                        Get My Complete Guide — {displayPrice}
                         <ArrowRight size={14} />
                     </button>
                     <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
