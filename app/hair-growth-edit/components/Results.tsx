@@ -250,28 +250,49 @@ export function Results({
                 )}
             </div>
 
-            {/* Short repeat of the buy button for people who read to the end.
-                All the detail lives in the offer panel above. The post-purchase
-                state is shown there, so this hides once they've paid. */}
+            {/* Detailed offer for readers who reach the end of their free results. */}
             {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
-                <div className="mt-24 rounded-2xl border border-foreground/15 bg-paper-dark px-6 py-10 text-center md:px-12">
-                    <h2 className="font-serif text-2xl leading-tight tracking-tight text-foreground md:text-3xl">
-                        Know What To Do Next
+                <div className="mt-24 rounded-2xl border border-foreground/15 bg-blue px-6 py-12 text-center md:px-12 md:py-16">
+                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
+                        Your Next Step
+                    </span>
+                    <h2 className="mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+                        Turn Your Results Into A Routine
                     </h2>
-                    <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground/80">
-                        The complete guide shows where your two foundation products fit, what to add next, and how to use each step in your week.
+                    <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
+                        Your results show the main pattern and two products to start with. The complete Growth Edit shows what to do next: which products to prioritize, how to use each one, and when each step belongs in your week. You can start without buying everything at once.
+                    </p>
+                    <div className="mx-auto mt-10 max-w-lg space-y-3 text-left">
+                        {[
+                            "Your first three buying priorities, in order, and what can wait",
+                            "The full routine, with why, how, and timing for every step",
+                            "A weekly wash schedule and a manageable first 30 days",
+                            "Checkpoints and adjustments if your scalp or lengths feel off",
+                            "What to skip, what not to combine, and which products to save",
+                            shouldShampooTwice
+                                ? "Cleansing instructions tailored to your two-pass wash days"
+                                : "Cleansing instructions tailored to your single-pass wash days",
+                        ].map((feature) => (
+                            <div key={feature} className="flex items-start gap-3">
+                                <Check className="mt-0.5 shrink-0 text-foreground/60" size={16} />
+                                <span className="text-sm leading-relaxed text-foreground/80">{feature}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="mt-10 font-serif text-3xl text-foreground">{displayPrice}</p>
+                    <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
+                        One-time purchase
+                    </p>
+                    <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
+                        The purchase includes your personalized digital guide only. Recommended physical products are not included and are sold separately.
                     </p>
                     <button
                         type="button"
-                        onClick={() => openCheckout()}
-                        className="mt-6 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
+                        onClick={openCheckout}
+                        className="mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
                     >
-                        Get My Complete Guide — {displayPrice}
-                        <ArrowRight size={14} />
+                        Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
                     </button>
-                    <p className="mt-3 text-[0.65rem] uppercase tracking-widest text-foreground/50">
-                        Apple Pay · Google Pay · Card
-                    </p>
                 </div>
             )}
 
