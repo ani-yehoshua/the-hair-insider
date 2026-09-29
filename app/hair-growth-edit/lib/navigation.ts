@@ -1,1 +1,6 @@
-export type AppView = "home" | "quiz" | "results" | "guide";
+export type AppView =
+    | "home"
+    | "quiz"
+    | "generating"
+    | "results"
+    | "guide";
