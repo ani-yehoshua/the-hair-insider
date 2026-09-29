@@ -88,21 +88,20 @@ export function Results({
                     Your Assessment · Your Wash Days
                 </span>
                 <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                    You shampoo {shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.
-                    {hasSevereRedFlag && <span className="block">Please get this change checked.</span>}
+                    {hasSevereRedFlag
+                        ? `Please get this change checked. You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.`
+                        : `You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}; start by focusing on ${primaryCause === "length protection (no dominant damage pattern)" ? "protecting length" : primaryCause}.`}
                 </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                    {hasSevereRedFlag ? (
-                        "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
-                    ) : (
-                        <>Your answers point to <strong>{primaryCause}</strong>. Your two free starting products are below; the complete guide shows what to add next.</>
-                    )}
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+                    {hasSevereRedFlag
+                        ? "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
+                        : "Your two free starting products are below. The complete guide puts the rest of your routine in order."}
                 </p>
                 {(hasSevereRedFlag || hasMinorRedFlag) && (
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">{disclaimer}</p>
                 )}
                 {!hasSevereRedFlag && !unlocked && (
-                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
+                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-5 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
                         {purchaseComplete ? (
                             <>
                                 <div>
@@ -118,14 +117,21 @@ export function Results({
                             <>
                                 <div>
                                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
-                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">A plan for your wash days: {shampooFrequencyAnswer ?? "tailored to you"}</h2>
-                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">Know what to buy first, when to use it, and how to build your first 30 days—without buying everything today.</p>
+                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">Your routine, in the right order.</h2>
+                                    <div className="mt-4 flex items-center gap-2 text-[0.65rem] font-medium uppercase tracking-wide text-foreground/75" aria-label="Routine preview: cleanse, targeted care, maintain">
+                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">01 Cleanse</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">02 Care</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">03 Maintain</span>
+                                    </div>
                                 </div>
                                 <div className="mt-5 md:mt-0 md:min-w-56">
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
                                         Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
                                     </button>
-                                    <p className="mt-2 text-center text-xs text-foreground/65">One-time digital guide. Products sold separately.</p>
+                                    <p className="mt-2 text-center text-xs text-foreground/75">Know what to use, when to use it, and what can wait.</p>
+                                    <p className="mt-1 text-center text-[0.65rem] text-foreground/60">One-time digital guide. Products sold separately.</p>
                                     <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>
                                 </div>
                             </>
