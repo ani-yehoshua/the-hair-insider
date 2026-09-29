@@ -136,9 +136,10 @@ export function Results({
                                         <span className="rounded-full border border-foreground/20 px-2 py-1">03 Maintain</span>
                                     </div>
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
-                                        Generate My Exact Routine – {displayPrice} <ArrowRight size={14} />
+                                        Generate my routine map – {displayPrice}. <ArrowRight size={14} />
                                     </button>
-                                    <p className="mt-2 text-center text-xs text-foreground/75">Know exactly what to use, in what order, and what not to combine - starting next wash.</p>
+                                    <p className="mt-2 text-center text-xs text-foreground/75">Built from your quiz answers. Educational guidance, not a medical diagnosis or 1:1 consult.</p>
+                                    <p className="mt-1 text-center text-xs text-foreground/75">Know exactly what to use, in what order, and what not to combine - starting next wash.</p>
                                     <p className="mt-1 text-center text-xs text-foreground/75">If anything isn’t crystal clear, reply to your receipt and I’ll adjust your edit.</p>
                                     <p className="mt-1 text-center text-[0.65rem] text-foreground/60">One-time digital guide. Products sold separately.</p>
                                     <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>
@@ -325,8 +326,9 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
-                                    Generate My Exact Routine – {displayPrice}
+                                    Generate my routine map – {displayPrice}.
                                 </button>
+                                <p className="mt-3 text-xs leading-relaxed text-foreground/70">Built from your quiz answers. Educational guidance, not a medical diagnosis or 1:1 consult.</p>
                             </div>
                         </>
                     )}

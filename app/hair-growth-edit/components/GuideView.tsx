@@ -391,6 +391,17 @@ export function GuideView({
                     </div>
                 </div>
 
+                <div className="mt-8 rounded-3xl border border-foreground/15 bg-paper p-6 md:p-8">
+                    <h3 className="font-serif text-2xl">Your first-wash checklist</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/75">Use your full routine below for product-specific placement and timing.</p>
+                    <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-foreground/80">
+                        <li>Cleanse your scalp with {shampooStep?.product.name ?? "your listed cleanser"} using the wash method below.</li>
+                        <li>Condition the lengths, detangle gently, then apply the listed leave-in before styling.</li>
+                        <li>Only use a treatment if it is due at its listed cadence; do not stack it with the regular step it replaces.</li>
+                        <li>Notice how your scalp and ends feel afterward before changing another step.</li>
+                    </ol>
+                </div>
+
                 <div className="mt-12 rounded-3xl bg-sage/25 p-6 md:p-10">
                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
                         Introduce the routine gradually
