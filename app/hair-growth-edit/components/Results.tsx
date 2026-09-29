@@ -2,7 +2,7 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
-import { ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
 import { GROWTH_EDIT_PRICE_CENTS, GROWTH_EDIT_SLUG } from "@/lib/pricing/growthEdit";
 import {
@@ -37,7 +37,6 @@ export function Results({
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
-    shouldShampooTwice,
     paidRoutine,
     supportingNeeds,
     unlocked,
@@ -78,12 +77,21 @@ export function Results({
           ? "This assessment is educational guidance, not a medical diagnosis. Since you noted some scalp or hair changes, we advise professional review if they are persistent or worsening."
           : "This assessment is educational guidance, not a medical diagnosis. The recommendations below reflect the strongest patterns in your answers.";
 
+    const leadObservation = (hasSevereRedFlag ? undefined : supportingNeeds.find((note) => note.startsWith("You reported")))
+        ?? `You reported ${observations[0] ?? "your current wash routine"}, so ${hasSevereRedFlag ? "arrange a professional review before changing your routine" : "start with the strongest pattern in your results"}.`;
+    const behaviorWhy = hasSevereRedFlag
+        ? "It can add avoidable stress while you arrange professional care."
+        : primaryCause === "length protection (no dominant damage pattern)"
+          ? "It adds avoidable friction even when your answers show no dominant damage pattern."
+          : `It can reinforce the ${primaryCause} pattern reflected in your answers.`;
+
     return (
         <div
             className="mx-auto w-full max-w-4xl px-5 pb-32 pt-8 md:px-8 md:pt-12 slide-up"
             data-testid="section-results"
         >
             <div className="mb-10">
+                <p className="mb-5 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">{leadObservation}</p>
                 <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
                     Your Assessment · Your Wash Days
                 </span>
@@ -118,19 +126,20 @@ export function Results({
                                 <div>
                                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
                                     <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">Your routine, in the right order.</h2>
-                                    <div className="mt-4 flex items-center gap-2 text-[0.65rem] font-medium uppercase tracking-wide text-foreground/75" aria-label="Routine preview: cleanse, targeted care, maintain">
-                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">01 Cleanse</span>
-                                        <span aria-hidden="true">→</span>
-                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">02 Care</span>
-                                        <span aria-hidden="true">→</span>
-                                        <span className="rounded-full border border-foreground/20 px-2.5 py-1.5">03 Maintain</span>
-                                    </div>
                                 </div>
-                                <div className="mt-5 md:mt-0 md:min-w-56">
+                                <div className="mt-5 md:mt-0 md:min-w-64">
+                                    <div className="mb-3 flex items-center justify-center gap-1 text-[0.55rem] font-medium uppercase tracking-wide text-foreground/75" aria-label="Routine preview: cleanse, care, maintain">
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">01 Cleanse</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">02 Care</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">03 Maintain</span>
+                                    </div>
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
-                                        Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
+                                        Generate My Exact Routine - {displayPrice} <ArrowRight size={14} />
                                     </button>
-                                    <p className="mt-2 text-center text-xs text-foreground/75">Know what to use, when to use it, and what can wait.</p>
+                                    <p className="mt-2 text-center text-xs text-foreground/75">Know exactly what to use, in what order, and what not to combine - starting next wash.</p>
+                                    <p className="mt-1 text-center text-xs text-foreground/75">If anything isn’t crystal clear, reply to your receipt and I’ll adjust your edit.</p>
                                     <p className="mt-1 text-center text-[0.65rem] text-foreground/60">One-time digital guide. Products sold separately.</p>
                                     <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>
                                 </div>
@@ -162,13 +171,13 @@ export function Results({
                     </p>
                 </div>
 
-                {supportingNeeds.length > 0 && (
+                {supportingNeeds.some((need) => need !== leadObservation) && (
                     <div className="border-t border-foreground/15 pt-10">
                         <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                             How your answers shaped the routine
                         </span>
                         <div className="mt-6 grid gap-3">
-                            {supportingNeeds.map((need) => (
+                            {supportingNeeds.filter((need) => need !== leadObservation).map((need) => (
                                 <p
                                     key={need}
                                     className="rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80"
@@ -189,10 +198,7 @@ export function Results({
                         A behavior to stop
                     </h2>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-                        For now, stop <strong>{behaviorToStop}</strong>. It most
-                        directly reinforces the symptoms you are experiencing.
-                        Restoring health requires removing the source of the
-                        stress first.
+                        Stop <strong>{behaviorToStop}</strong>. {behaviorWhy}
                     </p>
                 </div>
 
@@ -207,7 +213,7 @@ export function Results({
                         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
                             {hasSevereRedFlag
                                 ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
-                                : "These two recommendations address part of your pattern. The complete guide shows where they belong, what supports them, what to avoid combining, and how often each step should be used."}
+                                : "These two recommendations address part of your pattern. Your Growth Edit adds exact placement, cadence, and conflict rules so you stop mixing steps that cancel each other."}
                         </p>
                         <div className="mt-8 grid gap-6 sm:grid-cols-2">
                             {[product1, product2].map((prod) => (
@@ -255,52 +261,6 @@ export function Results({
                     </div>
                 )}
             </div>
-
-            {/* Detailed offer for readers who reach the end of their free results. */}
-            {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
-                <div className="mt-24 rounded-2xl border border-foreground/15 bg-blue px-6 py-12 text-center md:px-12 md:py-16">
-                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-                        Your Next Step
-                    </span>
-                    <h2 className="mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                        Turn Your Results Into A Routine
-                    </h2>
-                    <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                        Your results show the main pattern and two products to start with. The complete Growth Edit shows what to do next: which products to prioritize, how to use each one, and when each step belongs in your week. You can start without buying everything at once.
-                    </p>
-                    <div className="mx-auto mt-10 max-w-lg space-y-3 text-left">
-                        {[
-                            "Your first three buying priorities, in order, and what can wait",
-                            "The full routine, with why, how, and timing for every step",
-                            "A weekly wash schedule and a manageable first 30 days",
-                            "Checkpoints and adjustments if your scalp or lengths feel off",
-                            "What to skip, what not to combine, and which products to save",
-                            shouldShampooTwice
-                                ? "Cleansing instructions tailored to your two-pass wash days"
-                                : "Cleansing instructions tailored to your single-pass wash days",
-                        ].map((feature) => (
-                            <div key={feature} className="flex items-start gap-3">
-                                <Check className="mt-0.5 shrink-0 text-foreground/60" size={16} />
-                                <span className="text-sm leading-relaxed text-foreground/80">{feature}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <p className="mt-10 font-serif text-3xl text-foreground">{displayPrice}</p>
-                    <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                        One-time purchase
-                    </p>
-                    <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
-                        The purchase includes your personalized digital guide only. Recommended physical products are not included and are sold separately.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={openCheckout}
-                        className="mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                    >
-                        Get My Complete Guide — {displayPrice} <ArrowRight size={14} />
-                    </button>
-                </div>
-            )}
 
             {/* Softened, disclaimer-forward offer for severe cases: still buyable,
           but the copy leads with "this won't fix it, see a professional"
@@ -365,7 +325,7 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
-                                    Get Gentle Support Guide — {displayPrice}
+                                    Generate My Exact Routine - {displayPrice}
                                 </button>
                             </div>
                         </>
