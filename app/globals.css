@@ -155,3 +155,24 @@
 @keyframes growthEditFadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes growthEditSlideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes growthEditSheetSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* Brief transition between assessment completion and free results. */
+.growth-edit-quiz .results-generating-bar {
+  width: 0;
+  animation: growthEditBuildResults 2.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.growth-edit-quiz .results-generating-dot { animation: growthEditResultsPulse 1s ease-in-out infinite alternate; }
+@keyframes growthEditBuildResults {
+  0% { width: 4%; }
+  45% { width: 62%; }
+  78% { width: 86%; }
+  100% { width: 100%; }
+}
+@keyframes growthEditResultsPulse {
+  from { opacity: 0.35; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .growth-edit-quiz .results-generating-bar { width: 100%; animation: none; }
+  .growth-edit-quiz .results-generating-dot { animation: none; }
+}
