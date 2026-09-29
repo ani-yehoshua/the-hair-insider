@@ -8,6 +8,7 @@ import { calculateResults } from "./lib/scoring";
 import { Navbar } from "@/components/site/navbar";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
+import { ResultsGenerating } from "./components/ResultsGenerating";
 import { GuideView } from "./components/GuideView";
 import { BackToTopButton } from "./components/BackToTopButton";
 import { ViewTabs } from "./components/ViewTabs";
@@ -229,6 +230,9 @@ export default function GrowthEditClient() {
 
     const handleQuizComplete = async () => {
         track("quiz_completed", { signed_in: signedIn });
+        setView("generating");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const minimumDisplay = new Promise<void>((resolve) => window.setTimeout(resolve, 2200));
         if (signedIn) {
             await saveAssessment(answers);
             setUnlocked(await checkGrowthEditEntitlement());
@@ -236,8 +240,9 @@ export default function GrowthEditClient() {
         } else {
             saveDraftAnswers(answers);
         }
-        // Signed-out visitors see their results immediately, unsaved -- no wall
-        // between finishing the assessment and seeing what it found.
+        // Keep the transition visible while the assessment is saved,
+        // then continue to the free results without an email gate.
+        await minimumDisplay;
         setView("results");
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -364,6 +369,8 @@ export default function GrowthEditClient() {
                     onComplete={handleQuizComplete}
                 />
             )}
+
+            {effectiveView === "generating" && <ResultsGenerating />}
 
             {unlocked &&
                 assessmentComplete &&
