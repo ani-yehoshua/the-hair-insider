@@ -91,15 +91,15 @@ export function Results({
             data-testid="section-results"
         >
             <div className="mb-10">
-                <p className="mb-5 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">{leadObservation}</p>
-                <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                    Your Assessment · Your Wash Days
-                </span>
-                <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+                <h1 className="max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
                     {hasSevereRedFlag
                         ? `Please get this change checked. You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.`
                         : `You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}; start by focusing on ${primaryCause === "length protection (no dominant damage pattern)" ? "protecting length" : primaryCause}.`}
                 </h1>
+                <span className="mt-3 block text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
+                    Your Assessment · Your Wash Days
+                </span>
+                <p className="mt-4 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">{leadObservation}</p>
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
                     {hasSevereRedFlag
                         ? "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
@@ -136,7 +136,7 @@ export function Results({
                                         <span className="rounded-full border border-foreground/20 px-2 py-1">03 Maintain</span>
                                     </div>
                                     <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
-                                        Generate My Exact Routine - {displayPrice} <ArrowRight size={14} />
+                                        Generate My Exact Routine – {displayPrice} <ArrowRight size={14} />
                                     </button>
                                     <p className="mt-2 text-center text-xs text-foreground/75">Know exactly what to use, in what order, and what not to combine - starting next wash.</p>
                                     <p className="mt-1 text-center text-xs text-foreground/75">If anything isn’t crystal clear, reply to your receipt and I’ll adjust your edit.</p>
@@ -325,7 +325,7 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
-                                    Generate My Exact Routine - {displayPrice}
+                                    Generate My Exact Routine – {displayPrice}
                                 </button>
                             </div>
                         </>
