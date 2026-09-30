@@ -38,6 +38,7 @@ export default function GrowthEditClient() {
         useState(false);
     const [price, setPrice] = useState<string | null>(null);
     const didBootstrap = useRef(false);
+    const completingQuiz = useRef(false);
 
     // Reads the live Stripe price so the offer never drifts out of sync with
     // what checkout actually charges -- change the price in Stripe and every
@@ -229,25 +230,40 @@ export default function GrowthEditClient() {
     };
 
     const handleQuizComplete = async () => {
-        track("quiz_completed", { signed_in: signedIn });
-        setView("generating");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        const minimumDisplay = new Promise<void>((resolve) =>
-            window.setTimeout(resolve, 2200),
-        );
-        if (signedIn) {
-            await saveAssessment(answers);
-            setUnlocked(await checkGrowthEditEntitlement());
-            clearDraftAnswers();
-        } else {
-            saveDraftAnswers(answers);
+        // A ref, not state: a fast double-tap lands before React re-renders,
+        // so state would still read "not completing" for the second tap.
+        if (completingQuiz.current) return;
+        completingQuiz.current = true;
+
+        try {
+            track("quiz_completed", { signed_in: signedIn });
+            setView("generating");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            const minimumDisplay = new Promise<void>((resolve) =>
+                window.setTimeout(resolve, 2200),
+            );
+            try {
+                if (signedIn) {
+                    await saveAssessment(answers);
+                    setUnlocked(await checkGrowthEditEntitlement());
+                    clearDraftAnswers();
+                } else {
+                    saveDraftAnswers(answers);
+                }
+            } catch (e) {
+                // Results are computed from the answers in memory, so a failed
+                // save shouldn't strand the visitor on the loading screen.
+                console.error("Saving the assessment failed:", e);
+            }
+            // Keep the transition visible while the assessment is saved, then
+            // continue to the free results -- no wall between finishing the
+            // assessment and seeing what it found.
+            await minimumDisplay;
+            setView("results");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } finally {
+            completingQuiz.current = false;
         }
-        // Keep the transition visible while the assessment is saved, then
-        // continue to the free results -- no wall between finishing the
-        // assessment and seeing what it found.
-        await minimumDisplay;
-        setView("results");
-        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // Used by the post-purchase "Sign In" buttons on the results page. The
