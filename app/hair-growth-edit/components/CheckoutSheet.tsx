@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { X } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
+const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface CheckoutSheetProps {
   open: boolean;
@@ -102,6 +103,13 @@ export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: Checkou
         >
           <X size={18} />
         </button>
+
+        {courseSlug === GROWTH_EDIT_SLUG && (
+          <div className="mb-5 border-b border-foreground/15 pb-4" aria-label="Order summary">
+            <h2 className="font-serif text-xl text-foreground">Order summary</h2>
+            <p className="mt-2 text-sm leading-relaxed text-foreground/75">You’re getting a flexible, step-by-step routine guide based on your quiz answers, including a first-wash checklist and what not to combine. This is educational guidance, not a medical diagnosis or 1:1 consultation. Products are sold separately.</p>
+          </div>
+        )}
 
         {stripePromise ? (
           <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>

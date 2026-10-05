@@ -2,14 +2,13 @@ import { useState } from "react";
 import { track } from "@vercel/analytics";
 import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
-import { ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
+const GROWTH_EDIT_SLUG = "hair-growth-edit";
 import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
 } from "../lib/assessmentStore";
-
-const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
 interface ResultsProps {
     primaryCause: string;
@@ -38,7 +37,6 @@ export function Results({
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
-    shouldShampooTwice,
     paidRoutine,
     supportingNeeds,
     unlocked,
@@ -46,9 +44,6 @@ export function Results({
     onRequireAuth,
     onReset,
 }: ResultsProps) {
-    // Placeholder until the live Stripe price loads, matching the dash used
-    // elsewhere on the site (e.g. the free guide's offer card) rather than a
-    // guessed price.
     const displayPrice = price ?? "$–";
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
@@ -80,7 +75,19 @@ export function Results({
         ? "Your answers include a change best assessed by a dermatologist, GP, or qualified trichology professional. The gentle product suggestions below can support your hair in the meantime, but they are not a diagnosis or substitute for professional care."
         : hasMinorRedFlag
           ? "This assessment is educational guidance, not a medical diagnosis. Since you noted some scalp or hair changes, we advise professional review if they are persistent or worsening."
-          : "This assessment is educational guidance, not a medical diagnosis. The recommendations below reflect the strongest patterns in your answers.";
+          : "This assessment is educational guidance, not a medical diagnosis. The suggestions below are based on what you reported, and may not fit if your answers were incomplete or uncertain.";
+
+  const leadObservation = hasSevereRedFlag
+    ? 'The change you reported deserves professional evaluation before you alter your routine.'
+    : supportingNeeds.find((note) => note.startsWith('You reported'))
+      ?? (primaryCause === 'length protection (no dominant damage pattern)'
+        ? 'Your answers did not point to one dominant damage pattern, so a gentle, repeatable routine is a reasonable starting point.'
+        : `You reported ${observations[0] ?? 'changes in your current routine'}, so consider starting with the strongest pattern suggested by your answers.`);
+    const behaviorWhy = hasSevereRedFlag
+        ? "It can add avoidable stress while you arrange professional care."
+        : primaryCause === "length protection (no dominant damage pattern)"
+          ? "It may add avoidable friction even when your answers show no dominant damage pattern."
+          : `It may add to the ${primaryCause} pattern suggested by your answers.`;
 
     return (
         <div
@@ -88,112 +95,65 @@ export function Results({
             data-testid="section-results"
         >
             <div className="mb-10">
-                <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
+                <h1 className="max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
+                    {hasSevereRedFlag
+                        ? `Please get this change checked. You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.`
+                        : `You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}; your answers suggest focusing on ${primaryCause === "length protection (no dominant damage pattern)" ? "protecting length" : primaryCause}.`}
+                </h1>
+                <span className="mt-3 block text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
                     Your Assessment · Your Wash Days
                 </span>
-                <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                    You shampoo{" "}
-                    {shampooFrequencyAnswer?.toLowerCase() ??
-                        "on your schedule"}
-                    .
-                    {hasSevereRedFlag && (
-                        <span className="block">
-                            Please get this change checked.
-                        </span>
-                    )}
-                </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                    {hasSevereRedFlag ? (
-                        "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
-                    ) : (
-                        <>
-                            Your answers point to{" "}
-                            <strong>{primaryCause}</strong>. Your two free
-                            starting products are below; the complete guide
-                            shows what to add next.
-                        </>
-                    )}
+                <p className="mt-4 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">{leadObservation}</p>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+                    {hasSevereRedFlag
+                        ? "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
+                        : "Your two free starting products are below. The complete guide puts the rest of your routine in order."}
                 </p>
                 {(hasSevereRedFlag || hasMinorRedFlag) && (
-                    <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-                        {disclaimer}
-                    </p>
+                    <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">{disclaimer}</p>
                 )}
                 {!hasSevereRedFlag && !unlocked && (
-                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-paper-dark px-5 py-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
+                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-5 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
                         {purchaseComplete ? (
                             <>
                                 <div>
-                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                                        Purchase Complete
-                                    </span>
-                                    <h2 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">
-                                        Your complete guide is ready.
-                                    </h2>
-                                    <p className="mt-3 text-sm text-foreground/75">
-                                        Sign in with the email you used at
-                                        checkout to open your guide.
-                                    </p>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">Purchase Complete</span>
+                                    <h2 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">Your complete guide is ready.</h2>
+                                    <p className="mt-3 text-sm text-foreground/75">Sign in with the email you used at checkout to open your guide.</p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={onRequireAuth}
-                                    className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background md:mt-0 pill-cta"
-                                >
+                                <button type="button" onClick={onRequireAuth} className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-foreground px-6 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background md:mt-0 pill-cta">
                                     Sign In <ArrowRight size={14} />
                                 </button>
                             </>
                         ) : (
                             <>
                                 <div>
-                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                                        The Complete Growth Edit
-                                    </span>
-                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                                        A plan for your wash days:{" "}
-                                        {shampooFrequencyAnswer ??
-                                            "tailored to you"}
-                                    </h2>
-                                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-foreground/75">
-                                        Know what to buy first, when to use it,
-                                        and how to build your first 30 days —
-                                        without buying everything today.
-                                    </p>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">The Complete Growth Edit</span>
+                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">Your routine, in the right order.</h2>
                                 </div>
-                                <div className="mt-5 md:mt-0 md:min-w-56">
-                                    <button
-                                        type="button"
-                                        onClick={() => openCheckout()}
-                                        className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
-                                    >
-                                        Get My Complete Guide — {displayPrice}{" "}
-                                        <ArrowRight size={14} />
+                                <div className="mt-5 md:mt-0 md:min-w-64">
+                                    <div className="mb-3 flex items-center justify-center gap-1 text-[0.55rem] font-medium uppercase tracking-wide text-foreground/75" aria-label="Routine preview: cleanse, care, maintain">
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">01 Cleanse</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">02 Care</span>
+                                        <span aria-hidden="true">→</span>
+                                        <span className="rounded-full border border-foreground/20 px-2 py-1">03 Maintain</span>
+                                    </div>
+                                    <button type="button" onClick={openCheckout} className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta">
+                                        Get my step-by-step routine guide – {displayPrice} <ArrowRight size={14} />
                                     </button>
-                                    <p className="mt-2 text-center text-xs text-foreground/65">
-                                        One-time digital guide. Products sold
-                                        separately.
-                                    </p>
-                                    <p className="mt-2 text-center text-xs text-foreground/65">
-                                        Instant access · 7-day refund window for
-                                        first-time purchases.{" "}
-                                        <a
-                                            href="/terms"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="underline"
-                                        >
-                                            Terms
-                                        </a>
-                                    </p>
+                                    <p className="mt-2 text-center text-xs text-foreground/75">Built from your quiz answers. Educational guidance, not a 1:1 consult.</p>
+                                    <p className="mt-1 text-center text-xs text-foreground/75">A flexible, step-by-step routine you can apply each week — what to use, in what order, and what not to combine.</p>
+                                    <p className="mt-1 text-center text-xs text-foreground/75">If anything isn’t clear, reply to your receipt for clarification.</p>
+                                    <p className="mt-1 text-center text-[0.65rem] text-foreground/60">One-time digital guide. Products sold separately.</p>
+                                    <p className="mt-2 text-center text-xs text-foreground/65">Instant access · 7-day refund window for first-time purchases. <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a></p>
                                 </div>
                             </>
                         )}
                     </div>
                 )}
                 {!hasSevereRedFlag && !hasMinorRedFlag && (
-                    <p className="mt-4 text-xs leading-relaxed text-foreground/60">
-                        {disclaimer}
-                    </p>
+                    <p className="mt-4 text-xs leading-relaxed text-foreground/60">{disclaimer}</p>
                 )}
             </div>
 
@@ -208,21 +168,21 @@ export function Results({
                             primaryCause.slice(1)}
                     </h2>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-                        Your strongest pattern points to{" "}
-                        <strong>{primaryCause}</strong>, supported by the
-                        presence of {observations[0]} and {observations[1]}.
+                        {primaryCause === 'length protection (no dominant damage pattern)'
+              ? <>Your answers did not point to one dominant damage pattern. <strong>Protecting your lengths</strong> is a suggested starting focus, not a conclusion about your hair’s health.</>
+              : <>Based on what you reported, <strong>{primaryCause}</strong> is a suggested starting focus, informed by {observations[0]} and {observations[1]}.</>}
                         {hasSevereRedFlag &&
                             " Because of the change you noted, use the recommendations below as gentle interim support while arranging a professional consultation."}
                     </p>
                 </div>
 
-                {supportingNeeds.length > 0 && (
+                {supportingNeeds.some((need) => need !== leadObservation) && (
                     <div className="border-t border-foreground/15 pt-10">
                         <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                             How your answers shaped the routine
                         </span>
                         <div className="mt-6 grid gap-3">
-                            {supportingNeeds.map((need) => (
+                            {supportingNeeds.filter((need) => need !== leadObservation).map((need) => (
                                 <p
                                     key={need}
                                     className="rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80"
@@ -240,13 +200,10 @@ export function Results({
                         02 / Immediate Edit
                     </span>
                     <h2 className="mt-3 font-serif text-2xl text-foreground">
-                        A behavior to stop
+                        A habit to reconsider
                     </h2>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
-                        For now, stop <strong>{behaviorToStop}</strong>. It most
-                        directly reinforces the symptoms you are experiencing.
-                        Restoring health requires removing the source of the
-                        stress first.
+                        Consider reducing <strong>{behaviorToStop}</strong>. {behaviorWhy}
                     </p>
                 </div>
 
@@ -261,7 +218,7 @@ export function Results({
                         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
                             {hasSevereRedFlag
                                 ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
-                                : "These two recommendations address part of your pattern. The complete guide shows where they belong, what supports them, what to avoid combining, and how often each step should be used."}
+                                : "These two options were selected from your answers. The guide adds suggested order, timing, and combinations to avoid."}
                         </p>
                         <div className="mt-8 grid gap-6 sm:grid-cols-2">
                             {[product1, product2].map((prod) => (
@@ -310,69 +267,6 @@ export function Results({
                 )}
             </div>
 
-            {/* Detailed offer for readers who reach the end of their free results. */}
-            {!hasSevereRedFlag && !unlocked && !purchaseComplete && (
-                <div className="mt-24 rounded-2xl border border-foreground/15 bg-blue px-6 py-12 text-center md:px-12 md:py-16">
-                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/55">
-                        Your Next Step
-                    </span>
-                    <h2 className="mt-3 font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
-                        Turn Your Results Into A Routine
-                    </h2>
-                    <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                        Your results show the main pattern and two products to
-                        start with. The complete Growth Edit shows what to do
-                        next: which products to prioritize, how to use each one,
-                        and when each step belongs in your week. You can start
-                        without buying everything at once.
-                    </p>
-                    <div className="mx-auto mt-10 max-w-lg space-y-3 text-left">
-                        {[
-                            "Your first three buying priorities, in order, and what can wait",
-                            "The full routine, with why, how, and timing for every step",
-                            "A weekly wash schedule and a manageable first 30 days",
-                            "Checkpoints and adjustments if your scalp or lengths feel off",
-                            "What to skip, what not to combine, and which products to save",
-                            shouldShampooTwice
-                                ? "Cleansing instructions tailored to your two-pass wash days"
-                                : "Cleansing instructions tailored to your single-pass wash days",
-                        ].map((feature) => (
-                            <div
-                                key={feature}
-                                className="flex items-start gap-3"
-                            >
-                                <Check
-                                    className="mt-0.5 shrink-0 text-foreground/60"
-                                    size={16}
-                                />
-                                <span className="text-sm leading-relaxed text-foreground/80">
-                                    {feature}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                    <p className="mt-10 font-serif text-4xl text-foreground">
-                        {displayPrice}
-                    </p>
-                    <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                        One-time purchase
-                    </p>
-                    <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-foreground/60">
-                        The purchase includes your personalized digital guide
-                        only. Recommended physical products are not included and
-                        are sold separately.
-                    </p>
-                    <button
-                        type="button"
-                        onClick={openCheckout}
-                        className="mt-10 inline-flex w-full items-center justify-center gap-3 bg-foreground px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 sm:w-auto pill-cta"
-                    >
-                        Get My Complete Guide — {displayPrice}{" "}
-                        <ArrowRight size={14} />
-                    </button>
-                </div>
-            )}
-
             {/* Softened, disclaimer-forward offer for severe cases: still buyable,
           but the copy leads with "this won't fix it, see a professional"
           rather than the standard upsell framing. */}
@@ -415,8 +309,7 @@ export function Results({
                                 dermatologist, GP, or qualified trichology
                                 professional.{" "}
                                 <strong>
-                                    No product routine, including this one, will
-                                    resolve the underlying change you noted.
+                                    This routine cannot identify or treat the underlying cause of the change you reported.
                                 </strong>{" "}
                                 If you would still like gentle, conservative
                                 product guidance to use alongside professional
@@ -436,8 +329,9 @@ export function Results({
                                     onClick={() => openCheckout()}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
-                                    Get Gentle Support Guide — {displayPrice}
+                                    Get my step-by-step routine guide – {displayPrice}
                                 </button>
+                                <p className="mt-3 text-xs leading-relaxed text-foreground/70">Built from your quiz answers. Educational guidance, not a medical diagnosis or 1:1 consult.</p>
                             </div>
                         </>
                     )}

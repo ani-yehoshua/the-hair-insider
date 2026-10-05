@@ -288,10 +288,10 @@ export function calculateResults(answers: AnswerMap) {
         secondaryCause = null;
         finalObservations = healthyObservations.slice(0, 2);
         if (finalObservations.length < 2) {
-            finalObservations = [
-                "consistent routine",
-                "stable growth patterns",
-            ];
+            finalObservations.push("no dominant damage pattern in your answers");
+        }
+        if (finalObservations.length < 2) {
+            finalObservations.push("your current routine");
         }
     }
 
@@ -389,7 +389,7 @@ export function calculateResults(answers: AnswerMap) {
     }
     if (answers.wetFrizz === 1 || answers.wetFrizz === 2) {
         supportingNeeds.push(
-            "You reported frizz while soaking wet, so the routine prioritizes moisture retention, gentle handling, and protection of the cuticle.",
+            "You reported frizz while soaking wet, so the routine suggests gentle handling and moisture-focused care without assuming cuticle damage.",
         );
     }
     if (profile.stylePreference !== "natural") {
