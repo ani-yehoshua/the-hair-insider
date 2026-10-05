@@ -23,7 +23,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "diameter",
     prompt: "First, let’s find the thickness of one individual hair strand.",
-    help: "This is strand diameter—not how much hair you have. It helps determine whether your hair is easily weighed down or needs richer support.",
+    help: "This is strand diameter—not how much hair you have. We use it as one clue when suggesting lighter or richer products.",
     preparationTitle: "How to do the strand test",
     preparation: [
       "Find one naturally shed strand from your brush, clothing, or shower. Do not pull a strand from your scalp.",
@@ -41,7 +41,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "pattern",
     prompt: "Next, let’s identify the natural shape your hair makes on its own.",
-    help: "This is your natural texture pattern—not how frizzy, smooth, or styled your hair looks. The pattern helps determine how moisture travels through the strand and which product weights are most suitable.",
+    help: "This is your natural texture pattern—not how frizzy, smooth, or styled your hair looks. It helps us suggest product textures and styling steps; it is not a measure of hair health.",
     preparationTitle: "How to see your natural texture",
     preparation: [
       "Use freshly washed hair with no leave-in, gel, mousse, oil, or heat styling.",
@@ -79,7 +79,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "density",
     prompt: "In bright light, how much scalp shows along a normal part?",
-    help: "This measures your hair density, which influences how heavy your styling products should be and alerts us to potential thinning.",
+    help: "The amount of visible scalp helps us consider product weight. Density varies naturally; a recent change is more useful to note than a single observation.",
     preparationTitle: "How to assess your density",
     preparation: [
       "Start with clean, dry hair in a brightly lit room or in daylight.",
@@ -97,13 +97,13 @@ export const QUESTIONS: Question[] = [
   {
     id: "shed",
     prompt: "What do most fallen hairs look like?",
-    help: "This tells us if your hair is shedding naturally from the root or breaking off along the strand, which require entirely different treatments.",
+    help: "The length and ends of fallen hairs may help distinguish shedding from breakage. One strand cannot confirm why it came out.",
     preparationTitle: "How to inspect fallen hair",
     preparation: [
       "Collect a few loose hairs from your brush, shower drain, or clothing.",
       "Hold one hair up to a light background and look closely at the root end.",
-      "A tiny white or dark speck (the bulb) means the hair naturally shed from the root.",
-      "No bulb and shorter pieces mean the hair broke off along the strand."
+      "A tiny bulb at one end may suggest the full-length hair shed; it cannot tell you why.",
+      "Short, uneven pieces without a visible bulb may be breakage, but a missing bulb alone is not conclusive."
     ],
     options: [
       { label: "Full-length with a bulb", scores: { SH: 3 } },
@@ -115,7 +115,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "shedChange",
     prompt: "Has full-length shedding changed?",
-    help: "Tracking changes in your shedding rate helps identify if internal or environmental factors are shortening your hair's growth phase.",
+    help: "A noticeable change in shedding is worth tracking. Sudden or substantial changes are best discussed with a healthcare professional; this quiz cannot identify their cause.",
     preparationTitle: "How to measure shedding changes",
     preparation: [
       "Think about the amount of hair you typically see in the shower, on your brush, or on your clothes.",
@@ -133,7 +133,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "ends",
     prompt: "Inspect ends over dark and light backgrounds. What appears?",
-    help: "Checking your ends helps determine the physical integrity of your oldest hair, highlighting structural weakness and mechanical damage.",
+    help: "Visible splits or snapping can suggest wear at the ends, but they do not identify what caused it.",
     preparationTitle: "How to check your ends",
     preparation: [
       "Take a small section of dry hair and fan out the very ends.",
@@ -151,7 +151,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "wetFrizz",
     prompt: "Is your hair frizzy while soaking wet?",
-    help: "Wet frizz reveals whether your hair cuticles are raised or damaged. Smooth cuticles lay flat when wet, while raised cuticles repel water.",
+    help: "How strands group when wet is one observation we use for care suggestions; frizz alone cannot show whether the cuticle is damaged.",
     preparationTitle: "How to test wet frizz",
     preparation: [
       "Observe your hair while you are still in the shower, completely soaking wet.",
@@ -169,7 +169,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "wetting",
     prompt: "Under running water, how quickly does hair become fully wet?",
-    help: "This measures your hair's porosity—how easily moisture enters the strand. It tells us whether you need lightweight or heavy-duty moisture.",
+    help: "Wetting speed can vary with products and water flow. We use it as one clue when suggesting product weight, not as a porosity measurement.",
     preparationTitle: "How to test water absorption",
     preparation: [
       "Step into the shower with completely dry hair and no styling products.",
@@ -187,7 +187,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "drying",
     prompt: "Without heat, what happens after washing?",
-    help: "This confirms your porosity. How your hair releases moisture is just as important as how it absorbs it.",
+    help: "Drying time is another observation to consider alongside your other answers; it cannot confirm porosity on its own.",
     preparationTitle: "How to observe drying time",
     preparation: [
       "After washing, towel-blot your hair gently and let it air-dry without any heat tools.",
@@ -205,7 +205,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "residue",
     prompt: "Before washing, what can you see or feel?",
-    help: "This spots product buildup or mineral accumulation, which blocks moisture and causes artificial dryness and breakage.",
+    help: "A coated feeling may suggest product residue, while flakes may have other causes. Your answer helps shape suggestions but does not identify the cause.",
     preparationTitle: "How to check for buildup",
     preparation: [
       "Before your next wash, run your fingers firmly through your roots and along the lengths.",
@@ -223,7 +223,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "clarify",
     prompt: "After a thorough clarifying wash, what changes?",
-    help: "This helps confirm if your dryness is actually just product buildup. Clarifying removes buildup, returning your hair to its true state.",
+    help: "A change after clarifying may suggest residue plays a role, but it cannot confirm the cause of dryness.",
     preparationTitle: "How to recall clarifying results",
     preparation: [
       "Think back to the last time you used a strong, deep-cleansing clarifying shampoo.",
@@ -240,7 +240,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "dryFeel",
     prompt: "One day after conditioning, how do the lengths feel?",
-    help: "This measures how well your hair retains moisture after wash day. Good retention means your products match your porosity.",
+    help: "This describes how your lengths feel between washes; it does not measure moisture levels or prove a porosity type.",
     preparationTitle: "How to evaluate moisture retention",
     preparation: [
       "Wait 24 hours after your wash and condition routine.",
@@ -258,11 +258,11 @@ export const QUESTIONS: Question[] = [
   {
     id: "mushy",
     prompt: "When wet, does hair feel gummy or overly soft?",
-    help: "This checks for severe structural damage. When the inner protein structure of the hair is compromised, it loses its firmness and turns to mush when wet.",
+    help: "An unusually gummy feel may suggest fragile hair, especially after processing, but it cannot identify the underlying cause.",
     preparationTitle: "How to check wet texture",
     preparation: [
       "While hair is wet in the shower, gently pinch a small section of strands.",
-      "Feel for an unusual texture—healthy wet hair feels solid, while compromised hair may feel mushy, gummy, or like wet cotton.",
+      "Notice whether the strands feel unusually mushy, gummy, or cottony compared with your usual wet hair.",
       "Do not pull forcefully. If this only happens on bleached or highlighted sections, select that option."
     ],
     options: [
@@ -275,12 +275,12 @@ export const QUESTIONS: Question[] = [
   {
     id: "elasticity",
     prompt: "Gently stretch one wet shed strand. What happens?",
-    help: "This is the classic elasticity test. It reveals the balance of moisture and protein within your hair shaft.",
+    help: "A single strand can show how it behaves when gently stretched; this cannot measure its moisture or protein levels.",
     preparationTitle: "How to perform the stretch test",
     preparation: [
       "Find a single, already-shed strand of hair while you are washing or detangling wet hair.",
       "Hold an inch of the wet strand between your fingers and gently pull it taut, then release.",
-      "Healthy hair will stretch slightly and bounce back. Damaged hair may snap immediately or stretch out like gum without returning.",
+      "Notice whether the strand returns, snaps, or stays stretched. One result cannot tell you why.",
       "If you cannot test right now, choose 'Cannot test'."
     ],
     options: [
@@ -293,7 +293,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "proteinResponse",
     prompt: "After a protein or keratin treatment, what happens?",
-    help: "Your hair's reaction to protein tells us if it needs structural reinforcement or if it simply needs softer moisture.",
+    help: "How a past product felt can help us avoid products you disliked; it cannot diagnose a protein or moisture deficiency.",
     preparationTitle: "How to recall protein reactions",
     preparation: [
       "Think about your past experiences with products labeled 'protein treatment', 'keratin mask', or 'strengthening builder'.",
@@ -311,7 +311,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "heatUse",
     prompt: "How often does hair touch hot tools?",
-    help: "Heat exposure is one of the leading causes of length retention failure. Knowing your frequency helps us build a protective routine.",
+    help: "Heat frequency helps us suggest styling and handling options that may reduce repeated stress on the lengths.",
     preparationTitle: "How to count heat exposure",
     preparation: [
       "Include blow dryers, flat irons, curling wands, and heated styling brushes.",
@@ -328,7 +328,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "heatSigns",
     prompt: "Where are short rough pieces most visible?",
-    help: "Identifying the location of broken pieces helps us confirm if mechanical or heat habits are the specific culprit.",
+    help: "Where you see shorter pieces can help you review handling and heat habits, but location alone cannot establish the cause.",
     preparationTitle: "How to locate breakage zones",
     preparation: [
       "Examine your dry hair in a mirror, looking at the top layer, the ends, and the hairline.",
@@ -345,7 +345,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "chemical",
     prompt: "Which service occurred in the last year?",
-    help: "Chemical processes permanently alter the hair's structure, significantly increasing the need for targeted repair and specific handling.",
+    help: "Some chemical services can leave lengths feeling drier or more fragile. This helps us suggest gentler handling without assessing damage.",
     preparationTitle: "How to identify chemical exposure",
     preparation: [
       "Think back over the last 12 months of salon visits or at-home treatments.",
@@ -363,7 +363,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "tension",
     prompt: "How often is hair pulled tight or carries added weight?",
-    help: "Tension damages the follicle over time, leading to a specific type of hair loss called traction alopecia.",
+    help: "Repeatedly tight styles can put stress on the hair and scalp. Pain or thinning is a reason to consider professional advice.",
     preparationTitle: "How to assess tension",
     preparation: [
       "Think about your typical daily hairstyles.",
@@ -380,7 +380,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "tensionSigns",
     prompt: "After styling, what happens at the scalp or hairline?",
-    help: "These signs indicate your follicles are under dangerous stress, which must be addressed immediately to prevent permanent loss.",
+    help: "Pain, bumps, or thinning after tight styling can be warning signs. Loosen the style, and seek prompt professional evaluation for pain or thinning patches.",
     preparationTitle: "How to spot tension damage",
     preparation: [
       "Pay attention to how your scalp feels when you take your hair down at the end of the day.",
@@ -397,7 +397,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "scalp",
     prompt: "Between washes, what best matches your scalp?",
-    help: "Your scalp health dictates your hair growth. An inflamed, imbalanced scalp cannot produce strong, healthy hair.",
+    help: "Scalp comfort helps shape gentle-care suggestions. Persistent irritation, sores, or hair loss deserve professional assessment.",
     preparationTitle: "How to observe scalp health",
     preparation: [
       "Think about how your scalp feels on a normal day, neither freshly washed nor overdue for a wash.",
@@ -415,7 +415,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "lossPattern",
     prompt: "Do you see distinct bare or thinning patches, or eyebrow loss?",
-    help: "These patterns can flag underlying conditions that require a dermatologist rather than just a better product routine.",
+    help: "New bare patches or hair loss beyond the scalp are reasons to seek professional assessment; a quiz cannot identify the cause.",
     preparationTitle: "How to check for localized loss",
     preparation: [
       "Use a mirror to look over your entire scalp, parting the hair in different places.",
@@ -432,7 +432,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "shampooFrequency",
     prompt: "How often do you shampoo your scalp?",
-    help: "Washing frequency impacts both scalp health and hair hydration. Striking the right balance is key to length retention.",
+    help: "Your washing pattern helps us suggest a practical routine; the right frequency varies from person to person.",
     preparationTitle: "How to count your wash days",
     preparation: [
       "Count only the days you use a lathering shampoo on your scalp.",

@@ -321,19 +321,13 @@ export default function GrowthEditClient() {
                     <div className="grid gap-12 md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-16">
                         <div className="order-2 md:order-1">
                             <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                                Diagnostic Assessment
+                                Hair &amp; Scalp Assessment
                             </span>
                             <h1 className="mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-foreground md:text-7xl">
                                 The Growth Edit
                             </h1>
                             <div className="mt-6 h-px w-12 bg-foreground/30" />
-                            <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/80 md:text-base">
-                                A private, 25-question diagnostic for women
-                                struggling to retain length. Identify the root
-                                cause of your length stall, establish a
-                                foundational routine, and receive clear
-                                instructions on what habits to stop immediately.
-                            </p>
+                            <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/80 md:text-base">Answer questions about your hair and routine. Based on what you share, we’ll suggest starting points and products to consider. This is educational guidance, not a diagnosis.</p>
 
                             <div className="mt-10">
                                 <button

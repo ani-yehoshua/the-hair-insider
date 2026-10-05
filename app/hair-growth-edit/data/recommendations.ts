@@ -141,7 +141,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "rebalancingShampoo",
         "Rebalancing Shampoo",
         "Scalp cleanse",
-        "Regulates an oily, congested scalp without loading the lengths.",
+        "A cleanser option for oil-prone roots without a heavy finish on the lengths.",
         "https://go.shopmy.us/p-66731048",
     ),
     momoShampoo: product(
@@ -267,7 +267,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "nourishingHairBuildingPak",
         "NOURISHING Hair Building Pak",
         "Vegetal keratin treatment",
-        "Davines pairs vegetal keratin with its Biacidic Bond Complex to strengthen dry, brittle fibers. It is selected when your answers show that hair responds well to protein or needs structural reinforcement.",
+        "A protein-containing treatment considered when your answers show signs of fragility, such as a positive response to protein. Your answers do not establish a protein deficiency.",
         "https://go.shopmy.us/p-88386482",
     ),
     oiMilk: product(
@@ -346,7 +346,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "jolieFilteredShowerhead",
         "The Jolie Filtered Showerhead + Filter",
         "Water filtration",
-        "Reduces chlorine, heavy metals, bacteria, and scale before they reach the scalp and lengths, helping every routine start with cleaner shower water.",
+        "A filtered showerhead option if you want to consider water quality as part of your wash setup. Check the manufacturer’s filter specifications for your specific water concerns.",
         "https://go.shopmy.us/p-67307318",
         "Jolie",
     ),

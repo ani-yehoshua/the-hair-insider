@@ -13,8 +13,7 @@ export function ResultsGenerating() {
                     Building your results
                 </h1>
                 <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-foreground/70">
-                    Reviewing your strongest patterns, routine habits, and
-                    product needs.
+                    Organizing your answers and possible starting points.
                 </p>
 
                 <div className="mx-auto mt-12 max-w-md">
@@ -23,7 +22,7 @@ export function ResultsGenerating() {
                     </div>
                     <div className="mt-5 flex items-center justify-center gap-2 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/45">
                         <span className="results-generating-dot h-1.5 w-1.5 rounded-full bg-sage" />
-                        Personalizing your Growth Edit
+                        Using your quiz answers
                     </div>
                 </div>
             </div>

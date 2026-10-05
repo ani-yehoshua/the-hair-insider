@@ -26,8 +26,8 @@ const DAILY_TIPS = [
     "Avoid tight hairstyles that put constant tension on your edges.",
     "Let your hair air dry partially before using a blow dryer to minimize heat exposure.",
     "Apply heat protectant every single time before using hot tools.",
-    "Keep your scalp clean; a healthy scalp is the foundation for length retention.",
-    "Trim split ends as soon as you see them so they don't travel up the hair shaft.",
+    "Find a cleansing rhythm your scalp tolerates; seek professional advice if irritation persists.",
+    "Consider trimming visibly split ends to limit further wear along the strand.",
     "Massage your scalp gently when washing instead of scrubbing with your nails.",
     "Ensure your hair is thoroughly wet before applying shampoo to help it lather evenly.",
 ];
@@ -36,7 +36,7 @@ function getRoutineBenefit(step: RoutineStep): string {
     const { id, category } = step.product;
 
     if (id === "jolieFilteredShowerhead") {
-        return "This supports every wash step by reducing the mineral and chlorine exposure that can leave hair feeling coated, rough, or harder to manage.";
+        return "This is an optional wash-setup choice. Check the manufacturer’s filter specifications for your water concerns; it is not a treatment for scalp or hair changes.";
     }
     if (id === "energizingSuperactive") {
         return "This gives your routine a consistent scalp-focused step without adding weight or treatment products to the lengths.";
@@ -67,7 +67,7 @@ function getRoutineBenefit(step: RoutineStep): string {
         normalizedCategory.includes("keratin") ||
         normalizedCategory.includes("treatment")
     ) {
-        return "This is your targeted treatment step. Its scheduled cadence addresses the specific moisture or strength need in your results without over-treating the hair.";
+        return "This is a treatment option with a suggested cadence based on your answers, without adding several overlapping treatments at once.";
     }
     if (normalizedCategory.includes("leave-in")) {
         return "This keeps slip and moisture in the lengths after rinsing, making detangling and styling easier with less friction.";
@@ -198,11 +198,12 @@ export function GuideView({
                     The Complete Growth Edit
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-foreground/80 md:text-base">
-                    This is your personalized length-retention guide. Your
-                    routine is structured to address{" "}
-                    <strong>{primaryCause}</strong> and protect your ends while
-                    avoiding <strong>{behaviorToStop}</strong>. Follow the exact
-                    cadences below to build a foundation for healthy growth.
+                    This guide is assembled from your quiz answers. It suggests
+                    a sequence for focusing on <strong>{primaryCause}</strong>{" "}
+                    and handling your lengths more gently while reconsidering{" "}
+                    <strong>{behaviorToStop}</strong>. Use the listed cadences
+                    as starting points and adjust based on how your hair and
+                    scalp respond.
                 </p>
             </div>
 
@@ -213,9 +214,7 @@ export function GuideView({
             >
                 <div className="flex items-center gap-3">
                     <Calendar className="text-sage" size={20} />
-                    <h2 className="font-serif text-xl">
-                        Daily Length-Retention Tip
-                    </h2>
+                    <h2 className="font-serif text-xl">Length-Retention Tip</h2>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-foreground/80">
                     {dailyTip}
@@ -234,17 +233,17 @@ export function GuideView({
                     Your Action Plan
                 </h2>
                 <p className="mt-5 max-w-3xl text-sm leading-relaxed text-foreground/75 md:text-base">
-                    Your strongest pattern is{" "}
+                    Your answers suggest focusing on{" "}
                     <strong className="font-medium text-foreground">
                         {primaryCause}
                     </strong>
-                    . The goal is not to add more products at once. It is to
-                    remove the stress caused by{" "}
+                    . The goal is not to add more products at once. Consider
+                    reducing possible stress from{" "}
                     <strong className="font-medium text-foreground">
                         {behaviorToStop}
                     </strong>
-                    , establish a repeatable wash rhythm, and then judge the
-                    routine by how your scalp and lengths respond over time.
+                    , establishing a repeatable wash rhythm, and observing how
+                    your scalp and lengths respond over time.
                 </p>
 
                 <div className="mt-10 rounded-3xl border border-foreground/15 bg-paper-dark p-6 md:p-10">
@@ -254,17 +253,24 @@ export function GuideView({
                     <div className="mt-6 grid gap-6 md:grid-cols-[0.85fr_1.15fr] md:gap-12">
                         <div>
                             <h3 className="font-serif text-2xl">
-                                What your answers showed
+                                What you reported
                             </h3>
                             <p className="mt-4 text-sm leading-relaxed text-foreground/80">
-                                Your result was supported by{" "}
-                                {observations.length > 1
-                                    ? `${observations[0]} and ${observations[1]}`
-                                    : observations[0] ||
-                                      "the pattern across your answers"}
-                                . Those signs make consistency and low-friction
-                                handling more important than chasing a single
-                                “growth” product.
+                                {primaryCause ===
+                                "length protection (no dominant damage pattern)" ? (
+                                    "Your answers did not point to one dominant damage pattern. These suggestions are a starting point for gentler handling, not a conclusion about your hair’s health."
+                                ) : (
+                                    <>
+                                        Your answers included{" "}
+                                        {observations.length > 1
+                                            ? `${observations[0]} and ${observations[1]}`
+                                            : observations[0] ||
+                                              "the pattern across your answers"}
+                                        . These details informed the suggestions
+                                        below; they do not establish a medical
+                                        cause.
+                                    </>
+                                )}
                             </p>
                         </div>
                         <div>
@@ -276,9 +282,8 @@ export function GuideView({
                                     <strong className="font-medium text-foreground">
                                         Clean consistently:
                                     </strong>{" "}
-                                    Prevent residue and scalp oil from
-                                    interfering with the conditioning and
-                                    styling steps that follow.
+                                    Help manage residue and scalp oil before the
+                                    conditioning and styling steps that follow.
                                 </li>
                                 <li>
                                     <strong className="font-medium text-foreground">
@@ -318,15 +323,15 @@ export function GuideView({
                         Your repeatable rhythm
                     </span>
                     <h3 className="mt-3 font-serif text-3xl">
-                        The weekly schedule
+                        A suggested weekly rhythm
                     </h3>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/75">
-                        Plan for{" "}
+                        A starting point is{" "}
                         <strong className="font-medium text-foreground">
                             {washRhythm.toLowerCase()}
                         </strong>
-                        . Use this sequence as the default, then follow the
-                        exact cadence printed on each product card.
+                        . Use this sequence flexibly and check the suggested
+                        cadence on each product card.
                     </p>
                     <div className="mt-8 grid gap-4 md:grid-cols-3">
                         <div className="rounded-2xl border border-foreground/15 bg-paper p-6">
@@ -389,6 +394,37 @@ export function GuideView({
                             </p>
                         </div>
                     </div>
+                </div>
+
+                <div className="mt-8 rounded-3xl border border-foreground/15 bg-paper p-6 md:p-8">
+                    <h3 className="font-serif text-2xl">
+                        Your first-wash checklist
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/75">
+                        Use your full routine below for product-specific
+                        placement and timing.
+                    </p>
+                    <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-foreground/80">
+                        <li>
+                            Cleanse your scalp with{" "}
+                            {shampooStep?.product.name ??
+                                "your listed cleanser"}{" "}
+                            using the wash method below.
+                        </li>
+                        <li>
+                            Condition the lengths, detangle gently, then apply
+                            the listed leave-in before styling.
+                        </li>
+                        <li>
+                            Only use a treatment if it is due at its listed
+                            cadence; do not stack it with the regular step it
+                            replaces.
+                        </li>
+                        <li>
+                            Notice how your scalp and ends feel afterward before
+                            changing another step.
+                        </li>
+                    </ol>
                 </div>
 
                 <div className="mt-12 rounded-3xl bg-sage/25 p-6 md:p-10">
@@ -481,10 +517,10 @@ export function GuideView({
                                 </h4>
                                 <p className="mt-1 text-sm leading-relaxed text-foreground/75">
                                     Review photos taken in similar lighting and
-                                    styling. Retention shows up as
-                                    fuller-looking ends and less repeated
-                                    breakage; growth rate itself may not visibly
-                                    change.
+                                    styling. Signs of improved retention may
+                                    include fuller-looking ends and less
+                                    repeated breakage; growth rate itself may
+                                    not visibly change.
                                 </p>
                             </div>
                         </div>
@@ -558,15 +594,15 @@ export function GuideView({
                     {/* Where to spend first */}
                     <div>
                         <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
-                            Your first three purchases
+                            Three options to consider first
                         </span>
                         <h3 className="mt-3 font-serif text-3xl">
                             Where to spend first
                         </h3>
                         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/75">
-                            Start with these three products before expanding
-                            your routine. They give you the strongest foundation
-                            for the pattern identified in your results.
+                            These are prioritized options based on your answers.
+                            You do not need to buy everything at once; assess
+                            how each step fits before adding more.
                         </p>
 
                         <div className="mt-10 space-y-6">
@@ -655,7 +691,7 @@ export function GuideView({
                                         <strong className="font-medium text-foreground">
                                             Harsh clarifying scrubs:
                                         </strong>{" "}
-                                        Your scalp pattern does not call for
+                                        Your answers do not suggest a need for
                                         aggressive exfoliation.
                                     </li>
                                 )}
@@ -664,7 +700,7 @@ export function GuideView({
                                         <strong className="font-medium text-foreground">
                                             Heavy protein treatments:
                                         </strong>{" "}
-                                        Your results do not support adding a
+                                        Your answers do not suggest adding a
                                         separate high-protein treatment.
                                     </li>
                                 )}
@@ -856,7 +892,7 @@ export function GuideView({
                                         </div>
                                         <div className="rounded-xl bg-paper-dark p-5">
                                             <h4 className="font-serif text-lg">
-                                                How it benefits your routine
+                                                Why it may fit your routine
                                             </h4>
                                             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
                                                 {getRoutineBenefit(step)}
