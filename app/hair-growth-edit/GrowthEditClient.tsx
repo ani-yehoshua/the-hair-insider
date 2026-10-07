@@ -431,6 +431,10 @@ export default function GrowthEditClient() {
                         supportingNeeds={results.supportingNeeds}
                         washFrequency={results.washFrequency}
                         stylePreference={results.stylePreference}
+                        reportedDensityChange={answers.density === 3}
+                        firstRecommendation={results.product1}
+                        secondRecommendation={results.product2}
+                        hasSevereRedFlag={results.hasSevereRedFlag}
                     />
                 )}
 

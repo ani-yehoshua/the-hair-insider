@@ -424,7 +424,7 @@ export interface HairProfile {
     irritatedScalp: boolean;
 }
 
-function getWashSchedule(profile: HairProfile) {
+export function getWashSchedule(profile: Pick<HairProfile, 'washFrequency'>) {
     switch (profile.washFrequency) {
         case "daily":
             return {
