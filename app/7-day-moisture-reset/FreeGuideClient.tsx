@@ -61,6 +61,7 @@ export default function FreeGuideClient() {
                 const formatted = new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: json.currency.toUpperCase(),
+                    minimumFractionDigits: json.unitAmount % 100 === 0 ? 0 : 2,
                 }).format(json.unitAmount / 100);
                 setGrowthEditPrice(formatted);
             }
@@ -1105,7 +1106,7 @@ export default function FreeGuideClient() {
                         }
                         #guide-root .price{
                             font-family: 'Inter', sans-serif;
-                            font-size: 2rem;
+                            font-size: 2.5rem;
                             font-weight: 600;
                             letter-spacing: -0.03em;
                             line-height: 1;
@@ -1113,7 +1114,7 @@ export default function FreeGuideClient() {
                         }
                         #guide-root .price-was{
                             font-family: 'Inter', sans-serif;
-                            font-size: 1.25rem;
+                            font-size: 1.5rem;
                             font-weight: 500;
                             line-height: 1;
                             color: #e11d48;

@@ -173,11 +173,11 @@ export function Results({
                                         </span>
                                     </div>
                                     <p className="mb-2 flex items-baseline justify-center gap-2">
-                                        <span className="font-serif text-3xl text-foreground">
+                                        <span className="font-serif text-4xl text-foreground">
                                             {displayPrice}
                                         </span>
                                         {price && (
-                                            <span className="text-lg text-destructive line-through">
+                                            <span className="text-xl text-destructive line-through">
                                                 {GROWTH_EDIT_COMPARE_AT_PRICE}
                                             </span>
                                         )}
@@ -410,10 +410,10 @@ export function Results({
                                 product guidance to use alongside professional
                                 care, it is available below.
                             </p>
-                            <p className="mt-5 flex items-baseline justify-center gap-2 font-serif text-2xl text-foreground">
+                            <p className="mt-5 flex items-baseline justify-center gap-2 font-serif text-3xl text-foreground">
                                 {displayPrice}
                                 {price && (
-                                    <span className="font-sans text-base text-destructive line-through">
+                                    <span className="font-sans text-lg text-destructive line-through">
                                         {GROWTH_EDIT_COMPARE_AT_PRICE}
                                     </span>
                                 )}
