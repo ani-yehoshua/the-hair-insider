@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { X } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
+import { growthEditFontVariables } from '../fonts';
 const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface CheckoutSheetProps {
@@ -87,7 +88,7 @@ export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: Checkou
 
   return createPortal(
     <div
-      className="growth-edit-quiz fixed inset-0 z-50 flex items-end justify-center bg-black/40 fade-in"
+      className={`growth-edit-quiz ${growthEditFontVariables} fixed inset-0 z-50 flex items-end justify-center bg-black/40 fade-in`}
       onClick={onClose}
     >
       <div

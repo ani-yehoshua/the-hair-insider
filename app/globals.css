@@ -142,10 +142,30 @@
   --paper-dark: #d6e0e2;
   --sage: #343430;
   --blue: #d4dde3;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  /* Typography mirrors the 7-Day Moisture Reset: the serif carries the page and
+     Inter is reserved for small labels, buttons and fine print (see below).
+     Cormorant has a small x-height, so the Tailwind text steps are scaled up here;
+     line-heights are ratios, so they scale with them. */
+  --text-sm: 1.0625rem;
+  --text-base: 1.1875rem;
+  --text-lg: 1.3125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.125rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3.25rem;
+  --text-6xl: 4rem;
+  --text-7xl: 4.75rem;
+  font-family: var(--font-cormorant-garamond), Georgia, serif;
+  font-variant-numeric: lining-nums;
 }
-.growth-edit-quiz .font-serif { font-family: var(--font-bodoni-moda), Georgia, serif; }
-.growth-edit-quiz .font-support { font-family: var(--font-bodoni-moda), Georgia, serif; }
+.growth-edit-quiz .font-serif { font-family: var(--font-cormorant-garamond), Georgia, serif; }
+.growth-edit-quiz .font-support { font-family: var(--font-cormorant-garamond), Georgia, serif; }
+/* Sans roles: small caps labels, buttons (not the quiz answer options) and fine print. */
+.growth-edit-quiz .uppercase,
+.growth-edit-quiz .text-xs:not(.font-support),
+.growth-edit-quiz [class*="text-[0."],
+.growth-edit-quiz button:not([role="radio"]) { font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; }
 .growth-edit-quiz .rule-top { border-top: 1px solid rgb(52 52 48 / 0.15); }
 .growth-edit-quiz .rule-bottom { border-bottom: 1px solid rgb(52 52 48 / 0.15); }
 .growth-edit-quiz .rule-x { border-top: 1px solid rgb(52 52 48 / 0.15); border-bottom: 1px solid rgb(52 52 48 / 0.15); }
