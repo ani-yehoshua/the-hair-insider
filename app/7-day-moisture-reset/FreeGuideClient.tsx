@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
+import {
+    GROWTH_EDIT_COMPARE_AT_PRICE,
+    GROWTH_EDIT_PROMO_LABEL,
+} from "@/lib/pricing/growthEdit";
 
 const GUIDE_SLUG = "7-day-moisture-reset";
 
@@ -1106,6 +1110,14 @@ export default function FreeGuideClient() {
                             letter-spacing: -0.03em;
                             line-height: 1;
                             display: block;
+                        }
+                        #guide-root .price-was{
+                            font-family: 'Inter', sans-serif;
+                            font-size: 1.25rem;
+                            font-weight: 500;
+                            line-height: 1;
+                            color: #e11d48;
+                            text-decoration: line-through;
                         }
                         #guide-root .savings-badge{
                             background: #e11d48;
@@ -2596,6 +2608,16 @@ export default function FreeGuideClient() {
                                         <div className='offer-price-row'>
                                             <span className='price'>
                                                 {growthEditPrice ?? "$–"}
+                                            </span>
+                                            {growthEditPrice && (
+                                                <span className='price-was'>
+                                                    {
+                                                        GROWTH_EDIT_COMPARE_AT_PRICE
+                                                    }
+                                                </span>
+                                            )}
+                                            <span className='savings-badge'>
+                                                {GROWTH_EDIT_PROMO_LABEL}
                                             </span>
                                         </div>
                                         <div className='price-meta'>

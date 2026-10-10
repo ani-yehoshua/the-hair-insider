@@ -5,6 +5,10 @@ import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
 import {
+    GROWTH_EDIT_COMPARE_AT_PRICE,
+    GROWTH_EDIT_PROMO_LABEL,
+} from "@/lib/pricing/growthEdit";
+import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
 } from "../lib/assessmentStore";
@@ -168,6 +172,19 @@ export function Results({
                                             03 Maintain
                                         </span>
                                     </div>
+                                    <p className="mb-2 flex items-baseline justify-center gap-2">
+                                        <span className="font-serif text-3xl text-foreground">
+                                            {displayPrice}
+                                        </span>
+                                        {price && (
+                                            <span className="text-lg text-destructive line-through">
+                                                {GROWTH_EDIT_COMPARE_AT_PRICE}
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p className="mb-3 text-center text-[0.65rem] font-semibold uppercase tracking-widest text-foreground/80">
+                                        {GROWTH_EDIT_PROMO_LABEL}
+                                    </p>
                                     <button
                                         type="button"
                                         onClick={openCheckout}
@@ -393,8 +410,13 @@ export function Results({
                                 product guidance to use alongside professional
                                 care, it is available below.
                             </p>
-                            <p className="mt-5 font-serif text-2xl text-foreground">
+                            <p className="mt-5 flex items-baseline justify-center gap-2 font-serif text-2xl text-foreground">
                                 {displayPrice}
+                                {price && (
+                                    <span className="font-sans text-base text-destructive line-through">
+                                        {GROWTH_EDIT_COMPARE_AT_PRICE}
+                                    </span>
+                                )}
                             </p>
                             <p className="mt-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                                 One-time purchase · Not a substitute for medical
