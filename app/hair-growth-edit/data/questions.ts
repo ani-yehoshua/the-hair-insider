@@ -309,6 +309,23 @@ export const QUESTIONS: Question[] = [
     ]
   },
   {
+    id: "repairTreatmentResponse",
+    prompt: "When you’ve used a richer protein or repair mask, how did your lengths feel?",
+    help: "This helps us choose between a lighter starting mask and Hair Building Pak. Think about a rinse-out repair treatment—not a salon keratin service. You don’t need to try anything new to answer.",
+    preparationTitle: "Think about how your hair felt after it dried",
+    preparation: [
+      "Choose what you actually noticed after rinsing out a richer repair mask.",
+      "A good response means flexible, easier-to-handle lengths—not just a slippery coating.",
+      "If you cannot remember, or have never used one, choose the last answer. We’ll start with the lighter option."
+    ],
+    options: [
+      { label: "More flexible and easier to handle, without feeling heavy or coated", scores: {} },
+      { label: "Heavy, coated, or flat", scores: {} },
+      { label: "Stiff, rough, or harder to detangle", scores: {} },
+      { label: "I haven’t used one, or I’m not sure", scores: {} }
+    ]
+  },
+  {
     id: "heatUse",
     prompt: "How often does hair touch hot tools?",
     help: "Heat frequency helps us suggest styling and handling options that may reduce repeated stress on the lengths.",

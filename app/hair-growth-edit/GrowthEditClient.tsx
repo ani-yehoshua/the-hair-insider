@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { QUESTIONS } from "./data/questions";
 import { calculateResults } from "./lib/scoring";
+import { hasCompleteRoutineAnswers } from "./lib/assessmentCompleteness";
 import { Navbar } from "@/components/site/navbar";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
@@ -176,8 +177,8 @@ export default function GrowthEditClient() {
         })();
     }, [authLoading, signedIn]);
 
-    const assessmentComplete = QUESTIONS.every(
-        (question) => answers[question.id] !== undefined,
+    const assessmentComplete = hasCompleteRoutineAnswers(
+        answers, QUESTIONS.map(question => question.id), unlocked,
     );
 
     // Derived, not stored: if `view` claims 'results' but the assessment
@@ -431,6 +432,10 @@ export default function GrowthEditClient() {
                         supportingNeeds={results.supportingNeeds}
                         washFrequency={results.washFrequency}
                         stylePreference={results.stylePreference}
+                        reportedDensityChange={answers.density === 3}
+                        firstRecommendation={results.product1}
+                        secondRecommendation={results.product2}
+                        hasSevereRedFlag={results.hasSevereRedFlag}
                     />
                 )}
 

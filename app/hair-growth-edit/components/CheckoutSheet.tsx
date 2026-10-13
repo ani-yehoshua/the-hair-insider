@@ -4,11 +4,14 @@ import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe
 import { X } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
 import { growthEditFontVariables } from '../fonts';
+import { RoutineCheckoutSummary } from './RoutineCheckoutSummary';
+import { GROWTH_EDIT_COMPARE_AT_PRICE } from '@/lib/pricing/growthEdit';
 const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface CheckoutSheetProps {
   open: boolean;
   courseSlug: string;
+  price?: string | null;
   onClose: () => void;
   onComplete: () => void;
 }
@@ -32,7 +35,7 @@ interface CheckoutSheetProps {
 // it. The `growth-edit-quiz` class is reapplied here directly because
 // portaling moves this DOM subtree out from under that ancestor, and the
 // sheet's animation classes are scoped under that selector in globals.css.
-export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: CheckoutSheetProps) {
+export function CheckoutSheet({ open, courseSlug, price = null, onClose, onComplete }: CheckoutSheetProps) {
   const fetchClientSecret = useCallback(async () => {
     const res = await fetch('/api/checkout/embedded', {
       method: 'POST',
@@ -106,10 +109,7 @@ export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: Checkou
         </button>
 
         {courseSlug === GROWTH_EDIT_SLUG && (
-          <div className="mb-5 border-b border-foreground/15 pb-4" aria-label="Order summary">
-            <h2 className="font-serif text-xl text-foreground">Order summary</h2>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/75">You’re getting a flexible, step-by-step routine guide based on your quiz answers, including a first-wash checklist and what not to combine. This is educational guidance, not a medical diagnosis or 1:1 consultation. Products are sold separately.</p>
-          </div>
+          <RoutineCheckoutSummary price={price} compareAtPrice={GROWTH_EDIT_COMPARE_AT_PRICE} />
         )}
 
         {stripePromise ? (
