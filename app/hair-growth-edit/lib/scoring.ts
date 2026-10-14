@@ -363,8 +363,19 @@ export function calculateResults(answers: AnswerMap) {
         mechanicalTension: meNorm >= 0.4,
         breakage: brNorm >= 0.4,
         shedding: shNorm >= 0.4,
-        proteinSensitive: answers.proteinResponse === 1,
+        proteinSensitive:
+            answers.proteinResponse === 1 ||
+            answers.repairTreatmentResponse === 2,
         proteinPositive: positiveProteinResponse,
+        easilyWeighedDown: answers.dryFeel === 3,
+        repairTreatmentResponse:
+            answers.repairTreatmentResponse === 0
+                ? "comfortable"
+                : answers.repairTreatmentResponse === 1
+                  ? "heavy"
+                  : answers.repairTreatmentResponse === 2
+                    ? "stiff"
+                    : "unknown",
         washFrequency,
         lowConsistency: answers.consistency === 2 || answers.consistency === 3,
         irritatedScalp:
@@ -377,16 +388,20 @@ export function calculateResults(answers: AnswerMap) {
     );
 
     const supportingNeeds: string[] = [];
-    if (positiveProteinResponse) {
-        const proteinTiming = paidRoutine.find(
-            (step) => step.product.id === "nourishingHairBuildingPak",
-        )?.timing;
+    if (profile.proteinSensitive) {
         supportingNeeds.push(
-            `You reported stronger, bouncier hair after a protein or keratin treatment, so the routine includes one targeted Davines vegetal-keratin treatment${proteinTiming ? ` ${proteinTiming.toLowerCase()}` : ""}. It is not layered with another protein leave-in.`,
+            "You reported hair feeling hard, rough, or strawlike after a protein or repair treatment, so the routine avoids adding NOUNOU or Hair Building Pak for now.",
         );
-    } else if (answers.proteinResponse === 1) {
+    } else if (positiveProteinResponse) {
+        const proteinStep = paidRoutine.find((step) =>
+            ["nourishingHairBuildingPak", "nounouMask"].includes(
+                step.product.id,
+            ),
+        );
         supportingNeeds.push(
-            "You reported hair feeling hard or strawlike after protein, so the routine avoids adding a keratin or protein treatment for now.",
+            proteinStep
+                ? `You reported stronger, bouncier hair after a protein or keratin treatment, so the routine includes ${proteinStep.product.name}: ${proteinStep.timing}. ${profile.repairTreatmentResponse === "unknown" ? "With no clear history of richer repair masks, we start with the lighter option." : "We used your richer-mask response when choosing its weight."} It is not layered with another protein leave-in.`
+                : "You reported a good response to protein, but the change you reported takes priority. Keep care gentle and seek professional assessment before adding repair treatments.",
         );
     }
     if (answers.wetFrizz === 1 || answers.wetFrizz === 2) {

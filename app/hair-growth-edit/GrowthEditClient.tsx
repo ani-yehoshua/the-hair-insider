@@ -5,12 +5,17 @@ import { ArrowRight } from "lucide-react";
 import { track } from "@vercel/analytics";
 import { QUESTIONS } from "./data/questions";
 import { calculateResults } from "./lib/scoring";
+import {
+    firstMissingQuestionIndex,
+    hasCompleteRoutineAnswers,
+} from "./lib/assessmentCompleteness";
 import { Navbar } from "@/components/site/navbar";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
 import { ResultsGenerating } from "./components/ResultsGenerating";
 import { GuideView } from "./components/GuideView";
 import { BackToTopButton } from "./components/BackToTopButton";
+import { DevOwnerToggle } from "./components/DevOwnerToggle";
 import { ViewTabs } from "./components/ViewTabs";
 import type { AppView } from "./lib/navigation";
 import { useAuth } from "@/lib/auth/useAuth";
@@ -31,6 +36,9 @@ export default function GrowthEditClient() {
     const { signedIn, loading: authLoading } = useAuth();
     const [view, setView] = useState<AppView>("home");
     const [step, setStep] = useState(0);
+    // Set when a returning visitor is dropped onto a question they haven't
+    // answered yet (see the restore paths below).
+    const [resumeStep, setResumeStep] = useState<number | null>(null);
     const [answers, setAnswers] = useState<AnswerMap>({});
     const [unlocked, setUnlocked] = useState(false);
     const [bootstrapping, setBootstrapping] = useState(true);
@@ -117,14 +125,23 @@ export default function GrowthEditClient() {
         (async () => {
             if (!signedIn) {
                 // A signed-out visitor who already finished the assessment
-                // and reloaded lands back on their results, not the quiz.
+                // and reloaded lands back on their results, not the quiz. If
+                // a question was added since they finished, they resume at it
+                // with their earlier answers prefilled.
                 const draft = loadDraftAnswers();
-                if (
-                    draft &&
-                    QUESTIONS.every((question) => draft[question.id] !== undefined)
-                ) {
+                if (draft && Object.keys(draft).length > 0) {
                     setAnswers(draft);
-                    setView("results");
+                    const missing = firstMissingQuestionIndex(
+                        draft,
+                        QUESTIONS.map((question) => question.id),
+                    );
+                    if (missing === -1) {
+                        setView("results");
+                    } else {
+                        setStep(missing);
+                        setResumeStep(missing);
+                        setView("quiz");
+                    }
                 }
                 setBootstrapping(false);
                 return;
@@ -166,18 +183,29 @@ export default function GrowthEditClient() {
             setUnlocked(entitled);
             if (saved) {
                 setAnswers(saved);
-                setView(
-                    entitled && !calculateResults(saved).hasSevereRedFlag
-                        ? "guide"
-                        : "results",
+                const missing = firstMissingQuestionIndex(
+                    saved,
+                    QUESTIONS.map((question) => question.id),
+                    entitled,
                 );
+                if (missing === -1) {
+                    setView(
+                        entitled && !calculateResults(saved).hasSevereRedFlag
+                            ? "guide"
+                            : "results",
+                    );
+                } else {
+                    setStep(missing);
+                    setResumeStep(missing);
+                    setView("quiz");
+                }
             }
             setBootstrapping(false);
         })();
     }, [authLoading, signedIn]);
 
-    const assessmentComplete = QUESTIONS.every(
-        (question) => answers[question.id] !== undefined,
+    const assessmentComplete = hasCompleteRoutineAnswers(
+        answers, QUESTIONS.map(question => question.id), unlocked,
     );
 
     // Derived, not stored: if `view` claims 'results' but the assessment
@@ -209,6 +237,7 @@ export default function GrowthEditClient() {
     const handleStart = () => {
         track("quiz_started");
         setStep(0);
+        setResumeStep(null);
         setAnswers({});
         clearDraftAnswers();
         setView("quiz");
@@ -275,6 +304,15 @@ export default function GrowthEditClient() {
     };
 
     const results = calculateResults(answers);
+
+    // Development-only (see DevOwnerToggle): preview the owner's experience
+    // without buying. Client state only -- nothing is written to Supabase.
+    const toggleDevOwnerView = () => {
+        const next = !unlocked;
+        setUnlocked(next);
+        setView(next && !results.hasSevereRedFlag ? "guide" : "results");
+        window.scrollTo({ top: 0, behavior: "auto" });
+    };
 
     if (bootstrapping) {
         return (
@@ -380,6 +418,7 @@ export default function GrowthEditClient() {
                     onNext={handleQuizNext}
                     onBack={handleQuizBack}
                     onComplete={handleQuizComplete}
+                    finishAtStep={resumeStep}
                 />
             )}
 
@@ -413,6 +452,7 @@ export default function GrowthEditClient() {
                         setView("home");
                         setAnswers({});
                         setStep(0);
+                        setResumeStep(null);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                 />
@@ -431,6 +471,10 @@ export default function GrowthEditClient() {
                         supportingNeeds={results.supportingNeeds}
                         washFrequency={results.washFrequency}
                         stylePreference={results.stylePreference}
+                        reportedDensityChange={answers.density === 3}
+                        firstRecommendation={results.product1}
+                        secondRecommendation={results.product2}
+                        hasSevereRedFlag={results.hasSevereRedFlag}
                     />
                 )}
 
@@ -453,6 +497,13 @@ export default function GrowthEditClient() {
             </footer>
 
             <BackToTopButton />
+
+            {(effectiveView === "results" || effectiveView === "guide") && (
+                <DevOwnerToggle
+                    ownerView={unlocked}
+                    onToggle={toggleDevOwnerView}
+                />
+            )}
         </div>
     );
 }

@@ -4,11 +4,14 @@ import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe
 import { X } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
 import { growthEditFontVariables } from '../fonts';
+import { RoutineCheckoutSummary } from './RoutineCheckoutSummary';
+import { GROWTH_EDIT_COMPARE_AT_PRICE } from '@/lib/pricing/growthEdit';
 const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface CheckoutSheetProps {
   open: boolean;
   courseSlug: string;
+  price?: string | null;
   onClose: () => void;
   onComplete: () => void;
 }
@@ -32,7 +35,7 @@ interface CheckoutSheetProps {
 // it. The `growth-edit-quiz` class is reapplied here directly because
 // portaling moves this DOM subtree out from under that ancestor, and the
 // sheet's animation classes are scoped under that selector in globals.css.
-export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: CheckoutSheetProps) {
+export function CheckoutSheet({ open, courseSlug, price = null, onClose, onComplete }: CheckoutSheetProps) {
   const fetchClientSecret = useCallback(async () => {
     const res = await fetch('/api/checkout/embedded', {
       method: 'POST',
@@ -92,24 +95,27 @@ export function CheckoutSheet({ open, courseSlug, onClose, onComplete }: Checkou
       onClick={onClose}
     >
       <div
-        className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-paper px-5 pb-8 pt-4 shadow-2xl sheet-slide-up"
+        className="relative max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-paper px-5 pb-8 shadow-2xl sheet-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-foreground/20" />
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close checkout"
-          className="absolute right-4 top-4 rounded-full p-2 text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-foreground"
-        >
-          <X size={18} />
-        </button>
+        {/* Sticky so the close button stays reachable however far the sheet is scrolled.
+            The height cap uses dvh (the visible area), not vh: on phones vh counts the
+            browser's address bar as if it were hidden, which pushed the top of the
+            sheet -- and its close button -- underneath it. */}
+        <div className="sticky top-0 z-10 -mx-5 mb-2 flex justify-center bg-paper px-5 pb-2 pt-4">
+          <div className="h-1 w-10 rounded-full bg-foreground/20" />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close checkout"
+            className="absolute right-3 top-2 rounded-full p-2 text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-foreground"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
         {courseSlug === GROWTH_EDIT_SLUG && (
-          <div className="mb-5 border-b border-foreground/15 pb-4" aria-label="Order summary">
-            <h2 className="font-serif text-xl text-foreground">Order summary</h2>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/75">You’re getting a flexible, step-by-step routine guide based on your quiz answers, including a first-wash checklist and what not to combine. This is educational guidance, not a medical diagnosis or 1:1 consultation. Products are sold separately.</p>
-          </div>
+          <RoutineCheckoutSummary price={price} compareAtPrice={GROWTH_EDIT_COMPARE_AT_PRICE} />
         )}
 
         {stripePromise ? (

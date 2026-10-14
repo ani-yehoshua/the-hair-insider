@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import GrowthEditClient from "./GrowthEditClient";
 import { growthEditFontVariables } from "./fonts";
+import { QUESTIONS } from "./data/questions";
 
 export const metadata: Metadata = {
   title: "The Growth Edit",
-  description: "A 25-question diagnostic assessment for women struggling to retain hair length.",
+  description: `A ${QUESTIONS.length}-question diagnostic assessment for women struggling to retain hair length.`,
   robots: { index: true, follow: true },
 };
 

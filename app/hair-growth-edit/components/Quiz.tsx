@@ -9,6 +9,9 @@ interface QuizProps {
     onNext: () => void;
     onBack: () => void;
     onComplete: () => void;
+    // A returning visitor resumed at a newly added question: once everything
+    // is answered, finish on that question instead of clicking through the rest.
+    finishAtStep?: number | null;
 }
 
 const PatternIcon = ({ type }: { type: number }) => {
@@ -74,12 +77,16 @@ export function Quiz({
     onNext,
     onBack,
     onComplete,
+    finishAtStep = null,
 }: QuizProps) {
     const currentQuestion = QUESTIONS[step];
     const currentAnswer = currentQuestion
         ? answers[currentQuestion.id]
         : undefined;
-    const isLast = step === QUESTIONS.length - 1;
+    const isLast =
+        step === QUESTIONS.length - 1 ||
+        (finishAtStep === step &&
+            QUESTIONS.every((question) => answers[question.id] !== undefined));
     const progress = ((step + 1) / QUESTIONS.length) * 100;
 
     if (!currentQuestion) return null;

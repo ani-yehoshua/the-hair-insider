@@ -419,12 +419,14 @@ export interface HairProfile {
     shedding: boolean;
     proteinSensitive: boolean;
     proteinPositive: boolean;
+    easilyWeighedDown?: boolean;
+    repairTreatmentResponse?: "comfortable" | "heavy" | "stiff" | "unknown";
     washFrequency: "daily" | "severalWeekly" | "weekly" | "lessWeekly";
     lowConsistency: boolean;
     irritatedScalp: boolean;
 }
 
-function getWashSchedule(profile: HairProfile) {
+export function getWashSchedule(profile: Pick<HairProfile, "washFrequency">) {
     switch (profile.washFrequency) {
         case "daily":
             return {
@@ -438,21 +440,22 @@ function getWashSchedule(profile: HairProfile) {
                 shampoo: "Every wash day; usually 2–3 times weekly",
                 scalpSerum: "2–3 times weekly, after washing",
                 targetedTreatment: "Every 3–4 wash days (about once weekly)",
-                moistureTreatment: "Every 3–4 wash days (about once weekly)",
+                moistureTreatment:
+                    "Every 3–4 wash days (about every 1–2 weeks)",
             };
         case "weekly":
             return {
                 shampoo: "Every wash day; about once weekly",
                 scalpSerum: "On wash day, once weekly",
                 targetedTreatment: "Every wash day, about once weekly",
-                moistureTreatment: "Every wash day, about once weekly",
+                moistureTreatment: "Every 2 wash days (about every 2 weeks)",
             };
         case "lessWeekly":
             return {
                 shampoo: "Every wash day; less than once weekly",
                 scalpSerum: "On wash day; about every 1–2 weeks",
                 targetedTreatment: "On a wash day every 1–2 weeks",
-                moistureTreatment: "On a wash day every 1–2 weeks",
+                moistureTreatment: "Every 2 wash days (about every 2–4 weeks)",
             };
         default:
             // The app calculates an in-progress preview before this question is
@@ -464,6 +467,26 @@ function getWashSchedule(profile: HairProfile) {
                 moistureTreatment: "No more than once weekly",
             };
     }
+}
+
+export function getKeratinSchedule(
+    washFrequency: HairProfile["washFrequency"],
+) {
+    const skipWashes = washFrequency === "daily" ? 4 : 2;
+    return {
+        skipWashes,
+        timing: `Use on your first wash, then skip the next ${skipWashes} washes; repeat only if needed, no sooner than every ${skipWashes + 1} wash days`,
+        explanation:
+            "This is a protein-containing rinse-out treatment, not an everyday conditioner or a salon keratin service. Spacing it out lets you see how your hair responds; repeated protein treatments can leave some hair feeling stiff or rough. On the skipped washes, use your regular conditioner. Pause the treatment if your hair feels harder, rougher, or more brittle.",
+    };
+}
+
+export function getStrengthTreatment(profile: HairProfile): ProductId {
+    return profile.proteinPositive &&
+        profile.repairTreatmentResponse === "comfortable" &&
+        !profile.easilyWeighedDown
+        ? "nourishingHairBuildingPak"
+        : "nounouMask";
 }
 
 export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
@@ -515,11 +538,13 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
             ? "detoxScrub"
             : null;
     const mask: ProductId =
-        profile.strengthNeed && !profile.proteinSensitive
-            ? "nourishingHairBuildingPak"
-            : ["HC", "BR"].includes(profile.diagnosis)
-              ? "nounouMask"
-              : "oiMask";
+        profile.proteinSensitive || profile.repairTreatmentResponse === "stiff"
+            ? "oiMask"
+            : profile.strengthNeed
+              ? getStrengthTreatment(profile)
+              : ["HC", "BR"].includes(profile.diagnosis)
+                ? "nounouMask"
+                : "oiMask";
     // Keep protein targeted to the rinse-out treatment rather than stacking it
     // with a keratin leave-in on every wash day.
     const leaveIn: ProductId = "oiMilk";
@@ -580,10 +605,14 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
     }
     coreSteps.push([
         mask,
-        washSchedule.moistureTreatment,
         mask === "nourishingHairBuildingPak"
-            ? `Use after shampooing in place of conditioner on a treatment wash day. Apply through the lengths, leave on for 10 minutes, comb through, then rinse thoroughly. Do not use it at every wash; follow the ${washSchedule.targetedTreatment.toLowerCase()} cadence.`
-            : "Use after cleansing in place of conditioner; leave 5–10 minutes and rinse.",
+            ? getKeratinSchedule(profile.washFrequency).timing
+            : washSchedule.moistureTreatment,
+        mask === "nourishingHairBuildingPak"
+            ? `On your first wash, gently squeeze out excess water after shampooing. Apply to damaged lengths and ends in sections, leave for 10–15 minutes according to the label, then rinse thoroughly. Follow with conditioner, as directed by the manufacturer. ${getKeratinSchedule(profile.washFrequency).timing}. ${getKeratinSchedule(profile.washFrequency).explanation} Do not add a keratin leave-in or another protein treatment that day.`
+            : mask === "nounouMask"
+              ? "Use on your first wash after shampoo, in place of your regular conditioner. Apply through damp mid-lengths and ends, gently comb through, leave for the time on your jar, and rinse thoroughly. NOUNOU formulas have different leave times, so follow your own label. After this first wash, return to regular conditioner and use the mask on its scheduled treatment washes. Use this mask on its own; do not add another repair or protein treatment to the same wash."
+              : "Use after cleansing in place of conditioner; leave for the time on the label and rinse.",
     ]);
     coreSteps.push([
         leaveIn,
@@ -644,7 +673,18 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
         order: index + 1,
         timing,
         instruction,
-        product: PRODUCTS[id],
+        product:
+            id === "nounouMask" && profile.strengthNeed
+                ? {
+                      ...PRODUCTS[id],
+                      reason: "Your answers suggest your lengths may benefit from strength-focused care. We’re starting with the lighter NOUNOU repair mask rather than making a richer protein treatment the default. It replaces conditioner on treatment washes. A positive protein response does not mean you need the most intensive treatment.",
+                  }
+                : id === "nourishingHairBuildingPak"
+                  ? {
+                        ...PRODUCTS[id],
+                        reason: "You reported a good response to protein and flexible, easier-to-handle lengths after richer repair masks, without a heavy or coated feel. That is why Hair Building Pak is the starting treatment here rather than NOUNOU. Use it on its scheduled treatment wash, then follow with conditioner; your answers cannot confirm a protein deficiency.",
+                    }
+                  : PRODUCTS[id],
     }));
 }
 
@@ -666,8 +706,12 @@ export function selectFoundationRecommendations(
             : PRODUCTS.oiOil;
     const preferredIds: ProductId[] = [];
 
-    if (profile.strengthNeed && !profile.proteinSensitive)
-        preferredIds.push("nourishingHairBuildingPak");
+    if (
+        profile.strengthNeed &&
+        !profile.proteinSensitive &&
+        profile.repairTreatmentResponse !== "stiff"
+    )
+        preferredIds.push(getStrengthTreatment(profile));
     if (profile.irritatedScalp || profile.diagnosis === "SC")
         preferredIds.push(shampoo.id, conditioner.id);
     else {
@@ -690,7 +734,7 @@ export function selectFoundationRecommendations(
             case "P":
             case "EL":
             case "MP":
-                preferredIds.push("nourishingHairBuildingPak", "oiMilk");
+                preferredIds.push(getStrengthTreatment(profile), "oiMilk");
                 break;
             case "HP":
                 preferredIds.push(conditioner.id, oil.id);

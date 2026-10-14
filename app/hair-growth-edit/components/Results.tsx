@@ -4,10 +4,9 @@ import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
-import {
-    GROWTH_EDIT_COMPARE_AT_PRICE,
-    GROWTH_EDIT_PROMO_LABEL,
-} from "@/lib/pricing/growthEdit";
+import { ROUTINE_OFFER } from "../lib/routineOffer";
+import { RoutineInclusions } from "./RoutineInclusions";
+import { GROWTH_EDIT_COMPARE_AT_PRICE } from "@/lib/pricing/growthEdit";
 import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
@@ -114,7 +113,7 @@ export function Results({
                 <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
                     {hasSevereRedFlag
                         ? "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
-                        : "Your two free starting products are below. The complete guide puts the rest of your routine in order."}
+                        : "Your two free starting products are below. Your personalized routine is built based on the answers you just gave."}
                 </p>
                 {(hasSevereRedFlag || hasMinorRedFlag) && (
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
@@ -130,11 +129,11 @@ export function Results({
                                         Purchase Complete
                                     </span>
                                     <h2 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">
-                                        Your complete guide is ready.
+                                        Your personalized routine is ready.
                                     </h2>
                                     <p className="mt-3 text-sm text-foreground/75">
                                         Sign in with the email you used at
-                                        checkout to open your guide.
+                                        checkout to open your routine.
                                     </p>
                                 </div>
                                 <button
@@ -149,13 +148,13 @@ export function Results({
                             <>
                                 <div>
                                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                                        The Complete Growth Edit
+                                        {ROUTINE_OFFER.label}
                                     </span>
                                     <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                                        Your routine, in the right order.
+                                        {ROUTINE_OFFER.title}
                                     </h2>
                                 </div>
-                                <div className="mt-5 md:mt-0 md:min-w-64">
+                                <div className="mt-5 md:mt-0 md:min-w-64 md:max-w-sm">
                                     <div
                                         className="mb-3 flex items-center justify-center gap-1 text-[0.55rem] font-medium uppercase tracking-wide text-foreground/75"
                                         aria-label="Routine preview: cleanse, care, maintain"
@@ -177,42 +176,48 @@ export function Results({
                                             {displayPrice}
                                         </span>
                                         {price && (
-                                            <span className="text-xl text-destructive line-through">
+                                            <s className="text-sm text-foreground/60">
                                                 {GROWTH_EDIT_COMPARE_AT_PRICE}
-                                            </span>
+                                            </s>
                                         )}
                                     </p>
-                                    <p className="mb-3 text-center text-[0.65rem] font-semibold uppercase tracking-widest text-foreground/80">
-                                        {GROWTH_EDIT_PROMO_LABEL}
+                                    {price && (
+                                        <p className="mb-3 text-center text-xs leading-relaxed text-foreground/75">
+                                            {ROUTINE_OFFER.launchReason}
+                                        </p>
+                                    )}
+                                    <p className="mb-3 text-sm leading-relaxed text-foreground/85">
+                                        {ROUTINE_OFFER.value}
                                     </p>
                                     <button
                                         type="button"
                                         onClick={openCheckout}
                                         className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
                                     >
-                                        Get my step-by-step routine –{" "}
+                                        Get my personalized routine –{" "}
                                         {displayPrice} <ArrowRight size={14} />
                                     </button>
                                     <p className="mt-2 text-center text-xs text-foreground/75">
-                                        Built from your quiz answers.
-                                        Educational guidance, not a 1:1 consult.
+                                        {ROUTINE_OFFER.reassurance}
                                     </p>
                                     <p className="mt-1 text-center text-xs text-foreground/75">
-                                        A flexible, step-by-step routine you can
-                                        apply each week — what to use, in what
-                                        order, and what not to combine.
+                                        {ROUTINE_OFFER.fitPromise}
+                                    </p>
+                                    <p className="mt-3 text-center text-xs leading-relaxed text-foreground/70">
+                                        {ROUTINE_OFFER.practicalCue}
                                     </p>
                                     <p className="mt-1 text-center text-xs text-foreground/75">
                                         If anything isn’t clear, reply to your
                                         receipt for clarification.
                                     </p>
                                     <p className="mt-1 text-center text-[0.65rem] text-foreground/60">
-                                        One-time digital guide. Products sold
+                                        Educational guidance, not a 1:1 consult.
+                                        One-time purchase; products sold
                                         separately.
                                     </p>
                                     <p className="mt-2 text-center text-xs text-foreground/65">
-                                        Instant access · 7-day refund window for
-                                        first-time purchases.{" "}
+                                        7-day refund window for first-time
+                                        purchases.{" "}
                                         <a
                                             href="/terms"
                                             target="_blank"
@@ -221,6 +226,21 @@ export function Results({
                                         >
                                             Terms
                                         </a>
+                                    </p>
+                                </div>
+                                <div
+                                    className="mt-6 border-t border-foreground/15 pt-5 md:col-span-2 md:mt-0"
+                                    data-testid="routine-contents"
+                                >
+                                    <p className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-foreground/60">
+                                        Included in your routine
+                                    </p>
+                                    <RoutineInclusions
+                                        price={price ? displayPrice : null}
+                                    />
+                                    <p className="mt-3 text-xs leading-relaxed text-foreground/75">
+                                        A weekly plan with phased milestones—no
+                                        day-by-day to-do list.
                                     </p>
                                 </div>
                             </>
@@ -454,6 +474,7 @@ export function Results({
             <CheckoutSheet
                 open={checkoutOpen}
                 courseSlug={GROWTH_EDIT_SLUG}
+                price={price}
                 onClose={() => setCheckoutOpen(false)}
                 onComplete={handleCheckoutComplete}
             />

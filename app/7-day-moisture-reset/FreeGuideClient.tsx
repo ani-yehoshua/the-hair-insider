@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
+import { QUESTIONS } from "@/app/hair-growth-edit/data/questions";
 import {
     GROWTH_EDIT_COMPARE_AT_PRICE,
     GROWTH_EDIT_PROMO_LABEL,
@@ -2578,8 +2579,8 @@ export default function FreeGuideClient() {
                                     <div className='offer-card-body'>
                                         <h3>The Growth Edit</h3>
                                         <p className='lead'>
-                                            A private 25-question assessment
-                                            that identifies your primary
+                                            A private {QUESTIONS.length}-question
+                                            assessment that identifies your primary
                                             length-retention pattern, then maps
                                             the exact order, products, and
                                             timing for your routine.

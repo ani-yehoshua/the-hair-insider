@@ -1,12 +1,18 @@
 import { useState, useEffect, useMemo } from "react";
-import {
-    ExternalLink,
-    Bookmark,
-    BookmarkCheck,
-    Calendar,
-    Filter,
-} from "lucide-react";
-import type { RoutineStep } from "../data/recommendations";
+import { Calendar } from "lucide-react";
+import type {
+    ProductRecommendation,
+    RoutineStep,
+} from "../data/recommendations";
+import { ProductShelf } from "./ProductShelf";
+import { StarterPair } from "./StarterPair";
+import { FirstWashRoutine } from "./FirstWashRoutine";
+import { WashDayPlan } from "./WashDayPlan";
+import { RoutineSnapshot } from "./RoutineSnapshot";
+import { BasedOnAnswers } from "./GuideNotes";
+import { ROUTINE_OFFER } from "../lib/routineOffer";
+import { getFirstWashPlan } from "../lib/firstWash";
+import { getFirstPurchaseReason, getStarterPair } from "../lib/guideSummary";
 
 interface GuideViewProps {
     paidRoutine: RoutineStep[];
@@ -18,6 +24,10 @@ interface GuideViewProps {
     washFrequency: "daily" | "severalWeekly" | "weekly" | "lessWeekly";
     stylePreference:
         "natural" | "blowout" | "straightened" | "curled" | "protective";
+    reportedDensityChange: boolean;
+    firstRecommendation: ProductRecommendation | null;
+    secondRecommendation: ProductRecommendation | null;
+    hasSevereRedFlag: boolean;
 }
 
 const DAILY_TIPS = [
@@ -32,62 +42,6 @@ const DAILY_TIPS = [
     "Ensure your hair is thoroughly wet before applying shampoo to help it lather evenly.",
 ];
 
-function getRoutineBenefit(step: RoutineStep): string {
-    const { id, category } = step.product;
-
-    if (id === "jolieFilteredShowerhead") {
-        return "This is an optional wash-setup choice. Check the manufacturer’s filter specifications for your water concerns; it is not a treatment for scalp or hair changes.";
-    }
-    if (id === "energizingSuperactive") {
-        return "This gives your routine a consistent scalp-focused step without adding weight or treatment products to the lengths.";
-    }
-    if (id === "detoxScrub") {
-        return "This provides occasional residue removal so your regular cleanser and conditioning steps can work without layers of buildup getting in the way.";
-    }
-    if (
-        id === "bioIonicDryer" ||
-        id === "bioIonicFlatIron" ||
-        id === "bioIonicCurlingIron"
-    ) {
-        return "This matches the finished style you actually wear while helping you use more controlled heat, fewer repeated passes, and less unnecessary handling.";
-    }
-
-    const normalizedCategory = category.toLowerCase();
-    if (
-        normalizedCategory.includes("shampoo") ||
-        normalizedCategory.includes("cleanse")
-    ) {
-        return "This creates the clean foundation for the rest of your routine while matching the level of moisture, scalp support, and weight your answers call for.";
-    }
-    if (normalizedCategory.includes("conditioner")) {
-        return "This adds slip and softness after cleansing, which helps reduce friction during detangling and protects the lengths from avoidable breakage.";
-    }
-    if (
-        normalizedCategory.includes("mask") ||
-        normalizedCategory.includes("keratin") ||
-        normalizedCategory.includes("treatment")
-    ) {
-        return "This is a treatment option with a suggested cadence based on your answers, without adding several overlapping treatments at once.";
-    }
-    if (normalizedCategory.includes("leave-in")) {
-        return "This keeps slip and moisture in the lengths after rinsing, making detangling and styling easier with less friction.";
-    }
-    if (normalizedCategory.includes("heat protectant")) {
-        return "This places a protective step between fragile lengths and styling heat, supporting the finished look you prefer with less repeated stress.";
-    }
-    if (
-        normalizedCategory.includes("styling") ||
-        normalizedCategory.includes("curl")
-    ) {
-        return "This supports your usual finished style so you can get the result you want without adding several overlapping stylers or excessive manipulation.";
-    }
-    if (normalizedCategory.includes("oil")) {
-        return "This is a finishing step for the ends, helping reduce roughness and friction in the oldest, most breakage-prone part of the hair.";
-    }
-
-    return `This fills the ${normalizedCategory} role in your sequence so each product has one clear job and the routine stays focused rather than repetitive.`;
-}
-
 export function GuideView({
     paidRoutine,
     shouldShampooTwice,
@@ -97,6 +51,10 @@ export function GuideView({
     supportingNeeds = [],
     washFrequency,
     stylePreference,
+    reportedDensityChange,
+    firstRecommendation,
+    secondRecommendation,
+    hasSevereRedFlag,
 }: GuideViewProps) {
     const [savedProducts, setSavedProducts] = useState<string[]>(() => {
         try {
@@ -128,29 +86,22 @@ export function GuideView({
         );
     };
 
-    // Date.now() is impure and can't run directly in the render body
-    // (useMemo included), and setting state from an effect just to read it
-    // once causes an extra cascading render. useState's lazy initializer is
-    // the one React-sanctioned place for one-time impure setup like this --
-    // it runs once on mount, not on every render.
-    const [dailyTip] = useState(() => {
+    const dailyTip = useMemo(() => {
         const dayIndex = Math.floor(Date.now() / 86400000);
         return DAILY_TIPS[dayIndex % DAILY_TIPS.length];
-    });
-
-    const firstThreeSteps = useMemo(() => {
-        const unique = new Map();
-        for (const step of paidRoutine) {
-            if (!unique.has(step.product.id)) {
-                unique.set(step.product.id, step);
-            }
-            if (unique.size === 3) break;
-        }
-        return Array.from(unique.values());
-    }, [paidRoutine]);
+    }, []);
 
     const hasProtein = paidRoutine.some(
         (step) => step.product.id === "nourishingHairBuildingPak",
+    );
+    const hasNounou = paidRoutine.some(
+        (step) => step.product.id === "nounouMask",
+    );
+    const hasReplacingMask = paidRoutine.some((step) =>
+        ["nounouMask", "oiMask"].includes(step.product.id),
+    );
+    const replacingMask = paidRoutine.find((step) =>
+        ["nounouMask", "oiMask"].includes(step.product.id),
     );
     const hasScrub = paidRoutine.some(
         (step) => step.product.id === "detoxScrub",
@@ -179,10 +130,28 @@ export function GuideView({
         curled: "your curled or waved finish",
         protective: "your protective style",
     }[stylePreference];
-
-    const displayedRoutine = showSavedOnly
-        ? paidRoutine.filter((step) => savedProducts.includes(step.product.id))
-        : paidRoutine;
+    const firstPurchase = !hasSevereRedFlag
+        ? paidRoutine.find(
+              (step) => step.product.id === firstRecommendation?.id,
+          )?.product
+        : undefined;
+    const firstPurchaseReason = firstPurchase
+        ? getFirstPurchaseReason(firstPurchase)
+        : "";
+    const starterPair = hasSevereRedFlag
+        ? []
+        : getStarterPair(
+              paidRoutine,
+              firstRecommendation,
+              secondRecommendation,
+          );
+    const firstWashPlan = getFirstWashPlan(
+        paidRoutine,
+        washFrequency,
+        shouldShampooTwice,
+        stylePreference,
+        hasSevereRedFlag,
+    );
 
     return (
         <div
@@ -191,21 +160,133 @@ export function GuideView({
         >
             {/* Guide Header */}
             <div className="max-w-3xl">
-                <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                    Your Digital Plan
+                <p className="mb-2 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/65">
+                    {ROUTINE_OFFER.title}
+                </p>
+                <p className="mb-5 text-xs leading-relaxed text-foreground/75">
+                    {ROUTINE_OFFER.inclusions.join(" · ")}
+                </p>
+                <div
+                    className="mb-5 grid grid-cols-2 gap-4"
+                    data-testid="opening-promise-headings"
+                >
+                    <h2 className="font-serif text-lg leading-snug">
+                        <a
+                            className="underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
+                            href="#what-to-use-and-skip"
+                        >
+                            {ROUTINE_OFFER.useSkipHeading}
+                        </a>
+                    </h2>
+                    <h2 className="font-serif text-lg leading-snug">
+                        <a
+                            className="underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
+                            href="#product-layering"
+                        >
+                            {ROUTINE_OFFER.layeringHeading}
+                        </a>
+                    </h2>
+                </div>
+                <RoutineSnapshot
+                    routine={paidRoutine}
+                    washFrequency={washFrequency}
+                    hasSevereRedFlag={hasSevereRedFlag}
+                />
+                {firstPurchase && (
+                    <p
+                        className="mt-4 text-sm leading-relaxed text-foreground/85 md:text-base"
+                        data-testid="first-purchase-priority"
+                    >
+                        If you only buy one first, start with{" "}
+                        <strong className="font-medium text-foreground">
+                            {firstPurchase.name}
+                        </strong>
+                        {firstPurchaseReason
+                            ? ` because ${firstPurchaseReason}.`
+                            : `. ${firstPurchase.reason}`}
+                    </p>
+                )}
+                {hasSevereRedFlag && (
+                    <p
+                        className="mt-4 text-sm leading-relaxed text-foreground/85"
+                        data-testid="professional-care-priority"
+                    >
+                        Before buying anything new, have the change you reported
+                        assessed by a qualified healthcare professional.
+                        Products are not a substitute for that care.
+                    </p>
+                )}
+                <span className="mt-10 block text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
+                    Your Growth Edit · Weekly Plan + First 30 Days
                 </span>
                 <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
-                    The Complete Growth Edit
+                    Your Personalized Routine
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-foreground/80 md:text-base">
-                    This guide is assembled from your quiz answers. It suggests
-                    a sequence for focusing on <strong>{primaryCause}</strong>{" "}
-                    and handling your lengths more gently while reconsidering{" "}
-                    <strong>{behaviorToStop}</strong>. Use the listed cadences
-                    as starting points and adjust based on how your hair and
-                    scalp respond.
+                    Your routine plan, weekly wash cadence, first 30 days, what
+                    not to combine, and troubleshooting are here in one
+                    place—based on the answers you just gave.{" "}
+                    {starterPair.length === 2
+                        ? "Your foundation steps and curated shelf show where to start and what can wait. "
+                        : "Your curated shelf shows the products included in your plan. "}
+                    This is quiz-based guidance, not an in-person assessment.
+                    Adjust as you notice how your hair and scalp feel.
                 </p>
             </div>
+
+            <nav
+                className="mt-8 flex flex-wrap gap-x-5 gap-y-3 text-sm text-foreground/80"
+                aria-label="Inside your routine"
+            >
+                <a
+                    className="underline underline-offset-4"
+                    href="#routine-plan"
+                >
+                    Routine plan
+                </a>
+                <a
+                    className="underline underline-offset-4"
+                    href="#weekly-wash-cadence"
+                >
+                    Weekly wash cadence
+                </a>
+                <a
+                    className="underline underline-offset-4"
+                    href="#first-30-days"
+                >
+                    First 30 days
+                </a>
+                <a
+                    className="underline underline-offset-4"
+                    href="#what-not-to-combine"
+                >
+                    What not to combine
+                </a>
+                <a
+                    className="underline underline-offset-4"
+                    href="#routine-troubleshooting"
+                >
+                    Troubleshooting
+                </a>
+                {starterPair.length === 2 && (
+                    <a
+                        className="underline underline-offset-4"
+                        href="#starter-pair-heading"
+                    >
+                        Foundation steps
+                    </a>
+                )}
+                <a
+                    className="underline underline-offset-4"
+                    href="#curated-shelf-heading"
+                >
+                    Curated shelf
+                </a>
+            </nav>
+            <WashDayPlan
+                routine={paidRoutine}
+                hasSevereRedFlag={hasSevereRedFlag}
+            />
 
             {/* Daily Tip */}
             <div
@@ -232,23 +313,24 @@ export function GuideView({
                 <h2 className="mt-3 font-serif text-3xl text-foreground md:text-4xl">
                     Your Action Plan
                 </h2>
+                <BasedOnAnswers className="mt-3" />
                 <p className="mt-5 max-w-3xl text-sm leading-relaxed text-foreground/75 md:text-base">
-                    Your answers suggest focusing on{" "}
+                    Based on what you shared, start with{" "}
                     <strong className="font-medium text-foreground">
                         {primaryCause}
                     </strong>
-                    . The goal is not to add more products at once. Consider
-                    reducing possible stress from{" "}
+                    . You do not need to add everything at once. Pay attention
+                    to{" "}
                     <strong className="font-medium text-foreground">
                         {behaviorToStop}
                     </strong>
-                    , establishing a repeatable wash rhythm, and observing how
-                    your scalp and lengths respond over time.
+                    , keep your wash routine consistent, and notice what
+                    changes.
                 </p>
 
                 <div className="mt-10 rounded-3xl border border-foreground/15 bg-paper-dark p-6 md:p-10">
                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
-                        Why this strategy fits
+                        Why these suggestions
                     </span>
                     <div className="mt-6 grid gap-6 md:grid-cols-[0.85fr_1.15fr] md:gap-12">
                         <div>
@@ -258,48 +340,48 @@ export function GuideView({
                             <p className="mt-4 text-sm leading-relaxed text-foreground/80">
                                 {primaryCause ===
                                 "length protection (no dominant damage pattern)" ? (
-                                    "Your answers did not point to one dominant damage pattern. These suggestions are a starting point for gentler handling, not a conclusion about your hair’s health."
+                                    "Your answers did not point to one clear pattern of damage. Start with gentle handling. The quiz cannot confirm whether your hair is healthy or damaged."
                                 ) : (
                                     <>
-                                        Your answers included{" "}
+                                        You mentioned{" "}
                                         {observations.length > 1
                                             ? `${observations[0]} and ${observations[1]}`
                                             : observations[0] ||
-                                              "the pattern across your answers"}
-                                        . These details informed the suggestions
-                                        below; they do not establish a medical
-                                        cause.
+                                              "the concerns in your quiz answers"}
+                                        . That helped us choose these
+                                        suggestions, but it does not tell us the
+                                        medical cause.
                                     </>
                                 )}
                             </p>
                         </div>
                         <div>
                             <h3 className="font-serif text-2xl">
-                                What the plan is designed to do
+                                What to work on
                             </h3>
                             <ul className="mt-4 space-y-3 text-sm leading-relaxed text-foreground/80">
                                 <li>
                                     <strong className="font-medium text-foreground">
-                                        Clean consistently:
+                                        Keep your scalp clean:
                                     </strong>{" "}
-                                    Help manage residue and scalp oil before the
-                                    conditioning and styling steps that follow.
+                                    Wash away oil and product buildup before
+                                    conditioning and styling.
                                 </li>
                                 <li>
                                     <strong className="font-medium text-foreground">
-                                        Protect the lengths:
+                                        Be gentle with your hair:
                                     </strong>{" "}
-                                    Reduce friction, rough detangling, repeated
-                                    heat, and unnecessary handling of the oldest
-                                    hair.
+                                    Detangle without pulling, limit repeated
+                                    heat, and avoid rubbing or tugging at your
+                                    ends.
                                 </li>
                                 <li>
                                     <strong className="font-medium text-foreground">
-                                        Change one variable at a time:
+                                        Change one thing at a time:
                                     </strong>{" "}
-                                    Introduce the routine in phases so you can
-                                    tell which adjustment is helping or causing
-                                    a problem.
+                                    Add new steps slowly so you can tell what
+                                    helps and what does not agree with your hair
+                                    or scalp.
                                 </li>
                             </ul>
                             {supportingNeeds.length > 0 && (
@@ -320,18 +402,22 @@ export function GuideView({
 
                 <div className="mt-12">
                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
-                        Your repeatable rhythm
+                        How often to use each step
                     </span>
-                    <h3 className="mt-3 font-serif text-3xl">
-                        A suggested weekly rhythm
+                    <h3
+                        id="weekly-wash-cadence"
+                        className="mt-3 scroll-mt-8 font-serif text-3xl"
+                    >
+                        Weekly wash cadence
                     </h3>
+                    <BasedOnAnswers className="mt-3" />
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/75">
-                        A starting point is{" "}
+                        Start with{" "}
                         <strong className="font-medium text-foreground">
                             {washRhythm.toLowerCase()}
                         </strong>
-                        . Use this sequence flexibly and check the suggested
-                        cadence on each product card.
+                        . You can adjust this as needed. Each product card shows
+                        how often to use that step.
                     </p>
                     <div className="mt-8 grid gap-4 md:grid-cols-3">
                         <div className="rounded-2xl border border-foreground/15 bg-paper p-6">
@@ -345,7 +431,9 @@ export function GuideView({
                                 {shampooStep?.timing || "Every wash day"}.
                                 Cleanse the scalp, condition the lengths,
                                 detangle gently, then apply leave-in before
-                                styling.
+                                styling. On a treatment wash, follow the mask
+                                route above instead of automatically adding both
+                                mask and conditioner.
                             </p>
                         </div>
                         <div className="rounded-2xl border border-foreground/15 bg-paper p-6">
@@ -365,11 +453,31 @@ export function GuideView({
                                             {step.timing}.
                                         </p>
                                     ))}
-                                    <p>
-                                        Each treatment replaces its comparable
-                                        regular step. Do not stack them in the
-                                        same wash.
-                                    </p>
+                                    {hasScrub && (
+                                        <p>
+                                            Your detox scrub replaces shampoo on
+                                            its scheduled wash; it is not an
+                                            extra cleansing step.
+                                        </p>
+                                    )}
+                                    {replacingMask && (
+                                        <p>
+                                            {replacingMask.product.name}{" "}
+                                            replaces conditioner on its
+                                            scheduled treatment wash. Rinse
+                                            thoroughly, then follow with your
+                                            recommended leave-in.
+                                        </p>
+                                    )}
+                                    {hasProtein && (
+                                        <p>
+                                            Use your NOURISHING Hair Building
+                                            Pak after shampoo, rinse, then
+                                            condition as directed by its label.
+                                            Do not add another protein treatment
+                                            or keratin leave-in.
+                                        </p>
+                                    )}
                                 </div>
                             ) : (
                                 <p className="mt-3 text-sm leading-relaxed text-foreground/75">
@@ -384,91 +492,135 @@ export function GuideView({
                                 Between washes
                             </span>
                             <h4 className="mt-3 font-serif text-xl">
-                                Protect, do not restart
+                                Keep it simple
                             </h4>
                             <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                                Preserve {styleLabel}, smooth only a small
-                                amount of oil over rough ends if needed, and
-                                avoid layering more products at the roots. Use
-                                the scalp step only at its listed cadence.
+                                Maintain {styleLabel} without adding more
+                                product to your roots. If your ends feel rough,
+                                try a small amount of oil. If you choose to use
+                                the scalp serum, follow the timing on its card.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-8 rounded-3xl border border-foreground/15 bg-paper p-6 md:p-8">
-                    <h3 className="font-serif text-2xl">
-                        Your first-wash checklist
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground/75">
-                        Use your full routine below for product-specific
-                        placement and timing.
-                    </p>
-                    <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-foreground/80">
-                        <li>
-                            Cleanse your scalp with{" "}
-                            {shampooStep?.product.name ??
-                                "your listed cleanser"}{" "}
-                            using the wash method below.
-                        </li>
-                        <li>
-                            Condition the lengths, detangle gently, then apply
-                            the listed leave-in before styling.
-                        </li>
-                        <li>
-                            Only use a treatment if it is due at its listed
-                            cadence; do not stack it with the regular step it
-                            replaces.
-                        </li>
-                        <li>
-                            Notice how your scalp and ends feel afterward before
-                            changing another step.
-                        </li>
-                    </ol>
-                </div>
+                <FirstWashRoutine plan={firstWashPlan} />
 
                 <div className="mt-12 rounded-3xl bg-sage/25 p-6 md:p-10">
                     <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
                         Introduce the routine gradually
                     </span>
-                    <h3 className="mt-3 font-serif text-3xl">
+                    <h3
+                        id="first-30-days"
+                        className="mt-3 scroll-mt-8 font-serif text-3xl"
+                    >
                         Your first 30 days
                     </h3>
+                    <BasedOnAnswers className="mt-3" />
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/75">
+                        A weekly plan with phased milestones—no day-by-day to-do
+                        list.
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed text-foreground/70">
+                        The checks below look at comfort and handling, not a
+                        deadline for new growth. If you haven’t washed yet, use
+                        them after your next wash.
+                    </p>
                     <div className="mt-8 grid gap-8 md:grid-cols-3">
                         <div>
                             <p className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                                 Days 1–7
                             </p>
                             <h4 className="mt-2 font-serif text-xl">
-                                Set the baseline
+                                Start with the basics
                             </h4>
                             <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                                Start with the cleanser, conditioner, leave-in,
-                                and the behavior change above. Take one photo of
-                                your ends and note scalp comfort, shedding
-                                during washing, tangling, and breakage.
+                                Follow your first-wash steps above, then use
+                                shampoo, conditioner, leave-in, and the habit
+                                change for your regular washes.{" "}
+                                {hasProtein && !hasSevereRedFlag
+                                    ? "Use your keratin treatment on that first wash, then follow the skipped-wash schedule. "
+                                    : !hasSevereRedFlag &&
+                                        paidRoutine.some(
+                                            (step) =>
+                                                step.product.id ===
+                                                "nounouMask",
+                                        )
+                                      ? "NOUNOU replaces conditioner on your first wash; return to regular conditioner afterward and repeat the mask on its scheduled treatment washes. "
+                                      : ""}
+                                Take a photo of your ends. Make a quick note of
+                                how your scalp feels and how much shedding,
+                                tangling, or breakage you notice when washing.
                             </p>
+                            <div
+                                className="mt-5 border-t border-foreground/15 pt-4"
+                                data-testid="week-one-checklist"
+                            >
+                                <h5 className="text-sm font-medium">
+                                    {ROUTINE_OFFER.progressHeading}
+                                </h5>
+                                <ul className="mt-3 list-disc space-y-2 pl-4 text-sm leading-relaxed text-foreground/80">
+                                    <li>
+                                        My scalp feels comfortable after
+                                        washing, without new burning or
+                                        irritation.
+                                    </li>
+                                    <li>
+                                        My lengths feel flexible—not stiff or
+                                        coated.
+                                    </li>
+                                    <li>
+                                        I can follow the product order without
+                                        adding extra treatments.
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div>
                             <p className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                                 Days 8–14
                             </p>
                             <h4 className="mt-2 font-serif text-xl">
-                                Add targeted support
+                                Try one new step
                             </h4>
                             <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                                If the core steps feel comfortable, add the
-                                scalp product and your scheduled mask or
-                                treatment. Patch test leave-on scalp products
-                                and stop if irritation develops.
+                                If the basics are working for you, try your mask
+                                or treatment only when its wash-count schedule
+                                says it is due—not just because a new week has
+                                started. The scalp serum is optional. Patch test
+                                any leave-on scalp product first, and stop using
+                                it if your scalp becomes irritated.
                             </p>
+                            <div
+                                className="mt-5 border-t border-foreground/15 pt-4"
+                                data-testid="week-two-checklist"
+                            >
+                                <h5 className="text-sm font-medium">
+                                    {ROUTINE_OFFER.progressHeading}
+                                </h5>
+                                <ul className="mt-3 list-disc space-y-2 pl-4 text-sm leading-relaxed text-foreground/80">
+                                    <li>
+                                        Detangling feels easier, or at least
+                                        isn’t getting harder.
+                                    </li>
+                                    <li>
+                                        I’m following my wash-count schedule,
+                                        with regular washes between treatments
+                                        when it calls for them.
+                                    </li>
+                                    <li>
+                                        I know which amount or step to adjust if
+                                        my hair feels coated or rough.
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div>
                             <p className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                                 Days 15–30
                             </p>
                             <h4 className="mt-2 font-serif text-xl">
-                                Refine the amount
+                                Find the right amount
                             </h4>
                             <p className="mt-3 text-sm leading-relaxed text-foreground/75">
                                 Add styling and finishing products only as
@@ -506,9 +658,10 @@ export function GuideView({
                                     After 4–6 weeks
                                 </h4>
                                 <p className="mt-1 text-sm leading-relaxed text-foreground/75">
-                                    Compare breakage, tangling, end texture, and
-                                    how long your finished style lasts against
-                                    your baseline notes.
+                                    Look back at your first notes. Is detangling
+                                    easier? Do your ends feel different? Are you
+                                    seeing less breakage, or does your style
+                                    last longer?
                                 </p>
                             </div>
                             <div className="border-l border-foreground/25 pl-5">
@@ -516,11 +669,11 @@ export function GuideView({
                                     After 8–12 weeks
                                 </h4>
                                 <p className="mt-1 text-sm leading-relaxed text-foreground/75">
-                                    Review photos taken in similar lighting and
-                                    styling. Signs of improved retention may
-                                    include fuller-looking ends and less
-                                    repeated breakage; growth rate itself may
-                                    not visibly change.
+                                    Compare photos with your hair styled the
+                                    same way and in similar lighting.
+                                    Fuller-looking ends and less breakage may
+                                    mean you are keeping more of your length—not
+                                    that your hair is growing faster.
                                 </p>
                             </div>
                         </div>
@@ -530,18 +683,22 @@ export function GuideView({
                         <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
                             Adjust without guessing
                         </span>
-                        <h3 className="mt-3 font-serif text-3xl">
+                        <h3
+                            id="routine-troubleshooting"
+                            className="mt-3 scroll-mt-8 font-serif text-3xl"
+                        >
                             Troubleshooting
                         </h3>
+                        <BasedOnAnswers className="mt-3" />
                         <div className="mt-6 space-y-4 text-sm leading-relaxed text-foreground/75">
                             <p>
                                 <strong className="font-medium text-foreground">
                                     Hair feels coated or limp:
                                 </strong>{" "}
-                                Reduce leave-in, styler, and oil amounts first.
-                                If residue persists, use the cleansing cadence
-                                in this guide rather than adding another
-                                treatment.
+                                Try less leave-in, styling product, and oil
+                                first. If buildup remains, follow the shampoo
+                                timing in your routine rather than adding
+                                another treatment.
                             </p>
                             <p>
                                 <strong className="font-medium text-foreground">
@@ -571,10 +728,11 @@ export function GuideView({
                                 <strong className="font-medium text-foreground">
                                     Breakage is unchanged:
                                 </strong>{" "}
-                                Audit detangling, tension, heat, and nighttime
-                                friction before buying another product.
-                                Technique can cancel out an otherwise
-                                appropriate routine.
+                                Before buying another product, look at how you
+                                detangle, how tightly you style, how much heat
+                                you use, and whether your hair rubs against
+                                bedding at night. Products cannot make up for
+                                repeated pulling or rough handling.
                             </p>
                         </div>
                     </div>
@@ -584,85 +742,17 @@ export function GuideView({
             {/* Premium Guidance Section */}
             <div className="mt-16 border-t border-foreground/15 pt-16">
                 <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                    Strategic Application
+                    Using your routine
                 </span>
-                <h2 className="mt-3 font-serif text-3xl text-foreground">
-                    Premium Guidance
+                <h2
+                    id="what-to-use-and-skip"
+                    className="mt-3 scroll-mt-8 font-serif text-3xl text-foreground"
+                >
+                    {ROUTINE_OFFER.useSkipHeading}
                 </h2>
+                <BasedOnAnswers className="mt-3" />
 
                 <div className="mt-10">
-                    {/* Where to spend first */}
-                    <div>
-                        <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
-                            Three options to consider first
-                        </span>
-                        <h3 className="mt-3 font-serif text-3xl">
-                            Where to spend first
-                        </h3>
-                        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/75">
-                            These are prioritized options based on your answers.
-                            You do not need to buy everything at once; assess
-                            how each step fits before adding more.
-                        </p>
-
-                        <div className="mt-10 space-y-6">
-                            {firstThreeSteps.map((step, index) => (
-                                <div
-                                    key={step.product.id}
-                                    className="group flex flex-col gap-6 rounded-3xl border border-foreground/15 bg-paper p-6 md:flex-row md:items-stretch md:p-8"
-                                    data-testid={`priority-product-${step.product.id}`}
-                                >
-                                    <div className="flex min-h-52 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/70 p-5 mix-blend-multiply md:w-56">
-                                        <img
-                                            src={step.product.image}
-                                            alt={`${step.product.name} by ${step.product.brand}`}
-                                            className="h-44 w-44 object-contain transition-transform duration-500 group-hover:scale-105"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <div className="flex flex-1 flex-col">
-                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                            <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                                                Priority {index + 1} /{" "}
-                                                {step.product.category}
-                                            </span>
-                                            <span className="w-fit rounded-full bg-sage/30 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/80">
-                                                {step.timing}
-                                            </span>
-                                        </div>
-                                        <h4 className="mt-4 font-serif text-2xl leading-tight">
-                                            {step.product.name}
-                                        </h4>
-                                        <p className="mt-1 text-xs font-medium text-foreground/60">
-                                            {step.product.brand}
-                                        </p>
-                                        <p className="mt-5 text-sm leading-relaxed text-foreground/80">
-                                            <strong className="font-medium text-foreground">
-                                                Why this comes first:
-                                            </strong>{" "}
-                                            {step.product.reason}
-                                        </p>
-                                        <p className="mt-3 text-sm leading-relaxed text-foreground/80">
-                                            <strong className="font-medium text-foreground">
-                                                How to use:
-                                            </strong>{" "}
-                                            {step.instruction}
-                                        </p>
-                                        <a
-                                            href={step.product.link}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="mt-6 inline-flex items-center gap-2 self-start text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
-                                        >
-                                            View on Retailer{" "}
-                                            <ExternalLink size={12} />
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* What to skip */}
                     <div className="mt-12 rounded-3xl border border-foreground/15 bg-sage/25 px-6 py-8 md:grid md:grid-cols-[11rem_1fr] md:gap-10 md:px-10 md:py-10">
                         <div>
@@ -675,8 +765,8 @@ export function GuideView({
                         </div>
                         <div>
                             <p className="mt-5 text-sm leading-relaxed text-foreground/80 md:mt-0">
-                                Avoid duplicate-purpose impulse buys that are
-                                not part of your plan:
+                                Before buying anything extra, check whether you
+                                already have a product that does the same job:
                             </p>
                             <ul className="mt-4 space-y-3 text-sm leading-relaxed text-foreground/80">
                                 <li>
@@ -685,6 +775,11 @@ export function GuideView({
                                     </strong>{" "}
                                     Do not add another cream unless it replaces
                                     the styling step already listed below.
+                                    <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                                        Why: Similar creams can leave hair
+                                        coated and make it harder to tell which
+                                        one helps.
+                                    </p>
                                 </li>
                                 {!hasScrub && (
                                     <li>
@@ -693,6 +788,11 @@ export function GuideView({
                                         </strong>{" "}
                                         Your answers do not suggest a need for
                                         aggressive exfoliation.
+                                        <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                                            Why: Extra scrubbing can irritate
+                                            your scalp without addressing a need
+                                            you reported.
+                                        </p>
                                     </li>
                                 )}
                                 {!hasProtein && (
@@ -702,27 +802,39 @@ export function GuideView({
                                         </strong>{" "}
                                         Your answers do not suggest adding a
                                         separate high-protein treatment.
+                                        <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                                            Why: Keep the treatment already
+                                            selected for you, if any, separate
+                                            so you can notice stiffness or
+                                            heaviness before adding more.
+                                        </p>
                                     </li>
                                 )}
                                 <li>
                                     <strong className="font-medium text-foreground">
                                         Duplicate treatments:
                                     </strong>{" "}
-                                    One product per purpose is enough;
-                                    overlapping products add cost without giving
-                                    the step a clearer job.
+                                    Choose one and see how your hair responds.
+                                    <p className="mt-1 text-xs leading-relaxed text-foreground/70">
+                                        Why: One treatment at a time lets you
+                                        see what agrees with your hair without
+                                        paying twice for the same job.
+                                    </p>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
                     {/* What not to combine */}
-                    <div className="mt-6 rounded-3xl border border-foreground/15 bg-paper-dark px-6 py-8 md:grid md:grid-cols-[11rem_1fr] md:gap-10 md:px-10 md:py-10">
+                    <div className="mt-6 rounded-3xl border border-foreground/15 bg-blue/70 px-6 py-8 md:grid md:grid-cols-[11rem_1fr] md:gap-10 md:px-10 md:py-10">
                         <div>
                             <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/50">
                                 Avoid overlap
                             </span>
-                            <h3 className="mt-2 font-serif text-2xl">
+                            <h3
+                                id="what-not-to-combine"
+                                className="mt-2 scroll-mt-8 font-serif text-2xl"
+                            >
                                 What not to combine
                             </h3>
                         </div>
@@ -737,6 +849,27 @@ export function GuideView({
                                     Pak.
                                 </li>
                             )}
+                            {hasNounou && (
+                                <li>
+                                    <strong className="font-medium text-foreground">
+                                        NOUNOU with another repair treatment:
+                                    </strong>{" "}
+                                    Use your NOUNOU mask on its own; do not add
+                                    another repair treatment or keratin leave-in
+                                    to the same wash. One repair mask is enough
+                                    to assess your response.
+                                </li>
+                            )}
+                            {hasReplacingMask && (
+                                <li>
+                                    <strong className="font-medium text-foreground">
+                                        Mask plus conditioner:
+                                    </strong>{" "}
+                                    {replacingMask?.product.name} replaces your
+                                    regular conditioner on treatment washes. Use
+                                    the mask or conditioner, not both.
+                                </li>
+                            )}
                             {hasScrub && (
                                 <li>
                                     <strong className="font-medium text-foreground">
@@ -749,16 +882,17 @@ export function GuideView({
                             )}
                             <li>
                                 <strong className="font-medium text-foreground">
-                                    High heat with fresh chemical stress:
+                                    High heat after a chemical treatment:
                                 </strong>{" "}
-                                Avoid adding intense hot-tool styling when the
-                                hair has just been chemically processed.
+                                Avoid intense hot-tool styling right after
+                                coloring, bleaching, or another chemical
+                                treatment.
                             </li>
                             <li>
                                 <strong className="font-medium text-foreground">
-                                    More frequent treatment applications:
+                                    Using treatments too often:
                                 </strong>{" "}
-                                Follow the cadence shown in your routine. Doing
+                                Follow the timing on each product card. Using
                                 more does not make hair grow faster.
                             </li>
                         </ul>
@@ -776,147 +910,39 @@ export function GuideView({
                         </div>
                         <p className="mt-5 text-sm leading-relaxed text-foreground/80 md:mt-0">
                             {shouldShampooTwice
-                                ? "Use two gentle shampoo passes on wash day. The first loosens surface oil and product residue; the second completes the cleanse. Focus both passes at the scalp and rinse thoroughly between them."
-                                : "Use one gentle shampoo pass on wash day. Focus the lather at the scalp and let the rinse water carry it through the lengths rather than scrubbing the ends."}
+                                ? "Shampoo twice, gently. The first wash loosens oil and product buildup; the second helps wash away what remains. Focus on your scalp both times and rinse well between washes."
+                                : "Shampoo once, gently. Work the lather into your scalp and let it rinse through the rest of your hair. You do not need to scrub your ends."}
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Routine Steps */}
-            <div className="mt-24 border-t border-foreground/15 pt-16">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                            Your Step-by-Step
-                        </span>
-                        <h2 className="mt-3 font-serif text-3xl text-foreground">
-                            The Complete Routine
-                        </h2>
-                    </div>
-                    <button
-                        onClick={() => setShowSavedOnly(!showSavedOnly)}
-                        className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
-                            showSavedOnly
-                                ? "border-foreground bg-foreground text-background"
-                                : "border-foreground/20 text-foreground hover:bg-foreground/5"
-                        }`}
-                        data-testid="filter-saved-products"
-                    >
-                        <Filter size={14} />
-                        {showSavedOnly
-                            ? "Show Full Routine"
-                            : `Saved Products (${savedProducts.length})`}
-                    </button>
-                </div>
+            <StarterPair steps={starterPair} />
+            <ProductShelf
+                paidRoutine={paidRoutine}
+                savedProducts={savedProducts}
+                showSavedOnly={showSavedOnly}
+                onToggleSaved={() => setShowSavedOnly((v) => !v)}
+                onToggleSave={toggleSave}
+                reportedDensityChange={reportedDensityChange}
+            />
 
-                {displayedRoutine.length === 0 && showSavedOnly && (
-                    <div className="mt-12 rounded-2xl border border-dashed border-foreground/20 py-16 text-center text-foreground/60">
-                        You haven&apos;t saved any products yet.
-                    </div>
-                )}
-
-                <div className="mt-12 space-y-8">
-                    {displayedRoutine.map((step, index) => {
-                        const isSaved = savedProducts.includes(step.product.id);
-                        return (
-                            <div
-                                key={`${step.product.id}-${index}`}
-                                className="group flex flex-col gap-8 rounded-3xl border border-foreground/15 bg-paper p-6 md:flex-row md:p-8"
-                                data-testid={`routine-step-${step.product.id}`}
-                            >
-                                {/* Product Image & Save */}
-                                <div className="relative flex w-full shrink-0 flex-col items-center justify-center overflow-hidden rounded-2xl bg-white/70 p-6 mix-blend-multiply md:w-64">
-                                    <button
-                                        onClick={() =>
-                                            toggleSave(step.product.id)
-                                        }
-                                        className="absolute right-4 top-4 z-10 p-2 text-foreground/40 transition-colors hover:text-foreground"
-                                        title={
-                                            isSaved
-                                                ? "Remove from saved"
-                                                : "Save product"
-                                        }
-                                        data-testid={`save-product-${step.product.id}`}
-                                    >
-                                        {isSaved ? (
-                                            <BookmarkCheck
-                                                className="text-foreground"
-                                                size={24}
-                                            />
-                                        ) : (
-                                            <Bookmark size={24} />
-                                        )}
-                                    </button>
-                                    <img
-                                        src={step.product.image}
-                                        alt={`${step.product.name} by ${step.product.brand}`}
-                                        className="h-48 w-48 object-contain transition-transform duration-500 group-hover:scale-105"
-                                        loading="lazy"
-                                    />
-                                </div>
-
-                                {/* Details */}
-                                <div className="flex flex-1 flex-col">
-                                    <div className="mb-2 flex items-center justify-between">
-                                        <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                                            Step {step.order} /{" "}
-                                            {step.product.category}
-                                        </span>
-                                        <span className="rounded-full bg-sage/30 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/80 text-center inline-block">
-                                            {step.timing}
-                                        </span>
-                                    </div>
-
-                                    <h3 className="font-serif text-2xl leading-tight text-foreground">
-                                        {step.product.name}
-                                    </h3>
-                                    <p className="mt-1 text-xs font-medium text-foreground/60">
-                                        {step.product.brand}
-                                    </p>
-
-                                    <div className="mt-6 grid gap-6 md:grid-cols-2">
-                                        <div className="space-y-4">
-                                            <p className="text-sm leading-relaxed text-foreground/80">
-                                                <strong className="font-medium text-foreground">
-                                                    Why this is in your routine:
-                                                </strong>{" "}
-                                                {step.product.reason}
-                                            </p>
-                                            <p className="text-sm leading-relaxed text-foreground/80">
-                                                <strong className="font-medium text-foreground">
-                                                    How to use:
-                                                </strong>{" "}
-                                                {step.instruction}
-                                            </p>
-                                        </div>
-                                        <div className="rounded-xl bg-paper-dark p-5">
-                                            <h4 className="font-serif text-lg">
-                                                Why it may fit your routine
-                                            </h4>
-                                            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-                                                {getRoutineBenefit(step)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-auto pt-8">
-                                        <a
-                                            href={step.product.link}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
-                                        >
-                                            View on Retailer{" "}
-                                            <ExternalLink size={12} />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <aside
+                className="mt-12 rounded-2xl border border-foreground/15 bg-paper p-6"
+                data-testid="guide-fit-support"
+            >
+                <h2 className="font-serif text-2xl">
+                    Does this reflect your answers?
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-foreground/80">
+                    {ROUTINE_OFFER.fitPromise}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-foreground/65">
+                    Educational, quiz-based guidance—not a medical diagnosis or
+                    1:1 consultation. Your purchase covers this routine and
+                    plan; physical products are sold separately.
+                </p>
+            </aside>
         </div>
     );
 }

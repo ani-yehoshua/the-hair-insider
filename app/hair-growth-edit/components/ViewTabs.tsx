@@ -24,7 +24,7 @@ export function ViewTabs({ active, onSelect }: ViewTabsProps) {
                         key={tab.key}
                         type="button"
                         onClick={() => onSelect(tab.key)}
-                        className={`flex h-full items-center justify-center rounded-md text-sm font-medium transition-colors ${
+                        className={`flex h-full items-center justify-center rounded-md text-[0.7rem] font-medium uppercase tracking-widest transition-colors ${
                             active === tab.key
                                 ? "bg-foreground text-background shadow-sm"
                                 : "text-background hover:text-foreground"
