@@ -86,6 +86,7 @@ export function GuideView({
   const hasProtein = paidRoutine.some(step => step.product.id === 'nourishingHairBuildingPak');
   const hasNounou = paidRoutine.some(step => step.product.id === 'nounouMask');
   const hasReplacingMask = paidRoutine.some(step => ['nounouMask', 'oiMask'].includes(step.product.id));
+  const replacingMask = paidRoutine.find(step => ['nounouMask', 'oiMask'].includes(step.product.id));
   const hasScrub = paidRoutine.some(step => step.product.id === 'detoxScrub');
   const shampooStep = paidRoutine.find(step => step.product.category.toLowerCase().includes('cleanse'));
   const treatmentSteps = paidRoutine.filter(step =>
@@ -241,7 +242,9 @@ export function GuideView({
                       <strong className="font-medium text-foreground">{step.product.name}:</strong> {step.timing}.
                     </p>
                   ))}
-                  <p>A detox scrub replaces shampoo; a moisture mask replaces conditioner. The Hair Building Pak is different: use it after shampoo, rinse, then condition as directed by its label. Do not add another protein treatment or keratin leave-in.</p>
+                  {hasScrub && <p>Your detox scrub replaces shampoo on its scheduled wash; it is not an extra cleansing step.</p>}
+                  {replacingMask && <p>{replacingMask.product.name} replaces conditioner on its scheduled treatment wash. Rinse thoroughly, then follow with your recommended leave-in.</p>}
+                  {hasProtein && <p>Use your NOURISHING Hair Building Pak after shampoo, rinse, then condition as directed by its label. Do not add another protein treatment or keratin leave-in.</p>}
                 </div>
               ) : (
                 <p className="mt-3 text-sm leading-relaxed text-foreground/75">
@@ -385,8 +388,8 @@ export function GuideView({
             </div>
             <ul className="mt-5 space-y-3 text-sm leading-relaxed text-foreground/80 md:mt-0">
               {hasProtein && <li><strong className="font-medium text-foreground">Protein with more protein:</strong> Do not stack keratin leave-ins or protein stylers with your NOURISHING Hair Building Pak.</li>}
-              {hasNounou && <li><strong className="font-medium text-foreground">NOUNOU with another repair treatment:</strong> Do not add Hair Building Pak or a keratin leave-in to the same wash. One repair mask is enough to assess your response.</li>}
-              {hasReplacingMask && <li><strong className="font-medium text-foreground">Mask plus conditioner:</strong> NOUNOU and OI Hair Butter replace your regular conditioner on treatment washes. Hair Building Pak is the exception: it is followed by conditioner.</li>}
+              {hasNounou && <li><strong className="font-medium text-foreground">NOUNOU with another repair treatment:</strong> Use your NOUNOU mask on its own; do not add another repair treatment or keratin leave-in to the same wash. One repair mask is enough to assess your response.</li>}
+              {hasReplacingMask && <li><strong className="font-medium text-foreground">Mask plus conditioner:</strong> {replacingMask?.product.name} replaces your regular conditioner on treatment washes. Use the mask or conditioner, not both.</li>}
               {hasScrub && <li><strong className="font-medium text-foreground">Scrub with regular shampoo:</strong> The detox scrub replaces shampoo on its scheduled treatment day; do not use both cleansers in the same wash.</li>}
               <li><strong className="font-medium text-foreground">High heat after a chemical treatment:</strong> Avoid intense hot-tool styling right after coloring, bleaching, or another chemical treatment.</li>
               <li><strong className="font-medium text-foreground">Using treatments too often:</strong> Follow the timing on each product card. Using more does not make hair grow faster.</li>

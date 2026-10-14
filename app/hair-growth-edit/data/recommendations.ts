@@ -605,7 +605,7 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
         mask === "nourishingHairBuildingPak"
             ? `On your first wash, gently squeeze out excess water after shampooing. Apply to damaged lengths and ends in sections, leave for 10–15 minutes according to the label, then rinse thoroughly. Follow with conditioner, as directed by the manufacturer. ${getKeratinSchedule(profile.washFrequency).timing}. ${getKeratinSchedule(profile.washFrequency).explanation} Do not add a keratin leave-in or another protein treatment that day.`
             : mask === "nounouMask"
-                ? "Use on your first wash after shampoo, in place of your regular conditioner. Apply through damp mid-lengths and ends, gently comb through, leave for the time on your jar, and rinse thoroughly. NOUNOU formulas have different leave times, so follow your own label. After this first wash, return to regular conditioner and use the mask on its scheduled treatment washes. Do not add Hair Building Pak or another protein treatment to the same wash."
+                ? "Use on your first wash after shampoo, in place of your regular conditioner. Apply through damp mid-lengths and ends, gently comb through, leave for the time on your jar, and rinse thoroughly. NOUNOU formulas have different leave times, so follow your own label. After this first wash, return to regular conditioner and use the mask on its scheduled treatment washes. Use this mask on its own; do not add another repair or protein treatment to the same wash."
                 : "Use after cleansing in place of conditioner; leave for the time on the label and rinse.",
     ]);
     coreSteps.push([

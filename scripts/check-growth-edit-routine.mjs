@@ -93,6 +93,13 @@ for (const washFrequency of ['daily', 'severalWeekly', 'weekly', 'lessWeekly']) 
   assert.ok(html.includes('scalp-serum-optional-note'));
   assert.equal((html.match(/data-testid="routine-step-/g) || []).length, paidRoutine.length);
   assert.ok(getRoutineSnapshot(washFrequency, paidRoutine).length < 7);
+  if (!paidRoutine.some(step => step.product.id === 'nourishingHairBuildingPak')) {
+    assert.ok(!/Hair Building Pak|K-?Pak/i.test(html), 'Guide must not name an unselected protein treatment');
+  }
+  if (paidRoutine.some(step => step.product.id === 'nounouMask')) {
+    assert.ok(html.includes('Use this mask on its own'));
+    assert.ok(html.includes('NOUNOU'));
+  }
   renders++;
 }
 const checkout = renderToStaticMarkup(createElement(RoutineCheckoutSummary, { price: '$49' }));

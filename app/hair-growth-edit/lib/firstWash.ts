@@ -23,6 +23,7 @@ export function getFirstWashPlan(
   const conditioner = routine.find(step => step.product.category.toLowerCase().includes('conditioner') && !step.product.category.toLowerCase().includes('leave-in'));
   const protein = !hasSevereRedFlag ? find('nourishingHairBuildingPak') : undefined;
   const repairMask = !hasSevereRedFlag ? find('nounouMask') : undefined;
+  const moistureMask = !hasSevereRedFlag ? find('oiMask') : undefined;
   const leaveIn = routine.find(step => step.product.category.toLowerCase().includes('leave-in') && (!protein || step.product.id !== 'keratinLeaveIn'));
   const serum = !hasSevereRedFlag ? find('energizingSuperactive') : undefined;
   const heat = find('meluShield');
@@ -44,11 +45,11 @@ export function getFirstWashPlan(
   });
   if (repairMask) steps.push({
     title: `Treat your lengths with ${repairMask.product.name}`,
-    detail: 'After shampooing, gently squeeze out excess water and smooth the mask through your mid-lengths and ends, keeping it off your scalp. This takes the place of your regular conditioner today—you don’t need both. Gently detangle from the ends upward, leave for the time on your jar, then rinse thoroughly. The current NOUNOU formula has a shorter leave time than the older version, so your label is the one to follow. On your next wash, return to regular conditioner; come back to this mask on the treatment schedule in your product card. Don’t add Hair Building Pak or another protein treatment to this wash.',
+    detail: 'After shampooing, gently squeeze out excess water and smooth the mask through your mid-lengths and ends, keeping it off your scalp. This takes the place of your regular conditioner today—you don’t need both. Gently detangle from the ends upward, leave for the time on your jar, then rinse thoroughly. The current NOUNOU formula has a shorter leave time than the older version, so your label is the one to follow. On your next wash, return to regular conditioner; come back to this mask on the treatment schedule in your product card. Use this mask on its own—don’t layer another repair or protein treatment into the same wash.',
   });
   else if (conditioner) steps.push({
     title: `Condition with ${conditioner.product.name}`,
-    detail: `Smooth it through your mid-lengths and ends, keeping it away from your roots. ${protein ? 'Conditioning still comes after Hair Building Pak; follow its current label for the recommended pairing.' : 'Use your recommended conditioner today. The moisture mask has its own scheduled wash, when it replaces conditioner.'} Once your hair feels slippery, gently detangle from the ends upward. Hold each section above a knot so you aren’t pulling at the roots, and work slowly rather than forcing through it. Leave for the time on the label, then rinse thoroughly.`,
+    detail: `Smooth it through your mid-lengths and ends, keeping it away from your roots. ${protein ? `Conditioning still comes after ${protein.product.name}; follow its current label for the recommended pairing.` : moistureMask ? `Use ${conditioner.product.name} today. Save ${moistureMask.product.name} for its scheduled treatment wash, when it replaces conditioner.` : 'This is your rinse-out care step today; there is no separate mask to add.'} Once your hair feels slippery, gently detangle from the ends upward. Hold each section above a knot so you aren’t pulling at the roots, and work slowly rather than forcing through it. Leave for the time on the label, then rinse thoroughly.`,
   });
   steps.push({
     title: 'Remove excess water without rubbing',
@@ -77,10 +78,10 @@ export function getFirstWashPlan(
       : `Let your hair air-dry, or use the gentle drying method for your style. ${oil ? `Once dry, warm one or two drops of ${oil.product.name} between your palms and lightly smooth them over the ends. If your hair feels coated or limp, use less at the next wash.` : 'Once your hair is dry, you’re done—there’s no extra finishing product to add.'}`,
   });
   const layers: WashInstruction[] = [
-    { title: 'Rinse-out products first', detail: `Shampoo → ${protein ? 'your scheduled keratin treatment → conditioner' : repairMask ? `${repairMask.product.name} instead of conditioner on treatment washes` : 'conditioner, or a moisture mask on its scheduled wash'} → rinse. Finish the shower steps and rinse thoroughly before you start the products that stay in your hair.` },
+    { title: 'Rinse-out products first', detail: `${[shampoo?.product.name, protein?.product.name, repairMask ? `${repairMask.product.name} instead of conditioner on treatment washes` : conditioner?.product.name, 'rinse'].filter(Boolean).join(' → ')}. ${moistureMask ? `On its scheduled treatment wash, ${moistureMask.product.name} replaces ${conditioner?.product.name || 'conditioner'}. ` : ''}Finish the shower steps and rinse thoroughly before you start the products that stay in your hair.` },
     { title: 'Keep scalp care separate', detail: serum ? `${serum.product.name} goes directly on the clean scalp. Your leave-in and styling products go on the lengths, not on top of serum at the roots.` : 'Keep conditioner, leave-in, styling products, and oil on the lengths rather than building layers at the roots.' },
-    { title: 'Layer the lengths in order', detail: `${[leaveIn?.product.name, usesHeat && heat ? `${heat.product.name} before heat` : undefined, styling && stylePreference !== 'protective' ? styling.product.name : undefined, 'dry/style', oil ? `${oil.product.name} on dry ends` : undefined].filter(Boolean).join(' → ')}. Follow each product’s wet- or dry-hair directions. Oil goes last, not before hot tools.` },
-    { title: 'Give each product room to work', detail: 'Start with a small amount and spread it evenly. You can add a little where needed, but more product isn’t automatically more care. Sticky, coated, or heavy hair is a cue to use less next time—not to add another layer. Keep the keratin treatment separate from keratin leave-in or another protein treatment in the same wash.' },
+    { title: 'Layer the lengths in order', detail: `${[leaveIn?.product.name, usesHeat && heat ? `${heat.product.name} before heat` : undefined, styling && stylePreference !== 'protective' ? styling.product.name : undefined, 'dry/style', oil ? `${oil.product.name} on dry ends` : undefined].filter(Boolean).join(' → ')}. Follow each product’s wet- or dry-hair directions.${oil ? ' Oil goes last, not before hot tools.' : ''}` },
+    { title: 'Give each product room to work', detail: `Start with a small amount and spread it evenly. You can add a little where needed, but more product isn’t automatically more care. Sticky, coated, or heavy hair is a cue to use less next time—not to add another layer.${protein ? ` Keep ${protein.product.name} separate from keratin leave-in or another protein treatment in the same wash.` : repairMask ? ` Use ${repairMask.product.name} as your only repair treatment on its scheduled wash.` : ''}` },
   ];
   return { steps, layers, keratin: protein ? { name: protein.product.name, ...schedule } : null };
 }
