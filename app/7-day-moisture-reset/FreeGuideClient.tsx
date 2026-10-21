@@ -1177,6 +1177,12 @@ export default function FreeGuideClient() {
                             padding: 40px 24px;
                             text-align: center;
                         }
+                        #guide-root footer .verse{
+                            font-style: italic;
+                            font-size: 1.05rem;
+                            color: rgba(235,229,216,0.85);
+                            margin-bottom: 20px;
+                        }
                         #guide-root footer .brand{
                             font-family: 'Inter', sans-serif;
                             font-size: 0.72rem;
@@ -2658,6 +2664,7 @@ export default function FreeGuideClient() {
 
                 {/* ============ FOOTER ============ */}
                 <footer>
+                    <div className='verse'>Philippians 4:13</div>
                     <div className='brand'>
                         The Hair Insider · the-hair-insider.com
                     </div>

@@ -33,6 +33,10 @@ export function Footer() {
             <Separator />
 
             <div className='mx-auto max-w-6xl px-6 py-12'>
+                <p className='mb-10 text-center text-md italic tracking-wide'>
+                    Philippians 4:13
+                </p>
+
                 <div className='grid gap-10 text-center sm:text-left sm:grid-cols-2 lg:grid-cols-4'>
                     {/* Brand */}
                     <div className='space-y-4 lg:col-span-2'>

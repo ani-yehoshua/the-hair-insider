@@ -479,6 +479,9 @@ export default function GrowthEditClient() {
                 )}
 
             <footer className="border-t border-foreground/15 bg-paper py-10 px-6">
+                <p className="mb-8 text-center font-support text-sm italic text-foreground/70">
+                    Philippians 4:13
+                </p>
                 <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 md:flex-row">
                     <div className="text-center md:text-left">
                         <span className="text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/80">
