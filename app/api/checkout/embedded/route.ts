@@ -23,10 +23,17 @@ const admin = createClient(
 export async function POST(req: Request) {
     const stripe = getStripe();
     try {
-        const { courseSlug, expectedUnitAmount } = (await req.json()) as {
+        const { courseSlug, expectedUnitAmount, email } = (await req.json()) as {
             courseSlug?: string;
             expectedUnitAmount?: number;
+            email?: string;
         };
+        // The email asked for before payment pre-fills Stripe's email field, so
+        // the receipt and the account that claims the purchase use it.
+        const customerEmail =
+            typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+                ? email.trim().toLowerCase()
+                : undefined;
         if (!courseSlug) {
             return NextResponse.json({ error: 'Missing courseSlug.' }, { status: 400 });
         }
@@ -68,6 +75,7 @@ export async function POST(req: Request) {
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
             ...(discounts ? { discounts } : {}),
+            ...(customerEmail ? { customer_email: customerEmail } : {}),
             // 'if_required' keeps card completing inline (no navigation),
             // but still allows methods that can't complete without one
             // (Klarna, Amazon Pay, etc.) -- 'never' would silently drop

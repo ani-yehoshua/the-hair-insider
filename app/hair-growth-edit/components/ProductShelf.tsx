@@ -1,9 +1,9 @@
 import { BasedOnAnswers } from "./GuideNotes";
 import { useMemo } from "react";
 import {
-    ArrowUpRight,
     Bookmark,
     BookmarkCheck,
+    ExternalLink,
     Filter,
     ShoppingBag,
 } from "lucide-react";
@@ -143,9 +143,9 @@ export function ProductShelf({
                 data-testid="shelf-intro"
             >
                 You don&rsquo;t need every product at once. Your Growth Edit is
-                your personalized product shelf—not a checklist. Start with
-                what solves your biggest need, then come back to the list
-                whenever you&rsquo;re ready for your next product.
+                your personalized product shelf—not a checklist. Start with what
+                solves your biggest need, then come back to the list whenever
+                you&rsquo;re ready for your next product.
             </p>
 
             {groups.length === 0 && (
@@ -304,10 +304,10 @@ export function ProductShelf({
                                                     href={step.product.link}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    className="inline-flex items-center gap-2 text-[0.7rem] font-medium uppercase tracking-widest text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
+                                                    className="inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
                                                 >
                                                     View on Retailer{" "}
-                                                    <ArrowUpRight size={12} />
+                                                    <ExternalLink size={12} />
                                                 </a>
                                             </div>
                                         </div>

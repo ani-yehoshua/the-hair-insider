@@ -112,3 +112,61 @@ export function clearPurchasePendingSignIn(): void {
     // ignore
   }
 }
+
+const SAVED_EMAIL_KEY = 'ge_saved_email';
+
+// The email a visitor gave to save their results or to check out, kept so the
+// results card and the checkout drawer don't ask twice.
+export function loadSavedEmail(): string | null {
+  try {
+    return localStorage.getItem(SAVED_EMAIL_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function rememberSavedEmail(email: string): void {
+  try {
+    localStorage.setItem(SAVED_EMAIL_KEY, email);
+  } catch {
+    // ignore
+  }
+}
+
+export type SaveResultsSource = 'results' | 'checkout';
+
+// Saves the answers against an email on the server. "results" also emails the
+// visitor a summary and a link back; "checkout" only records the email.
+export async function saveResultsForEmail(
+  email: string,
+  answers: AnswerMap,
+  source: SaveResultsSource,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const res = await fetch('/api/hair-growth-edit/save-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, answers, source }),
+    });
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    if (!res.ok) return { ok: false, error: data.error };
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'Something went wrong. Please try again.' };
+  }
+}
+
+// Answers saved behind a results-email link (?r=<token>), or null if the
+// link is unknown.
+export async function loadResultsFromToken(token: string): Promise<AnswerMap | null> {
+  try {
+    const res = await fetch(
+      `/api/hair-growth-edit/restore?token=${encodeURIComponent(token)}`,
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as { answers?: AnswerMap };
+    return data.answers ?? null;
+  } catch {
+    return null;
+  }
+}

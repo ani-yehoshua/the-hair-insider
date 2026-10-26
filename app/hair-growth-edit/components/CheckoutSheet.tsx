@@ -2,16 +2,22 @@ import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { X } from 'lucide-react';
+import { track } from '@vercel/analytics';
+import { loadSavedEmail, rememberSavedEmail, saveResultsForEmail, type AnswerMap } from '../lib/assessmentStore';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
 import { growthEditFontVariables } from '../fonts';
 import { RoutineCheckoutSummary } from './RoutineCheckoutSummary';
 import type { FoundingAvailability } from '../lib/foundingOffer';
 const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 interface CheckoutSheetProps {
   open: boolean;
   courseSlug: string;
   availability?: FoundingAvailability | null;
+  answers: AnswerMap;
+  knownEmail?: string | null;
   onClose: () => void;
   onComplete: () => void;
 }
@@ -35,17 +41,52 @@ interface CheckoutSheetProps {
 // it. The `growth-edit-quiz` class is reapplied here directly because
 // portaling moves this DOM subtree out from under that ancestor, and the
 // sheet's animation classes are scoped under that selector in globals.css.
-export function CheckoutSheet({ open, courseSlug, availability = null, onClose, onComplete }: CheckoutSheetProps) {
+export function CheckoutSheet({ open, courseSlug, availability = null, answers, knownEmail = null, onClose, onComplete }: CheckoutSheetProps) {
   // The price the buyer was shown. The server refuses to charge a different one.
   const expectedUnitAmount = availability?.unitAmount ?? null;
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  useEffect(() => { if (open) setCheckoutError(null); }, [open]);
+  // The Growth Edit asks for an email before payment (so a visitor who opens
+  // checkout and leaves can still be followed up with). Anyone who already
+  // gave one, or is signed in, goes straight to payment.
+  const needsEmail = courseSlug === GROWTH_EDIT_SLUG;
+  const [email, setEmail] = useState('');
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    setCheckoutError(null);
+    setEmailError(null);
+    const known = knownEmail ?? loadSavedEmail();
+    setEmail(known ?? '');
+    setEmailConfirmed(Boolean(known));
+  }, [open, knownEmail]);
+  const showEmailStep = needsEmail && !emailConfirmed;
+
+  const confirmEmail = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const trimmed = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(trimmed)) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    setEmailError(null);
+    setSavingEmail(true);
+    // Fail open: payment must never be blocked by the email being recorded.
+    await saveResultsForEmail(trimmed, answers, 'checkout');
+    rememberSavedEmail(trimmed);
+    track('checkout_email_captured');
+    setEmail(trimmed);
+    setSavingEmail(false);
+    setEmailConfirmed(true);
+  };
+
   const fetchClientSecret = useCallback(async () => {
     try {
       const res = await fetch('/api/checkout/embedded', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ courseSlug, expectedUnitAmount }),
+      body: JSON.stringify({ courseSlug, expectedUnitAmount, email: needsEmail && emailConfirmed ? email : undefined }),
     });
     const data = (await res.json()) as { clientSecret?: string; error?: string };
     if (!res.ok || !data.clientSecret) {
@@ -56,7 +97,7 @@ export function CheckoutSheet({ open, courseSlug, availability = null, onClose, 
       setCheckoutError(failure instanceof Error ? failure.message : 'Could not start checkout.');
       throw failure;
     }
-  }, [courseSlug, expectedUnitAmount]);
+  }, [courseSlug, expectedUnitAmount, needsEmail, emailConfirmed, email]);
 
   // Plain `overflow: hidden` on <body> doesn't stop touch-scroll on iOS
   // Safari -- it keeps rubber-banding the page underneath regardless. The
@@ -127,13 +168,55 @@ export function CheckoutSheet({ open, courseSlug, availability = null, onClose, 
           <RoutineCheckoutSummary availability={availability} />
         )}
 
-        {stripePromise ? (
+        {showEmailStep ? (
+          <form onSubmit={confirmEmail} noValidate className="pb-4">
+            <label htmlFor="checkout-email" className="text-sm font-medium text-foreground">
+              Where should we send your plan?
+            </label>
+            <p className="mt-1 text-xs leading-relaxed text-foreground/65">
+              Your receipt and access go to this email. Use the one you&apos;ll sign in with.
+            </p>
+            <input
+              id="checkout-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              autoFocus
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@email.com"
+              className="mt-3 w-full border border-foreground/25 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 focus:border-foreground focus:outline-none"
+            />
+            {emailError && <p role="alert" className="mt-2 text-sm text-foreground/80">{emailError}</p>}
+            <button
+              type="submit"
+              disabled={savingEmail}
+              className="mt-4 inline-flex w-full items-center justify-center bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-50 pill-cta"
+            >
+              {savingEmail ? 'One moment…' : 'Continue to payment'}
+            </button>
+            <p className="mt-3 text-xs leading-relaxed text-foreground/60">
+              We&apos;ll also send a few emails about building your routine. Unsubscribe anytime.
+            </p>
+          </form>
+        ) : stripePromise ? (
           checkoutError ? <div role="alert" className="py-8 text-sm leading-relaxed text-foreground/80">
             <p>{checkoutError}</p>
             <button type="button" onClick={() => window.location.reload()} className="mt-4 underline">Refresh price and try again</button>
-          </div> : <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
-            <EmbeddedCheckout />
-          </EmbeddedCheckoutProvider>
+          </div> : <>
+            {needsEmail && email && (
+              <p className="mb-3 text-xs text-foreground/65">
+                Receipt and access for <strong>{email}</strong>
+                {!knownEmail && (
+                  <> · <button type="button" onClick={() => setEmailConfirmed(false)} className="underline">Change</button></>
+                )}
+              </p>
+            )}
+            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
+              <EmbeddedCheckout />
+            </EmbeddedCheckoutProvider>
+          </>
         ) : (
           <p className="py-12 text-center text-sm text-foreground/70">
             Checkout is not configured yet.

@@ -13,7 +13,9 @@ import {
 import {
     isPurchasePendingSignIn,
     markPurchasePendingSignIn,
+    type AnswerMap,
 } from "../lib/assessmentStore";
+import { SaveResultsCard } from "./SaveResultsCard";
 
 const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
@@ -33,6 +35,9 @@ interface ResultsProps {
     price: string | null;
     availability?: FoundingAvailability | null;
     pricingError?: string | null;
+    answers: AnswerMap;
+    // The signed-in visitor's email, when there is one; they are never asked again.
+    knownEmail?: string | null;
     onRequireAuth: () => void;
     onReset: () => void;
 }
@@ -52,6 +57,8 @@ export function Results({
     price,
     availability = null,
     pricingError = null,
+    answers,
+    knownEmail = null,
     onRequireAuth,
     onReset,
 }: ResultsProps) {
@@ -206,6 +213,10 @@ export function Results({
                 )}
             </div>
 
+            {!unlocked && !purchaseComplete && !knownEmail && (
+                <SaveResultsCard answers={answers} />
+            )}
+
             <div className="space-y-12">
                 {/* Root Cause */}
                 <div className="border-t border-foreground/15 pt-10">
@@ -290,7 +301,7 @@ export function Results({
                             {[product1, product2].map((prod) => (
                                 <div
                                     key={prod.id}
-                                    className="panel-outline rounded-2xl bg-paper px-6 py-8"
+                                    className="panel-outline rounded-2xl bg-border px-6 py-8"
                                 >
                                     <div className="mb-6 flex h-56 items-center justify-center overflow-hidden rounded-xl bg-white/70 p-4">
                                         <img
@@ -428,6 +439,8 @@ export function Results({
                 open={checkoutOpen}
                 courseSlug={GROWTH_EDIT_SLUG}
                 availability={availability}
+                answers={answers}
+                knownEmail={knownEmail}
                 onClose={() => setCheckoutOpen(false)}
                 onComplete={handleCheckoutComplete}
             />

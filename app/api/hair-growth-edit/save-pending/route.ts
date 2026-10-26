@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { enrollInSolutionSequence } from '@/lib/email/resendSolution';
 
 const admin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -54,6 +55,13 @@ export async function POST(req: Request) {
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Starts the Growth Edit sales emails. Never blocks saving the results.
+    try {
+        await enrollInSolutionSequence(email);
+    } catch (e) {
+        console.error('Solution sequence enrollment failed:', e);
     }
 
     return NextResponse.json({ ok: true });

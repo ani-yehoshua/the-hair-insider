@@ -27,6 +27,7 @@ import {
     clearDraftAnswers,
     clearPurchasePendingSignIn,
     loadDraftAnswers,
+    loadResultsFromToken,
     loadSavedAssessment,
     saveAssessment,
     saveDraftAnswers,
@@ -34,7 +35,7 @@ import {
 } from "./lib/assessmentStore";
 
 export default function GrowthEditClient() {
-    const { signedIn, loading: authLoading } = useAuth();
+    const { signedIn, user, loading: authLoading } = useAuth();
     const [view, setView] = useState<AppView>("home");
     const [step, setStep] = useState(0);
     // Set when a returning visitor is dropped onto a question they haven't
@@ -94,6 +95,20 @@ export default function GrowthEditClient() {
 
         (async () => {
             if (!signedIn) {
+                // A link from the "email me my results" message (?r=<token>)
+                // puts those answers back, on whatever device it is opened.
+                const restoreToken = new URLSearchParams(
+                    window.location.search,
+                ).get("r");
+                if (restoreToken) {
+                    window.history.replaceState(null, "", "/hair-growth-edit");
+                    const restored = await loadResultsFromToken(restoreToken);
+                    if (restored) {
+                        saveDraftAnswers(restored);
+                        track("results_restored");
+                    }
+                }
+
                 // A signed-out visitor who already finished the assessment
                 // and reloaded lands back on their results, not the quiz. If
                 // a question was added since they finished, they resume at it
@@ -418,6 +433,8 @@ export default function GrowthEditClient() {
                     price={price}
                     availability={availability}
                     pricingError={pricingError}
+                    answers={answers}
+                    knownEmail={user?.email ?? null}
                     onRequireAuth={handleRequireAuth}
                     onReset={() => {
                         clearDraftAnswers();

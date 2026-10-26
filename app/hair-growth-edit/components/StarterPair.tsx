@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { RoutineStep } from "../data/recommendations";
 import { getFirstPurchaseReason } from "../lib/guideSummary";
 import { BasedOnAnswers } from "./GuideNotes";
@@ -63,9 +63,9 @@ export function StarterPair({ steps }: { steps: RoutineStep[] }) {
                                     href={product.link}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="mt-4 inline-flex items-center gap-2 text-xs text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground"
+                                    className="mt-4 inline-flex items-center justify-center gap-2 bg-sage px-6 py-3 text-[0.7rem] font-medium uppercase tracking-widest text-primary-foreground transition-opacity hover:opacity-90 pill-cta"
                                 >
-                                    View on retailer <ArrowUpRight size={12} />
+                                    View on retailer <ExternalLink size={12} />
                                 </a>
                             </div>
                         </div>
