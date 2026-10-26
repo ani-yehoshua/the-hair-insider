@@ -16,7 +16,6 @@ export function RoutineSalesCard({ price, compareAtPrice = '$69', checkoutAction
     <section className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-7 md:px-8 md:py-8" aria-labelledby="growth-edit-offer-heading" data-testid="routine-sales-card">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/70">{ROUTINE_SALES_COPY.brand}</p>
-        <span className="rounded-full border border-foreground/20 px-3 py-1 text-xs text-foreground/75">{soldOut ? 'One-time purchase' : 'Founding price'}</span>
       </div>
       <div className="mt-5 md:grid md:grid-cols-[1.15fr_1fr] md:gap-10">
         <div>
@@ -34,14 +33,17 @@ export function RoutineSalesCard({ price, compareAtPrice = '$69', checkoutAction
                   {!soldOut && <><span className="sr-only">Regular price:</span><s className="text-base text-foreground/55">{compareAtPrice}</s></>}
                 </p>
                 <p className="mt-1 text-xs text-foreground/75">One-time purchase</p>
-                 <p className="mt-2 text-xs leading-relaxed text-foreground/65">{soldOut ? 'All 100 founding-price spots have been purchased. The regular price is $69.' : ROUTINE_SALES_COPY.launchReason}</p>
+                 <p className="mt-2 text-xs leading-relaxed text-foreground/65">{soldOut ? 'Regular pricing' : ROUTINE_SALES_COPY.launchReason}</p>
               </>
             ) : <p className="text-sm text-foreground/70" role="status">Loading price…</p>}
           </div>
           {availability && <FoundingProgress availability={availability} />}
           <div className="mt-4">{checkoutAction}</div>
-          <p className="mt-2 text-center text-xs text-foreground/75" data-testid="cta-reassurance">{price ? `${price} · Instant access` : 'Instant access after purchase'}</p>
-          <p className="mt-4 text-xs leading-relaxed text-foreground/65" data-testid="routine-fit-promise">{ROUTINE_OFFER.fitPromise}</p>
+          <p className="mt-2 text-center text-xs text-foreground/75" data-testid="cta-reassurance">Instant access</p>
+          <details className="mt-4 text-xs leading-relaxed text-foreground/65" data-testid="routine-fit-promise">
+            <summary className="cursor-pointer">7-day personalization promise</summary>
+            <p className="mt-2">{ROUTINE_OFFER.fitPromise}</p>
+          </details>
         </div>
       </div>
       <p className="mt-5 border-t border-foreground/10 pt-3 text-xs leading-relaxed text-foreground/60">

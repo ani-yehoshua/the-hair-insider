@@ -7,7 +7,7 @@ export function FoundingProgress({ availability }: { availability: FoundingAvail
     <div className="mt-4" data-testid="founding-progress">
       <p className="flex flex-wrap justify-between gap-x-3 gap-y-1 text-xs text-foreground/80" aria-live="polite">
         <span>{availability.claimed} of {availability.limit} founding spots claimed</span>
-        <span className="font-medium">{soldOut ? 'Founding price closed' : `${remaining} left at $49`}</span>
+        <span className="font-medium">{soldOut ? 'Founding price closed' : `${remaining} remaining`}</span>
       </p>
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-foreground/10" role="progressbar"
         aria-label="Purchased founding-price spots" aria-valuemin={0} aria-valuemax={availability.limit}
