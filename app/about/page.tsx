@@ -5,6 +5,7 @@ export const metadata: Metadata = {
     title: "About | The Hair Insider",
     description:
         "The Hair Insider is an education-first hair care course library focused on simple routines, clear guidance, and practical decisions.",
+    alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

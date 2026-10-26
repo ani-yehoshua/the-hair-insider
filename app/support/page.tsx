@@ -5,6 +5,7 @@ export const metadata: Metadata = {
     title: "Support",
     description:
         "Have a question about The Hair Insider? Reach our support team for course access help, partnerships, or general inquiries.",
+    alternates: { canonical: "/support" },
 };
 
 export default function SupportPage() {

@@ -5,7 +5,7 @@ export const ROUTINE_SALES_COPY = {
         "Know what to use, what to skip, and how to use your products together—based on your answers.",
     planScope: "A weekly routine. A clear first 30 days.",
     launchReason: "Founding price · First 100 purchases",
-    cta: "Get My Growth Edit",
+    cta: "Get My Personalized Plan",
 } as const;
 
 export const ROUTINE_OFFER = {

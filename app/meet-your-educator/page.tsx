@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import MeetYourEducatorClient from "./MeetYourEducatorClient";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { LAUREN, SITE_NAME, SITE_URL } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
     title: "Meet Your Educator | The Hair Insider",
@@ -19,5 +21,29 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-    return <MeetYourEducatorClient />;
+    return (
+        <>
+            <MeetYourEducatorClient />
+            <JsonLd
+                data={{
+                    "@context": "https://schema.org",
+                    "@type": "ProfilePage",
+                    mainEntity: {
+                        "@type": "Person",
+                        name: LAUREN.name,
+                        jobTitle: LAUREN.jobTitle,
+                        description: LAUREN.description,
+                        url: LAUREN.url,
+                        image: LAUREN.image,
+                        sameAs: LAUREN.sameAs,
+                        worksFor: {
+                            "@type": "Organization",
+                            name: SITE_NAME,
+                            url: SITE_URL,
+                        },
+                    },
+                }}
+            />
+        </>
+    );
 }

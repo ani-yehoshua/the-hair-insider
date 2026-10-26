@@ -5,6 +5,7 @@ export const metadata: Metadata = {
     title: "The Hair Insider: Hair Care Education & Routines",
     description:
         "Education-first hair care that teaches what your hair actually needs, why it feels like it won’t grow, and how to build a simple routine you can stick to.",
+    alternates: { canonical: "/" },
 };
 
 export default function Home() {

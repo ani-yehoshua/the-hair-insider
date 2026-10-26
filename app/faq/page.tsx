@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import FaqClient from "./FaqClient";
+import { FAQ_SECTIONS } from "./faqData";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
     title: "FAQ | The Hair Insider",
@@ -9,5 +11,22 @@ export const metadata: Metadata = {
 };
 
 export default function FaqPage() {
-    return <FaqClient />;
+    return (
+        <>
+            <FaqClient />
+            <JsonLd
+                data={{
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: FAQ_SECTIONS.flatMap((section) =>
+                        section.items.map(({ q, a }) => ({
+                            "@type": "Question",
+                            name: q,
+                            acceptedAnswer: { "@type": "Answer", text: a },
+                        })),
+                    ),
+                }}
+            />
+        </>
+    );
 }

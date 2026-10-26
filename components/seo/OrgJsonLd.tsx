@@ -8,6 +8,12 @@ export function OrgJsonLd() {
         name: "The Hair Insider",
         url: siteUrl,
         logo: `${siteUrl}/thi_navbar_logo.svg`,
+        founder: {
+            "@type": "Person",
+            name: "Lauren Jackson",
+            jobTitle: "Licensed cosmetologist and hair educator",
+            url: `${siteUrl}/meet-your-educator`,
+        },
         // Add real socials when ready:
         sameAs: [
             "https://www.instagram.com/thehairinsider",

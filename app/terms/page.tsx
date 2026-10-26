@@ -5,6 +5,7 @@ export const metadata: Metadata = {
     title: "Terms of Service | The Hair Insider",
     description:
         "Terms of Service for The Hair Insider. Education-only content, acceptable use, payments, and limitations of liability.",
+    alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

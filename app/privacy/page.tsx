@@ -5,6 +5,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy | The Hair Insider",
     description:
         "Privacy Policy for The Hair Insider. Learn what we collect, how we use it, and your choices.",
+    alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

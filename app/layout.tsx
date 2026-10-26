@@ -50,7 +50,6 @@ export const metadata: Metadata = {
     creator: "The Hair Insider",
     publisher: "The Hair Insider",
     applicationName: "The Hair Insider",
-    alternates: { canonical: siteUrl },
     icons: {
         icon: [{ url: "/favicon.ico" }],
         apple: [{ url: "/apple-touch-icon.png" }],
