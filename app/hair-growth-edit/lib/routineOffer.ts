@@ -1,3 +1,12 @@
+export const ROUTINE_SALES_COPY = {
+  brand: 'The Growth Edit',
+  headline: 'Stop buying products at random.',
+  description: 'Turn your quiz answers into a routine—what to buy, what to skip, and how to use your products together.',
+  planScope: 'A weekly routine. A clear first 30 days.',
+  launchReason: '$49 for the first 100 purchases. Then $69.',
+  cta: 'Get My Personalized Growth Edit',
+} as const;
+
 export const ROUTINE_OFFER = {
   title: 'Your Personalized Routine',
   label: 'Your Growth Edit · Weekly Plan + First 30 Days',

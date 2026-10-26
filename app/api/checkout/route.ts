@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { createGrowthEditCheckout, FoundingOfferError } from '@/lib/pricing/growthEditFounding';
 
 function getStripe() {
     const key = process.env.STRIPE_SECRET_KEY;
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const { courseSlug } = (await req.json()) as { courseSlug?: string };
+        const { courseSlug, expectedUnitAmount } = (await req.json()) as { courseSlug?: string; expectedUnitAmount?: number };
         if (!courseSlug) {
             return NextResponse.json(
                 { error: 'Missing courseSlug.' },
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
         const stripeCustomerId = stripeDB?.stripe_customer_id ?? null;
 
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
-        const session = await stripe.checkout.sessions.create({
+        const checkoutParams: Stripe.Checkout.SessionCreateParams = {
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
             success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -92,13 +93,16 @@ export async function POST(req: Request) {
                 course_id: course.id,
                 user_id: userData.user.id,
             },
-        });
+        };
+        const session = courseSlug === 'hair-growth-edit'
+            ? await createGrowthEditCheckout(admin, stripe, course.stripe_price_id, expectedUnitAmount, checkoutParams)
+            : await stripe.checkout.sessions.create(checkoutParams);
 
         return NextResponse.json({ url: session.url });
     } catch (err) {
         return NextResponse.json(
-            { error: err instanceof Error ? err.message : 'Unknown error' },
-            { status: 500 },
+            { error: err instanceof Error ? err.message : 'Unknown error', code: err instanceof FoundingOfferError ? err.code : undefined },
+            { status: err instanceof FoundingOfferError ? err.status : 500 },
         );
     }
 }

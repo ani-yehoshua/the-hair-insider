@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
+import { getFoundingAvailability } from '@/lib/pricing/growthEditFounding';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -24,8 +26,17 @@ export async function POST(req: Request) {
             expand: ['product'],
         });
 
-        const unitAmount = price.unit_amount ?? null;
+        let unitAmount = price.unit_amount ?? null;
         const currency = price.currency ?? 'usd';
+        // Other pages that request the course's original $49 price must also
+        // display $69 after the founding allocation is exhausted.
+        const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!);
+        const { data: growthEdit, error: courseError } = await admin.from('courses')
+            .select('stripe_price_id').eq('slug', 'hair-growth-edit').maybeSingle();
+        if (courseError) throw new Error('Could not verify current pricing.');
+        if (growthEdit?.stripe_price_id === priceId) {
+            unitAmount = (await getFoundingAvailability(admin, stripe, priceId)).unitAmount;
+        }
 
         const productName =
             price.product &&

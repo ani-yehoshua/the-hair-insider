@@ -4,8 +4,9 @@ import { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
-import { ROUTINE_OFFER } from "../lib/routineOffer";
-import { RoutineInclusions } from "./RoutineInclusions";
+import { ROUTINE_SALES_COPY } from "../lib/routineOffer";
+import { RoutineSalesCard } from "./RoutineSalesCard";
+import type { FoundingAvailability } from "../lib/foundingOffer";
 import {
     GROWTH_EDIT_COMPARE_AT_PRICE,
 } from "@/lib/pricing/growthEdit";
@@ -30,6 +31,8 @@ interface ResultsProps {
     supportingNeeds: string[];
     unlocked: boolean;
     price: string | null;
+    availability?: FoundingAvailability | null;
+    pricingError?: string | null;
     onRequireAuth: () => void;
     onReset: () => void;
 }
@@ -47,6 +50,8 @@ export function Results({
     supportingNeeds,
     unlocked,
     price,
+    availability = null,
+    pricingError = null,
     onRequireAuth,
     onReset,
 }: ResultsProps) {
@@ -57,6 +62,7 @@ export function Results({
     );
 
     const openCheckout = () => {
+        if (!availability || (availability.available === 0 && availability.claimed < availability.limit)) return;
         track("checkout_opened", { severe: hasSevereRedFlag });
         setCheckoutOpen(true);
     };
@@ -123,7 +129,7 @@ export function Results({
                     </p>
                 )}
                 {!hasSevereRedFlag && !unlocked && (
-                    <div className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-5 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8">
+                    <div className={purchaseComplete ? "mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-5 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:px-8" : ""}>
                         {purchaseComplete ? (
                             <>
                                 <div>
@@ -148,85 +154,18 @@ export function Results({
                             </>
                         ) : (
                             <>
-                                <div>
-                                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                                        {ROUTINE_OFFER.label}
-                                    </span>
-                                    <h2 className="mt-2 font-serif text-2xl leading-tight text-foreground md:text-3xl">
-                                        {ROUTINE_OFFER.title}
-                                    </h2>
-                                </div>
-                                <div className="mt-5 md:mt-0 md:min-w-64 md:max-w-sm">
-                                    <div
-                                        className="mb-3 flex items-center justify-center gap-1 text-[0.55rem] font-medium uppercase tracking-wide text-foreground/75"
-                                        aria-label="Routine preview: cleanse, care, maintain"
-                                    >
-                                        <span className="rounded-full border border-foreground/20 px-2 py-1">
-                                            01 Cleanse
-                                        </span>
-                                        <span aria-hidden="true">→</span>
-                                        <span className="rounded-full border border-foreground/20 px-2 py-1">
-                                            02 Care
-                                        </span>
-                                        <span aria-hidden="true">→</span>
-                                        <span className="rounded-full border border-foreground/20 px-2 py-1">
-                                            03 Maintain
-                                        </span>
-                                    </div>
-                                    <p className="mb-2 flex items-baseline justify-center gap-2">
-                                        <span className="font-serif text-4xl text-foreground">
-                                            {displayPrice}
-                                        </span>
-                                        {price && (
-                                            <s className="text-sm text-foreground/60">
-                                                {GROWTH_EDIT_COMPARE_AT_PRICE}
-                                            </s>
-                                        )}
-                                    </p>
-                                    {price && <p className="mb-3 text-center text-xs leading-relaxed text-foreground/75">{ROUTINE_OFFER.launchReason}</p>}
-                                    <p className="mb-3 text-sm leading-relaxed text-foreground/85">{ROUTINE_OFFER.value}</p>
-                                    <button
-                                        type="button"
-                                        onClick={openCheckout}
-                                        className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 pill-cta"
-                                    >
-                                        Get my personalized routine –{" "}
-                                        {displayPrice} <ArrowRight size={14} />
-                                    </button>
-                                    <p className="mt-2 text-center text-xs text-foreground/75">
-                                        {ROUTINE_OFFER.reassurance}
-                                    </p>
-                                    <p className="mt-1 text-center text-xs text-foreground/75">
-                                        {ROUTINE_OFFER.fitPromise}
-                                    </p>
-                                    <p className="mt-3 text-center text-xs leading-relaxed text-foreground/70">
-                                        {ROUTINE_OFFER.practicalCue}
-                                    </p>
-                                    <p className="mt-1 text-center text-xs text-foreground/75">
-                                        If anything isn’t clear, reply to your
-                                        receipt for clarification.
-                                    </p>
-                                    <p className="mt-1 text-center text-[0.65rem] text-foreground/60">
-                                        Educational guidance, not a 1:1 consult. One-time purchase; products sold separately.
-                                    </p>
-                                    <p className="mt-2 text-center text-xs text-foreground/65">
-                                        7-day refund window for
-                                        first-time purchases.{" "}
-                                        <a
-                                            href="/terms"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="underline"
-                                        >
-                                            Terms
-                                        </a>
-                                    </p>
-                                </div>
-                                <div className="mt-6 border-t border-foreground/15 pt-5 md:col-span-2 md:mt-0" data-testid="routine-contents">
-                                    <p className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-foreground/60">Included in your routine</p>
-                                    <RoutineInclusions price={price ? displayPrice : null} />
-                                    <p className="mt-3 text-xs leading-relaxed text-foreground/75">A weekly plan with phased milestones—no day-by-day to-do list.</p>
-                                </div>
+                                <RoutineSalesCard price={price} availability={availability}
+                                    compareAtPrice={GROWTH_EDIT_COMPARE_AT_PRICE}
+                                    checkoutAction={<button type="button" onClick={openCheckout}
+                                        disabled={!availability || (availability.available === 0 && availability.claimed < availability.limit)}
+                                        className="inline-flex w-full items-center justify-center gap-2 bg-foreground px-5 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 pill-cta">
+                                        {ROUTINE_SALES_COPY.cta} <ArrowRight size={14} />
+                                    </button>} />
+                                {pricingError && <p className="mt-3 text-sm text-foreground/80" role="alert">{pricingError}</p>}
+                                <p className="mt-2 text-center text-xs text-foreground/65">
+                                    7-day refund window for first-time purchases.{" "}
+                                    <a href="/terms" target="_blank" rel="noreferrer" className="underline">Terms</a>
+                                </p>
                             </>
                         )}
                     </div>
@@ -416,7 +355,7 @@ export function Results({
                             </p>
                             <p className="mt-5 flex items-baseline justify-center gap-2 font-serif text-3xl text-foreground">
                                 {displayPrice}
-                                {price && (
+                                {price && price !== GROWTH_EDIT_COMPARE_AT_PRICE && (
                                     <span className="font-sans text-lg text-destructive line-through">
                                         {GROWTH_EDIT_COMPARE_AT_PRICE}
                                     </span>
@@ -431,6 +370,7 @@ export function Results({
                                 <button
                                     type="button"
                                     onClick={() => openCheckout()}
+                                    disabled={!availability || (availability.available === 0 && availability.claimed < availability.limit)}
                                     className="inline-flex w-full items-center justify-center gap-3 border border-foreground/30 px-8 py-4 text-[0.7rem] font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-foreground/5 sm:w-auto pill-cta"
                                 >
                                     Get my step-by-step routine – {displayPrice}
@@ -456,6 +396,7 @@ export function Results({
             </div>
 
             <CheckoutSheet
+                expectedUnitAmount={availability?.unitAmount ?? null}
                 open={checkoutOpen}
                 courseSlug={GROWTH_EDIT_SLUG}
                 price={price}

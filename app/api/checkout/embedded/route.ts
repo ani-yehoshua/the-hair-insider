@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { createGrowthEditCheckout, FoundingOfferError } from '@/lib/pricing/growthEditFounding';
 
 function getStripe() {
     const key = process.env.STRIPE_SECRET_KEY;
@@ -22,7 +23,7 @@ const admin = createClient(
 export async function POST(req: Request) {
     const stripe = getStripe();
     try {
-        const { courseSlug } = (await req.json()) as { courseSlug?: string };
+        const { courseSlug, expectedUnitAmount } = (await req.json()) as { courseSlug?: string; expectedUnitAmount?: number };
         if (!courseSlug) {
             return NextResponse.json({ error: 'Missing courseSlug.' }, { status: 400 });
         }
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
 
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://the-hair-insider.com';
 
-        const session = await stripe.checkout.sessions.create({
+        const checkoutParams: Stripe.Checkout.SessionCreateParams = {
             ui_mode: 'embedded_page',
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
@@ -57,13 +58,16 @@ export async function POST(req: Request) {
             metadata: {
                 course_id: course.id,
             },
-        });
+        };
+        const session = courseSlug === 'hair-growth-edit'
+            ? await createGrowthEditCheckout(admin, stripe, course.stripe_price_id, expectedUnitAmount, checkoutParams)
+            : await stripe.checkout.sessions.create(checkoutParams);
 
         return NextResponse.json({ clientSecret: session.client_secret });
     } catch (err) {
         return NextResponse.json(
-            { error: err instanceof Error ? err.message : 'Unknown error' },
-            { status: 500 },
+            { error: err instanceof Error ? err.message : 'Unknown error', code: err instanceof FoundingOfferError ? err.code : undefined },
+            { status: err instanceof FoundingOfferError ? err.status : 500 },
         );
     }
 }

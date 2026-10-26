@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { sendThankYouEmail } from '@/lib/email/sendThankYou';
 import { SLUG_TO_RESEND_PROPERTY, markResendPurchase } from '@/lib/email/resendPurchase';
 import { notifyBillingMismatch } from '@/lib/email/notifyBillingMismatch';
+import { handleFoundingEvent } from '@/lib/pricing/growthEditFounding';
 
 export const runtime = 'nodejs';
 
@@ -37,6 +38,14 @@ export async function POST(req: Request) {
             { error: 'Webhook signature verification failed' },
             { status: 400 },
         );
+    }
+
+    // Signature has already been verified. The counter commits only paid sessions,
+    // and returns 500 on a ledger error so Stripe retries instead of losing a sale.
+    try {
+        await handleFoundingEvent(admin, event);
+    } catch {
+        return NextResponse.json({ error: 'Could not record founding purchase.' }, { status: 500 });
     }
 
     if (event.type === 'checkout.session.completed') {
