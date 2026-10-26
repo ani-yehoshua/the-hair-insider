@@ -282,7 +282,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "Miracle Leave-In Conditioner Plus Keratin",
         "Leave-in conditioner",
         "A light strengthening leave-in that helps fine or compromised strands retain moisture.",
-        "https://go.shopmy.us/p-67238901",
+        "https://itsa10haircare.com/products/miracle-leave-in-plus-keratin",
         "It’s a 10",
     ),
     meluShield: product(
@@ -355,7 +355,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "10X™ UltraLight Speed Dryer",
         "Blowout tool",
         "Uses Bio Ionic moisturizing-heat technology and adjustable heat to create the smooth, stretched finish you actually wear while limiting unnecessary drying time.",
-        "https://go.shopmy.us/p-85121009",
+        "https://bioionic.com/products/10x-ultra-light-speed-dryer",
         "Bio Ionic",
     ),
     bioIonicFlatIron: product(
