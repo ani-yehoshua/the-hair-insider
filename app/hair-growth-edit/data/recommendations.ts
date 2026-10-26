@@ -355,7 +355,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "10X™ UltraLight Speed Dryer",
         "Blowout tool",
         "Uses Bio Ionic moisturizing-heat technology and adjustable heat to create the smooth, stretched finish you actually wear while limiting unnecessary drying time.",
-        "https://bioionic.com/products/10x-ultra-light-speed-dryer",
+        "https://go.shopmy.us/p-97898162",
         "Bio Ionic",
     ),
     bioIonicFlatIron: product(
