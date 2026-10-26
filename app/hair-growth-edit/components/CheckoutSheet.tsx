@@ -1,17 +1,17 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { X } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
 import { growthEditFontVariables } from '../fonts';
 import { RoutineCheckoutSummary } from './RoutineCheckoutSummary';
-import { GROWTH_EDIT_COMPARE_AT_PRICE } from '@/lib/pricing/growthEdit';
+import type { FoundingAvailability } from '../lib/foundingOffer';
 const GROWTH_EDIT_SLUG = 'hair-growth-edit';
 
 interface CheckoutSheetProps {
   open: boolean;
   courseSlug: string;
-  price?: string | null;
+  availability?: FoundingAvailability | null;
   onClose: () => void;
   onComplete: () => void;
 }
@@ -35,19 +35,28 @@ interface CheckoutSheetProps {
 // it. The `growth-edit-quiz` class is reapplied here directly because
 // portaling moves this DOM subtree out from under that ancestor, and the
 // sheet's animation classes are scoped under that selector in globals.css.
-export function CheckoutSheet({ open, courseSlug, price = null, onClose, onComplete }: CheckoutSheetProps) {
+export function CheckoutSheet({ open, courseSlug, availability = null, onClose, onComplete }: CheckoutSheetProps) {
+  // The price the buyer was shown. The server refuses to charge a different one.
+  const expectedUnitAmount = availability?.unitAmount ?? null;
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  useEffect(() => { if (open) setCheckoutError(null); }, [open]);
   const fetchClientSecret = useCallback(async () => {
-    const res = await fetch('/api/checkout/embedded', {
+    try {
+      const res = await fetch('/api/checkout/embedded', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ courseSlug }),
+      body: JSON.stringify({ courseSlug, expectedUnitAmount }),
     });
     const data = (await res.json()) as { clientSecret?: string; error?: string };
     if (!res.ok || !data.clientSecret) {
       throw new Error(data.error || 'Could not start checkout.');
     }
-    return data.clientSecret;
-  }, [courseSlug]);
+      return data.clientSecret;
+    } catch (failure) {
+      setCheckoutError(failure instanceof Error ? failure.message : 'Could not start checkout.');
+      throw failure;
+    }
+  }, [courseSlug, expectedUnitAmount]);
 
   // Plain `overflow: hidden` on <body> doesn't stop touch-scroll on iOS
   // Safari -- it keeps rubber-banding the page underneath regardless. The
@@ -115,11 +124,14 @@ export function CheckoutSheet({ open, courseSlug, price = null, onClose, onCompl
         </div>
 
         {courseSlug === GROWTH_EDIT_SLUG && (
-          <RoutineCheckoutSummary price={price} compareAtPrice={GROWTH_EDIT_COMPARE_AT_PRICE} />
+          <RoutineCheckoutSummary availability={availability} />
         )}
 
         {stripePromise ? (
-          <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
+          checkoutError ? <div role="alert" className="py-8 text-sm leading-relaxed text-foreground/80">
+            <p>{checkoutError}</p>
+            <button type="button" onClick={() => window.location.reload()} className="mt-4 underline">Refresh price and try again</button>
+          </div> : <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
             <EmbeddedCheckout />
           </EmbeddedCheckoutProvider>
         ) : (

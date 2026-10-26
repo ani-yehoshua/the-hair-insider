@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { getGrowthEditOffer } from '@/lib/pricing/growthEditFounder';
 
 function getStripe() {
     const key = process.env.STRIPE_SECRET_KEY;
@@ -22,7 +23,10 @@ const admin = createClient(
 export async function POST(req: Request) {
     const stripe = getStripe();
     try {
-        const { courseSlug } = (await req.json()) as { courseSlug?: string };
+        const { courseSlug, expectedUnitAmount } = (await req.json()) as {
+            courseSlug?: string;
+            expectedUnitAmount?: number;
+        };
         if (!courseSlug) {
             return NextResponse.json({ error: 'Missing courseSlug.' }, { status: 400 });
         }
@@ -41,12 +45,29 @@ export async function POST(req: Request) {
             );
         }
 
+        // The Growth Edit's founder price is a Stripe promo code applied here,
+        // server-side, so the buyer is charged exactly what the page showed.
+        // If their screen is out of date (the price changed since it loaded),
+        // refuse rather than quietly charge a different amount.
+        let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
+        if (courseSlug === 'hair-growth-edit') {
+            const offer = await getGrowthEditOffer(stripe, course.stripe_price_id);
+            if (typeof expectedUnitAmount === 'number' && expectedUnitAmount !== offer.unitAmount) {
+                return NextResponse.json(
+                    { error: 'The price has changed. Please refresh to see the current price.', code: 'PRICE_CHANGED' },
+                    { status: 409 },
+                );
+            }
+            if (offer.promotionCodeId) discounts = [{ promotion_code: offer.promotionCodeId }];
+        }
+
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://the-hair-insider.com';
 
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
             mode: 'payment',
             line_items: [{ price: course.stripe_price_id, quantity: 1 }],
+            ...(discounts ? { discounts } : {}),
             // 'if_required' keeps card completing inline (no navigation),
             // but still allows methods that can't complete without one
             // (Klarna, Amazon Pay, etc.) -- 'never' would silently drop

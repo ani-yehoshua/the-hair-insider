@@ -6,9 +6,11 @@ import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
 import { QUESTIONS } from "@/app/hair-growth-edit/data/questions";
 import {
-    GROWTH_EDIT_COMPARE_AT_PRICE,
-    GROWTH_EDIT_PROMO_LABEL,
-} from "@/lib/pricing/growthEdit";
+    formatFoundingPrice,
+    formatRegularPrice,
+    parseFoundingAvailability,
+    type FoundingAvailability,
+} from "@/app/hair-growth-edit/lib/foundingOffer";
 
 const GUIDE_SLUG = "7-day-moisture-reset";
 
@@ -22,9 +24,8 @@ export default function FreeGuideClient() {
     const [showWelcome, setShowWelcome] = useState(false);
     const [buying, setBuying] = useState(false);
     const [buyError, setBuyError] = useState<string | null>(null);
-    const [growthEditPrice, setGrowthEditPrice] = useState<string | null>(
-        null,
-    );
+    const [growthEditOffer, setGrowthEditOffer] =
+        useState<FoundingAvailability | null>(null);
 
     async function handleGrowthEditCheckout() {
         setBuying(true);
@@ -39,32 +40,18 @@ export default function FreeGuideClient() {
         }
     }
 
-    // Fetch the live Growth Edit price so the offer card never goes stale
+    // Fetch the live Growth Edit offer (price + founder spots) so the card
+    // never goes stale; the same source the Growth Edit page itself uses.
     useEffect(() => {
         const run = async () => {
-            const { data: course } = await supabase
-                .from("courses")
-                .select("stripe_price_id")
-                .eq("slug", "hair-growth-edit")
-                .maybeSingle();
-
-            if (!course?.stripe_price_id) return;
-
-            const res = await fetch("/api/stripe/price", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ priceId: course.stripe_price_id }),
-            });
-            if (!res.ok) return;
-
-            const json = await res.json();
-            if (json.unitAmount != null) {
-                const formatted = new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: json.currency.toUpperCase(),
-                    minimumFractionDigits: json.unitAmount % 100 === 0 ? 0 : 2,
-                }).format(json.unitAmount / 100);
-                setGrowthEditPrice(formatted);
+            try {
+                const res = await fetch("/api/hair-growth-edit/founding-offer", {
+                    cache: "no-store",
+                });
+                if (!res.ok) return;
+                setGrowthEditOffer(parseFoundingAvailability(await res.json()));
+            } catch {
+                // Leave the placeholder price if the offer can't be read.
             }
         };
         run();
@@ -2615,18 +2602,24 @@ export default function FreeGuideClient() {
                                         </ul>
                                         <div className='offer-price-row'>
                                             <span className='price'>
-                                                {growthEditPrice ?? "$–"}
+                                                {growthEditOffer
+                                                    ? formatFoundingPrice(
+                                                          growthEditOffer,
+                                                      )
+                                                    : "$–"}
                                             </span>
-                                            {growthEditPrice && (
-                                                <span className='price-was'>
-                                                    {
-                                                        GROWTH_EDIT_COMPARE_AT_PRICE
-                                                    }
-                                                </span>
+                                            {growthEditOffer?.active && (
+                                                <>
+                                                    <span className='price-was'>
+                                                        {formatRegularPrice(
+                                                            growthEditOffer,
+                                                        )}
+                                                    </span>
+                                                    <span className='savings-badge'>
+                                                        Founding price
+                                                    </span>
+                                                </>
                                             )}
-                                            <span className='savings-badge'>
-                                                {GROWTH_EDIT_PROMO_LABEL}
-                                            </span>
                                         </div>
                                         <div className='price-meta'>
                                             One-time · Personalized digital

@@ -1,13 +1,19 @@
-import { ROUTINE_OFFER } from "../lib/routineOffer";
+import { ROUTINE_OFFER, ROUTINE_SALES_COPY } from "../lib/routineOffer";
+import {
+    formatFoundingPrice,
+    formatRegularPrice,
+    foundingReason,
+    isFoundingClosed,
+    type FoundingAvailability,
+} from "../lib/foundingOffer";
 import { RoutineInclusions } from "./RoutineInclusions";
 
 export function RoutineCheckoutSummary({
-    price,
-    compareAtPrice = "$69",
+    availability,
 }: {
-    price: string | null;
-    compareAtPrice?: string;
+    availability: FoundingAvailability | null;
 }) {
+    const price = availability ? formatFoundingPrice(availability) : null;
     return (
         <section
             className="mb-5 border-b border-foreground/15 pb-5"
@@ -15,46 +21,44 @@ export function RoutineCheckoutSummary({
             data-testid="routine-checkout-summary"
         >
             <p className="pr-8 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                {ROUTINE_OFFER.label}
+                {ROUTINE_SALES_COPY.brand} · Your personalized routine
             </p>
             <h2 className="mt-2 font-serif text-2xl text-foreground">
-                {ROUTINE_OFFER.title}
+                {ROUTINE_SALES_COPY.headline}
             </h2>
-            {price && (
+            {availability && price && (
                 <div className="mt-3">
                     <p className="flex items-baseline gap-2">
-                        <span className="sr-only">Planned regular price:</span>
-                        <s className="text-sm text-foreground/60">
-                            {compareAtPrice}
-                        </s>
-                        <span className="sr-only">Founding launch price:</span>
+                        <span className="sr-only">
+                            {availability.active ? "Founding price:" : "Price:"}
+                        </span>
                         <span className="font-serif text-4xl text-foreground">
                             {price}
                         </span>
+                        {availability.active && (
+                            <>
+                                <span className="sr-only">Regular price:</span>
+                                <s className="text-base text-foreground/55">
+                                    {formatRegularPrice(availability)}
+                                </s>
+                            </>
+                        )}
                     </p>
-                    <p className="mt-1 text-xs leading-relaxed text-foreground/75">
-                        {ROUTINE_OFFER.launchReason}
-                    </p>
+                    {availability.active && (
+                        <p className="mt-1 text-xs leading-relaxed text-foreground/75">
+                            {foundingReason(availability)}
+                        </p>
+                    )}
+                    {isFoundingClosed(availability) && (
+                        <p className="mt-1 text-xs leading-relaxed text-foreground/75">
+                            The {availability.limit} founding-price spots have
+                            been purchased. Regular pricing now applies.
+                        </p>
+                    )}
                 </div>
             )}
-            <div
-                className="mt-4 flex flex-wrap items-center gap-1 text-[0.55rem] font-medium uppercase tracking-wide text-foreground/75"
-                aria-label="Routine preview: cleanse, care, maintain"
-            >
-                <span className="rounded-full border border-foreground/20 px-2 py-1">
-                    01 Cleanse
-                </span>
-                <span aria-hidden="true">→</span>
-                <span className="rounded-full border border-foreground/20 px-2 py-1">
-                    02 Care
-                </span>
-                <span aria-hidden="true">→</span>
-                <span className="rounded-full border border-foreground/20 px-2 py-1">
-                    03 Maintain
-                </span>
-            </div>
             <p className="mt-3 text-sm leading-relaxed text-foreground/85">
-                {ROUTINE_OFFER.value}
+                {ROUTINE_SALES_COPY.description}
             </p>
             <p className="mt-2 text-xs text-foreground/75">
                 {ROUTINE_OFFER.reassurance}

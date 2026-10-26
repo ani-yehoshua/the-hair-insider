@@ -206,12 +206,21 @@ for (const washFrequency of ["daily", "severalWeekly", "weekly", "lessWeekly"])
         renders++;
     }
 const checkout = renderToStaticMarkup(
-    createElement(RoutineCheckoutSummary, { price: "$49" }),
+    createElement(RoutineCheckoutSummary, {
+        availability: {
+            claimed: 4,
+            limit: 100,
+            active: true,
+            unitAmount: 4900,
+            regularAmount: 6900,
+            currency: "usd",
+        },
+    }),
 );
 assert.ok(/One-time.*\$49/.test(checkout));
 assert.ok(checkout.includes(ROUTINE_OFFER.inclusions.join(" · ")));
 const loading = renderToStaticMarkup(
-    createElement(RoutineCheckoutSummary, { price: null }),
+    createElement(RoutineCheckoutSummary, { availability: null }),
 );
 assert.ok(!loading.includes("inclusions-price"));
 const client = fs.readFileSync(path.join(app, "GrowthEditClient.tsx"), "utf8");
