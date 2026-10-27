@@ -15,7 +15,6 @@ import {
     markPurchasePendingSignIn,
     type AnswerMap,
 } from "../lib/assessmentStore";
-import { SaveResultsCard } from "./SaveResultsCard";
 
 const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
@@ -212,10 +211,6 @@ export function Results({
                     </p>
                 )}
             </div>
-
-            {!unlocked && !purchaseComplete && !knownEmail && (
-                <SaveResultsCard answers={answers} />
-            )}
 
             <div className="space-y-12">
                 {/* Root Cause */}

@@ -15,6 +15,7 @@ import { Results } from "./components/Results";
 import { useFoundingAvailability } from "./lib/useFoundingAvailability";
 import { formatFoundingPrice } from "./lib/foundingOffer";
 import { ResultsGenerating } from "./components/ResultsGenerating";
+import { EmailCapture } from "./components/EmailCapture";
 import { GuideView } from "./components/GuideView";
 import { BackToTopButton } from "./components/BackToTopButton";
 import { DevOwnerToggle } from "./components/DevOwnerToggle";
@@ -29,8 +30,11 @@ import {
     loadDraftAnswers,
     loadResultsFromToken,
     loadSavedAssessment,
+    loadSavedEmail,
+    rememberSavedEmail,
     saveAssessment,
     saveDraftAnswers,
+    saveResultsForEmail,
     type AnswerMap,
 } from "./lib/assessmentStore";
 
@@ -104,7 +108,10 @@ export default function GrowthEditClient() {
                     window.history.replaceState(null, "", "/hair-growth-edit");
                     const restored = await loadResultsFromToken(restoreToken);
                     if (restored) {
-                        saveDraftAnswers(restored);
+                        saveDraftAnswers(restored.answers);
+                        // The link came from their email, so they've already
+                        // been through the email step.
+                        if (restored.email) rememberSavedEmail(restored.email);
                         track("results_restored");
                     }
                 }
@@ -121,7 +128,9 @@ export default function GrowthEditClient() {
                         QUESTIONS.map((question) => question.id),
                     );
                     if (missing === -1) {
-                        setView("results");
+                        // Someone who reloads before giving an email still
+                        // goes through the email step.
+                        setView(loadSavedEmail() ? "results" : "capture");
                     } else {
                         setStep(missing);
                         setResumeStep(missing);
@@ -193,12 +202,14 @@ export default function GrowthEditClient() {
         answers, QUESTIONS.map(question => question.id), unlocked,
     );
 
-    // Derived, not stored: if `view` claims 'results' but the assessment
-    // somehow isn't actually complete, fall back without a setState-in-effect.
-    // Results are shown to signed-out visitors too -- signing in is prompted
-    // inside the results page itself, not as a wall before it.
+    // Derived, not stored: if `view` claims 'results' (or the email step) but
+    // the assessment somehow isn't actually complete, fall back without a
+    // setState-in-effect. Signed-out visitors see an email step before their
+    // results; signing in is only prompted inside the results page itself.
     const effectiveView: AppView =
-        view === "results" && !assessmentComplete ? "quiz" : view;
+        (view === "results" || view === "capture") && !assessmentComplete
+            ? "quiz"
+            : view;
 
     useLayoutEffect(() => {
         if (effectiveView === "guide") {
@@ -269,11 +280,16 @@ export default function GrowthEditClient() {
                 // save shouldn't strand the visitor on the loading screen.
                 console.error("Saving the assessment failed:", e);
             }
-            // Keep the transition visible while the assessment is saved, then
-            // continue to the free results -- no wall between finishing the
-            // assessment and seeing what it found.
+            // Keep the transition visible while the assessment is saved. A
+            // signed-out visitor who hasn't given an email yet goes to the
+            // email step; everyone else goes straight to their results.
             await minimumDisplay;
-            setView("results");
+            const knownEmail = signedIn ? null : loadSavedEmail();
+            if (knownEmail) {
+                // A retake: keep the answers saved behind their email current.
+                void saveResultsForEmail(knownEmail, answers, "checkout");
+            }
+            setView(signedIn || knownEmail ? "results" : "capture");
             window.scrollTo({ top: 0, behavior: "smooth" });
         } finally {
             completingQuiz.current = false;
@@ -408,6 +424,16 @@ export default function GrowthEditClient() {
             )}
 
             {effectiveView === "generating" && <ResultsGenerating />}
+
+            {effectiveView === "capture" && (
+                <EmailCapture
+                    answers={answers}
+                    onDone={() => {
+                        setView("results");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                />
+            )}
 
             {unlocked &&
                 assessmentComplete &&

@@ -156,16 +156,20 @@ export async function saveResultsForEmail(
   }
 }
 
-// Answers saved behind a results-email link (?r=<token>), or null if the
-// link is unknown.
-export async function loadResultsFromToken(token: string): Promise<AnswerMap | null> {
+// Answers (and the email they were saved under) behind a results-email link
+// (?r=<token>), or null if the link is unknown.
+export async function loadResultsFromToken(
+  token: string,
+): Promise<{ answers: AnswerMap; email: string | null } | null> {
   try {
     const res = await fetch(
       `/api/hair-growth-edit/restore?token=${encodeURIComponent(token)}`,
     );
     if (!res.ok) return null;
-    const data = (await res.json()) as { answers?: AnswerMap };
-    return data.answers ?? null;
+    const data = (await res.json()) as { answers?: AnswerMap; email?: string };
+    return data.answers
+      ? { answers: data.answers, email: data.email ?? null }
+      : null;
   } catch {
     return null;
   }

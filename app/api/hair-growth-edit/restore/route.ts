@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
     const { data, error } = await admin
         .from('saved_growth_edit_results')
-        .select('answers')
+        .select('answers, email')
         .eq('token', token)
         .maybeSingle();
 
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json(
-        { answers: data.answers },
+        { answers: data.answers, email: data.email },
         { headers: { 'Cache-Control': 'no-store' } },
     );
 }
