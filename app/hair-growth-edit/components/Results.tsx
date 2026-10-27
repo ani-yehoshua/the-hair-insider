@@ -6,6 +6,10 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
 import { ROUTINE_SALES_COPY } from "../lib/routineOffer";
 import { RoutineSalesCard } from "./RoutineSalesCard";
+import { NextWashPreview } from "./NextWashPreview";
+import { getFirstWashPlan } from "../lib/firstWash";
+import type { HairProfile } from "../data/recommendations";
+import { trackGrowthEvent } from "../lib/conversionAnalytics";
 import {
     formatRegularPrice,
     type FoundingAvailability,
@@ -28,6 +32,8 @@ interface ResultsProps {
     hasSevereRedFlag: boolean;
     hasMinorRedFlag: boolean;
     shouldShampooTwice: boolean;
+    washFrequency: HairProfile["washFrequency"];
+    stylePreference: HairProfile["stylePreference"];
     paidRoutine: RoutineStep[];
     supportingNeeds: string[];
     unlocked: boolean;
@@ -50,6 +56,9 @@ export function Results({
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
+    shouldShampooTwice,
+    washFrequency,
+    stylePreference,
     paidRoutine,
     supportingNeeds,
     unlocked,
@@ -62,6 +71,7 @@ export function Results({
     onReset,
 }: ResultsProps) {
     const displayPrice = price ?? "$–";
+    const previewPlan = hasSevereRedFlag ? null : getFirstWashPlan(paidRoutine, washFrequency, shouldShampooTwice, stylePreference);
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
         isPurchasePendingSignIn(),
@@ -70,12 +80,13 @@ export function Results({
     const openCheckout = () => {
         // No price loaded yet means no offer to buy.
         if (!availability) return;
-        track("checkout_opened", { severe: hasSevereRedFlag });
+        trackGrowthEvent("growth_purchase_clicked", { unit_amount: availability.unitAmount });
+        try { track("checkout_opened", { severe: hasSevereRedFlag }); } catch { /* Never block checkout on analytics. */ }
         setCheckoutOpen(true);
     };
 
     const handleCheckoutComplete = () => {
-        track("checkout_completed");
+        try { track("checkout_completed"); } catch { /* Preserve purchase access even if analytics fails. */ }
         markPurchasePendingSignIn();
         setCheckoutOpen(false);
         setPurchaseComplete(true);
@@ -169,6 +180,8 @@ export function Results({
                             <>
                                 <RoutineSalesCard
                                     availability={availability}
+                                    primaryCause={primaryCause}
+                                    preview={previewPlan && <NextWashPreview plan={previewPlan} />}
                                     checkoutAction={
                                         <button
                                             type="button"

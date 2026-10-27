@@ -58,11 +58,13 @@ export function RoutineCheckoutSummary({
                 </div>
             )}
             <p className="mt-3 text-sm leading-relaxed text-foreground/85">
-                {ROUTINE_SALES_COPY.description}
+                {ROUTINE_SALES_COPY.problem} {ROUTINE_SALES_COPY.description}
             </p>
+            <p className="mt-2 text-xs leading-relaxed text-foreground/75">{ROUTINE_SALES_COPY.planScope}</p>
             <p className="mt-2 text-xs text-foreground/75">
                 {ROUTINE_OFFER.reassurance}
             </p>
+            <p className="mt-3 text-xs leading-relaxed text-foreground/70">{ROUTINE_SALES_COPY.shelfNote}</p>
             <p className="mt-3 text-xs leading-relaxed text-foreground/75">
                 {ROUTINE_OFFER.fitPromise}
             </p>

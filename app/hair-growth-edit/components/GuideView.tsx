@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { RoutineDecisionSupport } from "./RoutineDecisionSupport";
 import { Calendar } from "lucide-react";
 import type {
     ProductRecommendation,
@@ -268,6 +269,7 @@ export function GuideView({
                 >
                     Troubleshooting
                 </a>
+                {!hasSevereRedFlag && <a className="underline underline-offset-4" href="#decision-support-heading">Decide your next step</a>}
                 {starterPair.length === 2 && (
                     <a
                         className="underline underline-offset-4"
@@ -927,6 +929,7 @@ export function GuideView({
                 reportedDensityChange={reportedDensityChange}
             />
 
+            <RoutineDecisionSupport routine={paidRoutine} hasSevereRedFlag={hasSevereRedFlag} />
             <aside
                 className="mt-12 rounded-2xl border border-foreground/15 bg-paper p-6"
                 data-testid="guide-fit-support"

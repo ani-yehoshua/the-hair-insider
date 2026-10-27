@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { ROUTINE_OFFER, ROUTINE_SALES_COPY } from "../lib/routineOffer";
+import { getSalesFocus } from "../lib/salesFocus";
+import { trackGrowthEvent } from "../lib/conversionAnalytics";
 import { FoundingProgress } from "./FoundingProgress";
 import {
     formatFoundingPrice,
@@ -12,12 +15,29 @@ import {
 interface RoutineSalesCardProps {
     availability: FoundingAvailability | null;
     checkoutAction: ReactNode;
+    preview?: ReactNode;
+    primaryCause?: string;
 }
 
 export function RoutineSalesCard({
     availability,
     checkoutAction,
+    preview,
+    primaryCause,
 }: RoutineSalesCardProps) {
+    const cardRef = useRef<HTMLElement>(null);
+    const viewed = useRef(false);
+    useEffect(() => {
+        if (!cardRef.current || !availability || viewed.current || typeof IntersectionObserver === "undefined") return;
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting || viewed.current) return;
+            viewed.current = true;
+            trackGrowthEvent("growth_offer_viewed", { unit_amount: availability.unitAmount });
+            observer.disconnect();
+        }, { threshold: 0.25 });
+        observer.observe(cardRef.current);
+        return () => observer.disconnect();
+    }, [availability]);
     const closed = availability ? isFoundingClosed(availability) : false;
     // The spot bar only appears while the founder price is on offer, or
     // after it has sold out. Before then it's just the regular price.
@@ -25,6 +45,7 @@ export function RoutineSalesCard({
 
     return (
         <section
+            ref={cardRef}
             className="mt-5 rounded-2xl border border-foreground/15 bg-blue px-5 py-7 md:px-8 md:py-8"
             aria-labelledby="growth-edit-offer-heading"
             data-testid="routine-sales-card"
@@ -42,15 +63,17 @@ export function RoutineSalesCard({
                     >
                         {ROUTINE_SALES_COPY.headline}
                     </h2>
+                    <p className="mt-4 text-sm leading-relaxed text-foreground/80">{getSalesFocus(primaryCause)}</p>
                     <p
                         className="mt-4 text-base leading-relaxed text-foreground/85"
                         data-testid="cta-benefit"
                     >
-                        {ROUTINE_SALES_COPY.description}
+                        <strong className="font-medium">{ROUTINE_SALES_COPY.problem}</strong>{" "}{ROUTINE_SALES_COPY.description}
                     </p>
                     <p className="mt-3 text-sm text-foreground/70">
                         {ROUTINE_SALES_COPY.planScope}
                     </p>
+                    <p className="mt-4 text-xs leading-relaxed text-foreground/70" data-testid="free-vs-paid">{ROUTINE_SALES_COPY.freeVsPaid}</p>
                 </div>
                 <div className="mt-6 md:mt-0 md:pt-1">
                     <div data-testid="launch-pricing">
@@ -109,8 +132,9 @@ export function RoutineSalesCard({
                         className="mt-2 text-center text-xs text-foreground/75"
                         data-testid="cta-reassurance"
                     >
-                        Instant access
+                        {ROUTINE_OFFER.reassurance}
                     </p>
+                    <p className="mt-3 text-xs leading-relaxed text-foreground/70" data-testid="shelf-note">{ROUTINE_SALES_COPY.shelfNote}</p>
                     <details
                         className="mt-4 text-xs leading-relaxed text-foreground/65"
                         data-testid="routine-fit-promise"
@@ -122,6 +146,7 @@ export function RoutineSalesCard({
                     </details>
                 </div>
             </div>
+            {preview}
             <p className="mt-5 border-t border-foreground/10 pt-3 text-xs leading-relaxed text-foreground/60">
                 Quiz-based guidance, not a medical diagnosis or 1:1
                 consultation. Hair products sold separately.

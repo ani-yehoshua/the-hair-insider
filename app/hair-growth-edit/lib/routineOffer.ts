@@ -1,11 +1,14 @@
 export const ROUTINE_SALES_COPY = {
     brand: "The Growth Edit",
-    headline: "Your hair. A clear plan.",
+    headline: "Stop guessing at your next wash.",
+    problem: "Another product isn’t a plan.",
     description:
-        "Know what to use, what to skip, and how to use your products together—based on your answers.",
-    planScope: "A weekly routine. A clear first 30 days.",
+        "Your Growth Edit turns your answers into a clear routine: what to use, what to skip, and when. Know how your products fit together before buying more.",
+    planScope: "Your wash days, treatment days, and first 30 days—mapped out.",
     launchReason: "Founding price · First 100 purchases",
-    cta: "Get My Personalized Plan",
+    cta: "Get My Personalized Growth Edit",
+    freeVsPaid: "Your free assessment shows where to start. Your Growth Edit shows how to follow through: product order, wash and treatment timing, and what to change next.",
+    shelfNote: "You don’t need to buy the whole shelf. Start with your biggest need and add only what’s useful; hair products are sold separately.",
 } as const;
 
 export const ROUTINE_OFFER = {
