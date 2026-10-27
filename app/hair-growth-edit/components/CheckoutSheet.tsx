@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js';
 import { X } from 'lucide-react';
 import { track } from '@vercel/analytics';
+import { trackGrowthEvent } from '../lib/conversionAnalytics';
 import { loadSavedEmail, rememberSavedEmail, saveResultsForEmail, type AnswerMap } from '../lib/assessmentStore';
 import { stripePromise } from '@/lib/stripe/embeddedCheckoutClient';
 import { growthEditFontVariables } from '../fonts';
@@ -62,6 +63,18 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
     setEmailConfirmed(Boolean(known));
   }, [open, knownEmail]);
   const showEmailStep = needsEmail && !emailConfirmed;
+  useEffect(() => {
+    if (open) trackGrowthEvent('growth_checkout_opened', expectedUnitAmount == null ? undefined : { unit_amount: expectedUnitAmount });
+  }, [open, expectedUnitAmount]);
+  const closeCheckout = () => {
+    trackGrowthEvent('growth_checkout_closed', { stage: showEmailStep ? 'email' : 'payment', has_error: Boolean(checkoutError) });
+    onClose();
+  };
+  const completeCheckout = () => {
+    // Client completion is not proof that an asynchronous payment settled.
+    trackGrowthEvent('growth_checkout_reported_complete');
+    onComplete();
+  };
 
   const confirmEmail = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -75,25 +88,29 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
     // Fail open: payment must never be blocked by the email being recorded.
     await saveResultsForEmail(trimmed, answers, 'checkout');
     rememberSavedEmail(trimmed);
-    track('checkout_email_captured');
+    try { track('checkout_email_captured'); } catch { /* Recording telemetry must not block payment. */ }
     setEmail(trimmed);
     setSavingEmail(false);
     setEmailConfirmed(true);
   };
 
   const fetchClientSecret = useCallback(async () => {
+    let requestStatus = 0;
     try {
       const res = await fetch('/api/checkout/embedded', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ courseSlug, expectedUnitAmount, email: needsEmail && emailConfirmed ? email : undefined }),
     });
+    requestStatus = res.status;
     const data = (await res.json()) as { clientSecret?: string; error?: string };
     if (!res.ok || !data.clientSecret) {
       throw new Error(data.error || 'Could not start checkout.');
     }
+      trackGrowthEvent('growth_checkout_session_created');
       return data.clientSecret;
     } catch (failure) {
+      trackGrowthEvent('growth_checkout_failed', { status: requestStatus });
       setCheckoutError(failure instanceof Error ? failure.message : 'Could not start checkout.');
       throw failure;
     }
@@ -142,7 +159,7 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
   return createPortal(
     <div
       className={`growth-edit-quiz ${growthEditFontVariables} fixed inset-0 z-50 flex items-end justify-center bg-black/40 fade-in`}
-      onClick={onClose}
+      onClick={closeCheckout}
     >
       <div
         className="relative max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-paper px-5 pb-8 shadow-2xl sheet-slide-up"
@@ -156,7 +173,7 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
           <div className="h-1 w-10 rounded-full bg-foreground/20" />
           <button
             type="button"
-            onClick={onClose}
+          onClick={closeCheckout}
             aria-label="Close checkout"
             className="absolute right-3 top-2 rounded-full p-2 text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-foreground"
           >
@@ -213,7 +230,7 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
                 )}
               </p>
             )}
-            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
+            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete: completeCheckout }}>
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
           </>

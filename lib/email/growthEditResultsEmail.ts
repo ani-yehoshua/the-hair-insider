@@ -1,4 +1,5 @@
 import { SITE_URL } from '@/lib/seo/site';
+import { getStartingFocusLabel } from '@/app/hair-growth-edit/lib/salesFocus';
 
 export interface ResultsEmailSummary {
     primaryCause: string;
@@ -6,8 +7,6 @@ export interface ResultsEmailSummary {
     hasSevereRedFlag: boolean;
     products: { name: string; brand: string; link: string }[];
 }
-
-const NO_DOMINANT_PATTERN = 'length protection (no dominant damage pattern)';
 
 function escapeHtml(value: string) {
     return value
@@ -29,10 +28,7 @@ export const RESULTS_EMAIL_SUBJECT = 'Your Growth Edit results';
 
 export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
     const link = resultsLink(token);
-    const pattern =
-        summary.primaryCause === NO_DOMINANT_PATTERN
-            ? 'Protecting your length'
-            : sentenceCase(summary.primaryCause);
+    const pattern = sentenceCase(getStartingFocusLabel(summary.primaryCause));
     const productsHeading = summary.hasSevereRedFlag
         ? 'Gentle support for now'
         : 'Your two starting products';
@@ -72,7 +68,7 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:rgba(124,126,115,0.12);border-radius:10px;margin:0 0 24px;">
                   <tr>
                     <td style="padding:20px 24px;">
-                      <p style="margin:0 0 6px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:#7c7e73;">Primary pattern</p>
+                      <p style="margin:0 0 6px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:#7c7e73;">Your starting focus</p>
                       <p style="margin:0 0 16px;font-size:16px;line-height:1.5;">${escapeHtml(pattern)}</p>
                       <p style="margin:0 0 6px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:#7c7e73;">A habit to reconsider</p>
                       <p style="margin:0 0 16px;font-size:16px;line-height:1.5;">Reduce ${escapeHtml(summary.behaviorToStop)}</p>
@@ -114,7 +110,7 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
     const text = [
         'Here are your results from The Hair Insider assessment.',
         '',
-        `Primary pattern: ${pattern}`,
+        `Your starting focus: ${pattern}`,
         `A habit to reconsider: reduce ${summary.behaviorToStop}`,
         `${productsHeading}:`,
         ...summary.products.map((product) => `- ${product.name} by ${product.brand}: ${product.link}`),

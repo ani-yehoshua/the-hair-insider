@@ -26,6 +26,9 @@ export function RoutineCheckoutSummary({
             <h2 className="mt-2 font-serif text-2xl text-foreground">
                 {ROUTINE_SALES_COPY.headline}
             </h2>
+            <p className="mt-2 text-sm font-medium text-foreground/85">
+                {ROUTINE_SALES_COPY.subhead}
+            </p>
             {availability && price && (
                 <div className="mt-3">
                     <p className="flex items-baseline gap-2">
@@ -58,10 +61,16 @@ export function RoutineCheckoutSummary({
                 </div>
             )}
             <p className="mt-3 text-sm leading-relaxed text-foreground/85">
-                {ROUTINE_SALES_COPY.description}
+                {ROUTINE_SALES_COPY.problem} {ROUTINE_SALES_COPY.description}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-foreground/75">
+                {ROUTINE_SALES_COPY.planScope}
             </p>
             <p className="mt-2 text-xs text-foreground/75">
                 {ROUTINE_OFFER.reassurance}
+            </p>
+            <p className="mt-3 text-xs leading-relaxed text-foreground/70">
+                {ROUTINE_SALES_COPY.shelfNote}
             </p>
             <p className="mt-3 text-xs leading-relaxed text-foreground/75">
                 {ROUTINE_OFFER.fitPromise}

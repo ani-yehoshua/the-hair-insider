@@ -5,7 +5,13 @@ import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
 import { ROUTINE_SALES_COPY } from "../lib/routineOffer";
+import { getSalesFocus, getStartingFocusLabel } from "../lib/salesFocus";
+import { getHeatCareCallout } from "../lib/salesPersonalization";
 import { RoutineSalesCard } from "./RoutineSalesCard";
+import { NextWashPreview } from "./NextWashPreview";
+import { getFirstWashPlan } from "../lib/firstWash";
+import type { HairProfile } from "../data/recommendations";
+import { trackGrowthEvent } from "../lib/conversionAnalytics";
 import {
     formatRegularPrice,
     type FoundingAvailability,
@@ -28,6 +34,8 @@ interface ResultsProps {
     hasSevereRedFlag: boolean;
     hasMinorRedFlag: boolean;
     shouldShampooTwice: boolean;
+    washFrequency: HairProfile["washFrequency"];
+    stylePreference: HairProfile["stylePreference"];
     paidRoutine: RoutineStep[];
     supportingNeeds: string[];
     unlocked: boolean;
@@ -50,6 +58,9 @@ export function Results({
     behaviorToStop,
     hasSevereRedFlag,
     hasMinorRedFlag,
+    shouldShampooTwice,
+    washFrequency,
+    stylePreference,
     paidRoutine,
     supportingNeeds,
     unlocked,
@@ -62,6 +73,14 @@ export function Results({
     onReset,
 }: ResultsProps) {
     const displayPrice = price ?? "$–";
+    const previewPlan = hasSevereRedFlag
+        ? null
+        : getFirstWashPlan(
+              paidRoutine,
+              washFrequency,
+              shouldShampooTwice,
+              stylePreference,
+          );
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
         isPurchasePendingSignIn(),
@@ -70,12 +89,23 @@ export function Results({
     const openCheckout = () => {
         // No price loaded yet means no offer to buy.
         if (!availability) return;
-        track("checkout_opened", { severe: hasSevereRedFlag });
+        trackGrowthEvent("growth_purchase_clicked", {
+            unit_amount: availability.unitAmount,
+        });
+        try {
+            track("checkout_opened", { severe: hasSevereRedFlag });
+        } catch {
+            /* Never block checkout on analytics. */
+        }
         setCheckoutOpen(true);
     };
 
     const handleCheckoutComplete = () => {
-        track("checkout_completed");
+        try {
+            track("checkout_completed");
+        } catch {
+            /* Preserve purchase access even if analytics fails. */
+        }
         markPurchasePendingSignIn();
         setCheckoutOpen(false);
         setPurchaseComplete(true);
@@ -98,15 +128,18 @@ export function Results({
 
     const leadObservation = hasSevereRedFlag
         ? "The change you reported deserves professional evaluation before you alter your routine."
-        : (supportingNeeds.find((note) => note.startsWith("You reported")) ??
+        : ((primaryCause === "heat / chemical stress"
+              ? getHeatCareCallout(answers)
+              : null) ??
+          supportingNeeds.find((note) => note.startsWith("You reported")) ??
           (primaryCause === "length protection (no dominant damage pattern)"
               ? "Your answers did not point to one dominant damage pattern, so a gentle, repeatable routine is a reasonable starting point."
-              : `You reported ${observations[0] ?? "changes in your current routine"}, so consider starting with the strongest pattern suggested by your answers.`));
+              : `Your plan starts with ${getStartingFocusLabel(primaryCause)}. Keep it simple, then adjust.`));
     const behaviorWhy = hasSevereRedFlag
         ? "It can add avoidable stress while you arrange professional care."
         : primaryCause === "length protection (no dominant damage pattern)"
           ? "It may add avoidable friction even when your answers show no dominant damage pattern."
-          : `It may add to the ${primaryCause} pattern suggested by your answers.`;
+          : `It can work against your starting focus: ${getStartingFocusLabel(primaryCause)}.`;
 
     return (
         <div
@@ -117,22 +150,41 @@ export function Results({
                 <h1 className="max-w-3xl font-serif text-3xl leading-tight tracking-tight text-foreground md:text-5xl">
                     {hasSevereRedFlag
                         ? `Please get this change checked. You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}.`
-                        : `You shampoo ${shampooFrequencyAnswer?.toLowerCase() ?? "on your schedule"}; your answers suggest focusing on ${primaryCause === "length protection (no dominant damage pattern)" ? "protecting length" : primaryCause}.`}
+                        : "Finally, a wash day routine built around what your hair actually needs."}
                 </h1>
+                {!hasSevereRedFlag && (
+                    <p
+                        className="mt-3 max-w-2xl text-base leading-relaxed text-foreground/85"
+                        data-testid="results-starting-focus"
+                    >
+                        {getSalesFocus(primaryCause)} Here’s your starting plan.
+                    </p>
+                )}
                 <span className="mt-3 block text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                    Your Assessment · Your Wash Days
+                    Your Assessment ·{" "}
+                    {shampooFrequencyAnswer
+                        ? `You shampoo ${shampooFrequencyAnswer.toLowerCase()}`
+                        : "Your Wash Days"}
                 </span>
                 <p className="mt-4 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">
                     {leadObservation}
                 </p>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
-                    {hasSevereRedFlag
-                        ? "Your answers point to a change that needs professional assessment. Your results and gentle interim suggestions are below."
-                        : "Your two free starting products are below. Your personalized routine is built based on the answers you just gave."}
-                </p>
-                {(hasSevereRedFlag || hasMinorRedFlag) && (
+                {hasSevereRedFlag && (
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/80 md:text-base">
+                        Your answers point to a change that needs professional
+                        assessment. Your results and gentle interim suggestions
+                        are below.
+                    </p>
+                )}
+                {hasSevereRedFlag && (
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
                         {disclaimer}
+                    </p>
+                )}
+                {!hasSevereRedFlag && hasMinorRedFlag && (
+                    <p className="mt-3 text-xs leading-relaxed text-foreground/70">
+                        Quiz-based guidance. Persistent or worsening scalp or
+                        hair changes deserve professional review.
                     </p>
                 )}
                 {!hasSevereRedFlag && !unlocked && (
@@ -169,6 +221,15 @@ export function Results({
                             <>
                                 <RoutineSalesCard
                                     availability={availability}
+                                    primaryCause={primaryCause}
+                                    answers={answers}
+                                    preview={
+                                        previewPlan && (
+                                            <NextWashPreview
+                                                plan={previewPlan}
+                                            />
+                                        )
+                                    }
                                     checkoutAction={
                                         <button
                                             type="button"
@@ -205,7 +266,7 @@ export function Results({
                         )}
                     </div>
                 )}
-                {!hasSevereRedFlag && !hasMinorRedFlag && (
+                {!hasSevereRedFlag && (
                     <p className="mt-4 text-xs leading-relaxed text-foreground/60">
                         {disclaimer}
                     </p>
@@ -216,11 +277,11 @@ export function Results({
                 {/* Root Cause */}
                 <div className="border-t border-foreground/15 pt-10">
                     <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
-                        01 / Primary Pattern
+                        01 / Starting Focus
                     </span>
                     <h2 className="mt-3 font-serif text-2xl text-foreground">
-                        {primaryCause.charAt(0).toUpperCase() +
-                            primaryCause.slice(1)}
+                        Your starting focus:{" "}
+                        {getStartingFocusLabel(primaryCause)}
                     </h2>
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/80">
                         {primaryCause ===
@@ -235,9 +296,11 @@ export function Results({
                         ) : (
                             <>
                                 Based on what you reported,{" "}
-                                <strong>{primaryCause}</strong> is a suggested
-                                starting focus, informed by {observations[0]}{" "}
-                                and {observations[1]}.
+                                <strong>
+                                    {getStartingFocusLabel(primaryCause)}
+                                </strong>{" "}
+                                is a suggested starting focus, informed by{" "}
+                                {observations[0]} and {observations[1]}.
                             </>
                         )}
                         {hasSevereRedFlag &&
@@ -290,7 +353,7 @@ export function Results({
                         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
                             {hasSevereRedFlag
                                 ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
-                                : "These two options were selected from your answers. The guide adds suggested order, timing, and combinations to avoid."}
+                                : "Your starting product recommendations are below, selected from your answers. Your full personalized Growth Edit is a separate, one-time purchase; hair products are sold separately."}
                         </p>
                         <div className="mt-8 grid gap-6 sm:grid-cols-2">
                             {[product1, product2].map((prod) => (
