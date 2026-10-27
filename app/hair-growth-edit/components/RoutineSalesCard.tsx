@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import { ROUTINE_OFFER, ROUTINE_SALES_COPY } from "../lib/routineOffer";
 import { getSalesFocus } from "../lib/salesFocus";
+import { getPersonalizedSalesCopy } from "../lib/salesPersonalization";
 import { trackGrowthEvent } from "../lib/conversionAnalytics";
 import { FoundingProgress } from "./FoundingProgress";
 import {
@@ -17,6 +18,7 @@ interface RoutineSalesCardProps {
     checkoutAction: ReactNode;
     preview?: ReactNode;
     primaryCause?: string;
+    answers?: Readonly<Record<string, number>>;
 }
 
 export function RoutineSalesCard({
@@ -24,7 +26,9 @@ export function RoutineSalesCard({
     checkoutAction,
     preview,
     primaryCause,
+    answers,
 }: RoutineSalesCardProps) {
+    const personal = getPersonalizedSalesCopy(primaryCause, answers);
     const cardRef = useRef<HTMLElement>(null);
     const viewed = useRef(false);
     useEffect(() => {
@@ -63,12 +67,14 @@ export function RoutineSalesCard({
                     >
                         {ROUTINE_SALES_COPY.headline}
                     </h2>
-                    <p className="mt-4 text-sm leading-relaxed text-foreground/80">{getSalesFocus(primaryCause)}</p>
+                    <p className="mt-3 text-base font-medium text-foreground/90">{ROUTINE_SALES_COPY.subhead}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-foreground/80" data-testid="sales-personalized-focus">{personal?.reported ?? getSalesFocus(primaryCause)}</p>
+                    {personal && <p className="mt-3 text-sm leading-relaxed text-foreground/80" data-testid="sales-personalized-why">{personal.why}</p>}
                     <p
                         className="mt-4 text-base leading-relaxed text-foreground/85"
                         data-testid="cta-benefit"
                     >
-                        <strong className="font-medium">{ROUTINE_SALES_COPY.problem}</strong>{" "}{ROUTINE_SALES_COPY.description}
+                        {personal?.plan ?? <><strong className="font-medium">{ROUTINE_SALES_COPY.problem}</strong>{" "}{ROUTINE_SALES_COPY.description}</>}
                     </p>
                     <p className="mt-3 text-sm text-foreground/70">
                         {ROUTINE_SALES_COPY.planScope}
@@ -128,6 +134,9 @@ export function RoutineSalesCard({
                         <FoundingProgress availability={availability} />
                     )}
                     <div className="mt-4">{checkoutAction}</div>
+                    <p className="mt-2 text-center text-xs leading-relaxed text-foreground/85" data-testid="routine-fit-promise">
+                        {ROUTINE_OFFER.fitPromiseShort}
+                    </p>
                     <p
                         className="mt-2 text-center text-xs text-foreground/75"
                         data-testid="cta-reassurance"
@@ -135,15 +144,6 @@ export function RoutineSalesCard({
                         {ROUTINE_OFFER.reassurance}
                     </p>
                     <p className="mt-3 text-xs leading-relaxed text-foreground/70" data-testid="shelf-note">{ROUTINE_SALES_COPY.shelfNote}</p>
-                    <details
-                        className="mt-4 text-xs leading-relaxed text-foreground/65"
-                        data-testid="routine-fit-promise"
-                    >
-                        <summary className="cursor-pointer">
-                            7-day personalization promise
-                        </summary>
-                        <p className="mt-2">{ROUTINE_OFFER.fitPromise}</p>
-                    </details>
                 </div>
             </div>
             {preview}

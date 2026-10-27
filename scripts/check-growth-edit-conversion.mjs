@@ -45,6 +45,53 @@ const { RoutineSalesCard } = load(path.join(app, 'components/RoutineSalesCard.ts
 const { RoutineCheckoutSummary } = load(path.join(app, 'components/RoutineCheckoutSummary.tsx'));
 const { GuideView } = load(path.join(app, 'components/GuideView.tsx'));
 const { ROUTINE_SALES_COPY } = load(path.join(app, 'lib/routineOffer.ts'));
+const { getPersonalizedSalesCopy, getHeatCareCallout } = load(path.join(app, 'lib/salesPersonalization.ts'));
+const { getStartingFocusLabel } = load(path.join(app, 'lib/salesFocus.ts'));
+const { getPreviewStepHeading } = load(path.join(app, 'lib/previewStepCopy.ts'));
+const { QUESTIONS } = load(path.join(app, 'data/questions.ts'));
+const causes = [
+  'product buildup', 'dryness / low flexibility', 'compromised internal strength',
+  'low-porosity resistance', 'high-porosity moisture loss', 'elasticity loss',
+  'heat / chemical stress', 'mechanical tension', 'breakage', 'shedding',
+  'scalp imbalance', 'moisture + strength imbalance', 'mixed / uncertain porosity',
+  'length protection (no dominant damage pattern)',
+];
+let personalizedCases = 0;
+for (const cause of causes) {
+  let found = false;
+  for (let index = 0; index < 5; index++) {
+    const answers = Object.fromEntries(QUESTIONS.filter(q => q.options[index]).map(q => [q.id, index]));
+    const copy = getPersonalizedSalesCopy(cause, answers);
+    if (!copy) continue;
+    found = true;
+    const labels = QUESTIONS.flatMap(q => q.options[answers[q.id]] ? [q.options[answers[q.id]].label] : []);
+    const quotes = [...copy.reported.matchAll(/“([^”]+)”/g)].map(match => match[1]);
+    assert.ok(quotes.length > 0 && quotes.length <= 2);
+    for (const quote of quotes) assert.ok(labels.includes(quote), `Unselected evidence: ${quote}`);
+    assert.doesNotMatch(copy.why + copy.plan, /one clear fix|guaranteed|regrow/i);
+    personalizedCases++;
+  }
+  assert.ok(found, `No personalization for ${cause}`);
+}
+for (const answers of [undefined, {}, { residue: -1 }, { residue: 99 }, { residue: NaN }, { residue: 1.5 }, { clarify: 3 }]) {
+  assert.equal(getPersonalizedSalesCopy('product buildup', answers), null);
+}
+const buildup = getPersonalizedSalesCopy('product buildup', { residue: 1, dryFeel: 3 });
+assert.match(buildup.reported, /“Roots feel coated”/);
+assert.match(buildup.reported, /“Heavy or coated”/);
+assert.equal(getHeatCareCallout({ heatUse: 2, shampooFrequency: 3 }), 'You use heat 3+ times per week. Your plan starts with protection, then adjusts from there.');
+assert.match(getHeatCareCallout({ heatUse: 0, chemical: 2 }), /“Highlights or bleach”/);
+assert.equal(getHeatCareCallout({ heatUse: 0, chemical: 0 }), null);
+assert.equal(getStartingFocusLabel('dryness / low flexibility'), 'dryness and flexibility');
+assert.equal(ROUTINE_SALES_COPY.cta, 'Get My Personalized Routine');
+const resultsSource = fs.readFileSync(path.join(app, 'components/Results.tsx'), 'utf8');
+assert.match(resultsSource, /answers=\{answers\}/);
+assert.match(resultsSource, /getHeatCareCallout\(answers\)/);
+assert.match(resultsSource, /Finally, a wash day routine built around what your hair actually needs/);
+assert.match(resultsSource, /Quiz-based guidance\. Persistent or worsening/);
+assert.match(resultsSource, /Please get this change checked/);
+assert.equal(resultsSource.split('Your starting product recommendations are below').length - 1, 1);
+assert.doesNotMatch(resultsSource, /Your two free starting products|strongest pattern suggested by your answers/);
 const step = product => ({ product, order: 1, timing: 'Follow plan', instruction: 'Follow label' });
 let previews = 0;
 for (const frequency of ['daily', 'severalWeekly', 'weekly', 'lessWeekly']) {
@@ -55,6 +102,9 @@ for (const frequency of ['daily', 'severalWeekly', 'weekly', 'lessWeekly']) {
       assert.ok(selected.every(Boolean), 'Fixture must not silently drop an unknown product.');
       const routine = selected.map(step);
       const plan = getFirstWashPlan(routine, frequency, false, style);
+      for (const instruction of plan.steps.filter(step => step.title !== 'Start with warm water')) {
+        assert.notEqual(getPreviewStepHeading(instruction.title), instruction.title, `Missing benefit heading: ${instruction.title}`);
+      }
       const html = renderToStaticMarkup(React.createElement(NextWashPreview, { plan }));
       assert.match(html, /A look inside your routine/);
       assert.match(html, /excerpt/);
@@ -91,12 +141,20 @@ for (const availability of [
   { active: true, claimed: 4, limit: 100, unitAmount: 4900, regularAmount: 6900, currency: 'usd' },
   { active: false, claimed: 100, limit: 100, unitAmount: 6900, regularAmount: 6900, currency: 'usd' },
 ]) {
-  const sales = renderToStaticMarkup(React.createElement(RoutineSalesCard, { availability, primaryCause: 'product buildup', checkoutAction: React.createElement('button', null, ROUTINE_SALES_COPY.cta) }));
+  const sales = renderToStaticMarkup(React.createElement(RoutineSalesCard, { availability, primaryCause: 'product buildup', answers: { residue: 1, dryFeel: 3 }, checkoutAction: React.createElement('button', null, ROUTINE_SALES_COPY.cta) }));
   const checkout = renderToStaticMarkup(React.createElement(RoutineCheckoutSummary, { availability }));
   assert.ok(sales.includes(ROUTINE_SALES_COPY.headline));
   assert.ok(checkout.includes(ROUTINE_SALES_COPY.headline));
   assert.match(sales, /don’t need to buy the whole shelf/);
   assert.match(checkout, /don’t need to buy the whole shelf/);
+  assert.match(sales, /Roots feel coated/);
+  assert.match(sales, /Heavy or coated/);
+  assert.ok(sales.indexOf('routine-fit-promise') > sales.indexOf('</button>'));
+  assert.ok(sales.indexOf('routine-fit-promise') < sales.indexOf('cta-reassurance'));
+  assert.match(sales, /receipt within 7 days of purchase/);
+  assert.match(sales, /match your answers/);
+  assert.ok(sales.includes(ROUTINE_SALES_COPY.subhead));
+  assert.ok(checkout.includes(ROUTINE_SALES_COPY.subhead));
 }
 const { trackGrowthEvent } = load(path.join(app, 'lib/conversionAnalytics.ts'));
 trackGrowthEvent('growth_offer_viewed'); // SSR: no-op.
@@ -117,4 +175,5 @@ for (const file of fs.readdirSync(path.join(app, 'components'))) {
   assert.equal(parsed.diagnostics.filter(d => d.category === ts.DiagnosticCategory.Error).length, 0, `Syntax error: ${file}`);
 }
 console.log(`PASS: ${previews} real first-wash excerpts and full guide renders, 160 next-wash decisions, severe-flag suppression, matching sales/checkout promises, telemetry isolation, component syntax.`);
+console.log(`PASS: ${personalizedCases} selected-answer personalization cases across 14 patterns, invalid-answer handling, benefit headings, heat-vs-wash context, short promise placement, results wiring.`);
 console.log('Not a full Next build, browser checkout test, payment confirmation, or analytics delivery test.');

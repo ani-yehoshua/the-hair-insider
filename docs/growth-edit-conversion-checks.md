@@ -47,6 +47,10 @@ Use confirmed successful payments in Stripe/the existing webhook-backed purchase
 
 ## Verification and release
 
+The latest copy refinement leads Results with the intended routine outcome, mirrors only validated answer labels, distinguishes heat frequency from wash frequency, softens visible focus labels, removes the duplicate starting-product intro, and puts the scoped seven-day fit adjustment directly beneath the purchase CTA. Preview headings lead with benefits while preserving actual product titles, instructions, and treatment pauses on expansion. Checkout retains the matching offer headline and subhead.
+
+The added answer-context checks cover all 14 result patterns, missing/invalid selections, two different buildup profiles, heat-versus-wash context, Results wiring, and the short promise's placement. No scoring, product selection, URLs, founding-cap enforcement, checkout request contracts, authentication or entitlement changes are included in this refinement.
+
 From a workspace containing TypeScript, React and react-dom:
 
     node scripts/check-growth-edit-conversion.mjs /absolute/path/to/repository

@@ -26,6 +26,7 @@ export function RoutineCheckoutSummary({
             <h2 className="mt-2 font-serif text-2xl text-foreground">
                 {ROUTINE_SALES_COPY.headline}
             </h2>
+            <p className="mt-2 text-sm font-medium text-foreground/85">{ROUTINE_SALES_COPY.subhead}</p>
             {availability && price && (
                 <div className="mt-3">
                     <p className="flex items-baseline gap-2">
