@@ -7,7 +7,7 @@
         },
         {
             "path": "/api/cron/enroll-solution-audience",
-            "schedule": "0 15 * * *"
+            "schedule": "0 17 * * *"
         }
     ]
 }
