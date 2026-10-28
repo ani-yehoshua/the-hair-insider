@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { enrollInSolutionSequence } from '@/lib/email/resendSolution';
+import { startReengagement } from '@/lib/email/resendReengagement';
 
 export const runtime = 'nodejs';
 export const maxDuration = 300;
@@ -12,13 +12,19 @@ const admin = createClient(
 );
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
-// Enrolls the contacts that were already in Resend when the Solution Sequence
-// launched, a day at a time so a cold list isn't mailed all at once. The first
-// run snapshots the audience into solution_enrollment_queue; after that it
-// only works through that queue, newest signups first, so contacts who join
-// later are not pulled in. A contact is never enrolled twice (the queue row and
-// the Resend marker property both guard it), and unsubscribed contacts and
-// buyers are skipped.
+// Starts the Re-engagement automation for the contacts that were already in
+// Resend when the Solution Sequence launched, a day at a time so a cold list
+// isn't mailed all at once. Contacts who click "keep me on the list" are then
+// enrolled in the Solution Sequence by the Resend webhook
+// (/api/webhooks/resend); this job never sends them sales emails directly.
+// The first run snapshots the audience into solution_enrollment_queue; after
+// that it only works through that queue, newest signups first, so contacts who
+// join later are not pulled in. A contact is never started twice (the queue
+// row guards it), and unsubscribed contacts, buyers and anyone already in the
+// Solution Sequence are skipped.
+//
+// To pause: remove the cron entry in vercel.json, or set attempts = 3 on the
+// pending rows. To resume: set attempts = 0 on them and restore the entry.
 const DAILY_LIMIT = 200;
 const MAX_ATTEMPTS = 3;
 // Resend allows 10 requests/second; each enrollment makes about three calls.
@@ -109,7 +115,7 @@ export async function GET(req: Request) {
             for (const email of batch) {
                 if (Date.now() - startedAt >= TIME_BUDGET_MS || consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) break;
 
-                const outcome = await enrollInSolutionSequence(email, { createIfMissing: false });
+                const outcome = await startReengagement(email);
                 outcomes[outcome] = (outcomes[outcome] ?? 0) + 1;
 
                 if (outcome === 'error') {
