@@ -4,6 +4,10 @@
         {
             "path": "/api/cron/cleanup-unconfirmed-users",
             "schedule": "0 9 * * *"
+        },
+        {
+            "path": "/api/cron/enroll-solution-audience",
+            "schedule": "0 15 * * *"
         }
     ]
 }
