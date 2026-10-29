@@ -342,14 +342,14 @@ const { trackGrowthEvent } = load(path.join(app, "lib/conversionAnalytics.ts"));
 trackGrowthEvent("growth_offer_viewed"); // SSR: no-op.
 assert.equal(events.length, 0);
 globalThis.window = {};
-trackGrowthEvent("growth_purchase_clicked", { unit_amount: 4900 });
+trackGrowthEvent("growth_offer_viewed", { unit_amount: 4900 });
 assert.deepEqual(events.at(-1), [
-    "growth_purchase_clicked",
+    "growth_offer_viewed",
     { unit_amount: 4900 },
 ]);
 failTelemetry = true;
 assert.doesNotThrow(() =>
-    trackGrowthEvent("growth_checkout_reported_complete"),
+    trackGrowthEvent("growth_checkout_closed", { stage: "payment" }),
 );
 delete globalThis.window;
 

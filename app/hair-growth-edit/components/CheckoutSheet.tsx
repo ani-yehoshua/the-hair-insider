@@ -63,17 +63,9 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
     setEmailConfirmed(Boolean(known));
   }, [open, knownEmail]);
   const showEmailStep = needsEmail && !emailConfirmed;
-  useEffect(() => {
-    if (open) trackGrowthEvent('growth_checkout_opened', expectedUnitAmount == null ? undefined : { unit_amount: expectedUnitAmount });
-  }, [open, expectedUnitAmount]);
   const closeCheckout = () => {
     trackGrowthEvent('growth_checkout_closed', { stage: showEmailStep ? 'email' : 'payment', has_error: Boolean(checkoutError) });
     onClose();
-  };
-  const completeCheckout = () => {
-    // Client completion is not proof that an asynchronous payment settled.
-    trackGrowthEvent('growth_checkout_reported_complete');
-    onComplete();
   };
 
   const confirmEmail = async (event: React.FormEvent) => {
@@ -230,7 +222,7 @@ export function CheckoutSheet({ open, courseSlug, availability = null, answers, 
                 )}
               </p>
             )}
-            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete: completeCheckout }}>
+            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ fetchClientSecret, onComplete }}>
               <EmbeddedCheckout />
             </EmbeddedCheckoutProvider>
           </>

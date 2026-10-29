@@ -2,13 +2,10 @@ import { track } from "@vercel/analytics";
 
 type ConversionEvent =
     | "growth_offer_viewed"
-    | "growth_purchase_clicked"
     | "growth_preview_opened"
-    | "growth_checkout_opened"
     | "growth_checkout_session_created"
     | "growth_checkout_failed"
-    | "growth_checkout_closed"
-    | "growth_checkout_reported_complete";
+    | "growth_checkout_closed";
 
 /** No answers, symptoms, emails, session IDs, or raw error messages. */
 export function trackGrowthEvent(

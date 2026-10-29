@@ -11,7 +11,6 @@ import { RoutineSalesCard } from "./RoutineSalesCard";
 import { NextWashPreview } from "./NextWashPreview";
 import { getFirstWashPlan } from "../lib/firstWash";
 import type { HairProfile } from "../data/recommendations";
-import { trackGrowthEvent } from "../lib/conversionAnalytics";
 import {
     formatRegularPrice,
     type FoundingAvailability,
@@ -89,11 +88,11 @@ export function Results({
     const openCheckout = () => {
         // No price loaded yet means no offer to buy.
         if (!availability) return;
-        trackGrowthEvent("growth_purchase_clicked", {
-            unit_amount: availability.unitAmount,
-        });
         try {
-            track("checkout_opened", { severe: hasSevereRedFlag });
+            track("checkout_opened", {
+                severe: hasSevereRedFlag,
+                unit_amount: availability.unitAmount,
+            });
         } catch {
             /* Never block checkout on analytics. */
         }

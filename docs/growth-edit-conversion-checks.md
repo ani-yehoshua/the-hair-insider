@@ -29,15 +29,16 @@ No checkout session or payment was created as part of the audit.
 | Event | Meaning |
 | --- | --- |
 | `growth_offer_viewed` | At least 25% of a priced offer became visible; once per card mount. |
-| `growth_purchase_clicked` | A visitor clicked the purchase action with an available quote. |
 | `growth_preview_opened` | The visitor expanded the real first-wash excerpt. |
-| `growth_checkout_opened` | The checkout sheet opened. |
 | `growth_checkout_session_created` | The checkout API returned a client secret, not proof that payment UI loaded or money settled. |
 | `growth_checkout_failed` | Checkout creation failed; records HTTP status only, with 0 for no usable response. |
 | `growth_checkout_closed` | A visitor explicitly closed checkout; records email/payment stage and whether an error was shown. |
-| `growth_checkout_reported_complete` | Stripe's client completion callback fired, not independently verified paid revenue. |
 
-Existing `quiz_completed`, `results_viewed`, `checkout_opened`, `checkout_email_captured`, `checkout_completed` and `guide_viewed` events are preserved. Use the new, consistently prefixed events together rather than adding old and new event counts.
+Existing events are kept, and a few cover what earlier versions of this list tracked separately:
+
+- `checkout_opened` fires when a visitor taps the purchase button with a price available, and records `severe` and `unit_amount`. It replaces the separate purchase-click and sheet-opened events.
+- `checkout_completed` fires from Stripe's client completion callback. That is not independently verified paid revenue; confirm payments in Stripe.
+- `quiz_completed`, `email_captured`, `results_viewed`, `results_restored`, `checkout_email_captured` and `guide_viewed` are unchanged.
 
 New event payloads exclude answers, symptoms, email addresses, session identifiers and raw error messages. Analytics failures cannot block new purchase actions or completion handling.
 
