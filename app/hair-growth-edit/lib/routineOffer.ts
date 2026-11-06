@@ -1,5 +1,9 @@
 export const ROUTINE_SALES_COPY = {
     brand: "The Growth Edit",
+    decisionLine:
+        "Stop buying products without knowing how they fit together—get a routine that tells you what to use next, when to use it, and what to leave out.",
+    purchaseSummary:
+        "Your quiz answers become a personalized routine: what to use, what to skip, how to layer it, and when to wash and treat over your first 30 days.",
     headline: "Finally, a wash day that actually works for your hair.",
     subhead: "Stop guessing at your next wash.",
     problem: "Another product isn’t a plan.",

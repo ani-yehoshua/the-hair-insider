@@ -1,7 +1,7 @@
 /**
  * New assessments must answer every question. An entitled buyer with an older
  * saved assessment can still open their routine without the new repair-mask
- * follow-up; scoring treats that missing response as unknown. All original
+ * or optional toning follow-ups; scoring treats missing responses as unknown. All original
  * questions and the separate paid-access checks remain required.
  */
 export function hasCompleteRoutineAnswers(
@@ -12,7 +12,8 @@ export function hasCompleteRoutineAnswers(
     return questionIds.every(
         (id) =>
             answers[id] !== undefined ||
-            (hasPaidAccess && id === "repairTreatmentResponse"),
+            (hasPaidAccess &&
+                (id === "repairTreatmentResponse" || id === "blondeToning")),
     );
 }
 
@@ -30,6 +31,9 @@ export function firstMissingQuestionIndex(
     return questionIds.findIndex(
         (id) =>
             answers[id] === undefined &&
-            !(hasPaidAccess && id === "repairTreatmentResponse"),
+            !(
+                hasPaidAccess &&
+                (id === "repairTreatmentResponse" || id === "blondeToning")
+            ),
     );
 }

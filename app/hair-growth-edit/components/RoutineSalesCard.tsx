@@ -76,46 +76,19 @@ export function RoutineSalesCard({
                         id="growth-edit-offer-heading"
                         className="max-w-lg font-serif text-3xl leading-tight text-foreground md:text-4xl"
                     >
-                        {ROUTINE_SALES_COPY.headline}
+                        {ROUTINE_OFFER.title}
                     </h2>
-                    <p className="mt-3 text-base font-medium text-foreground/90">
-                        {ROUTINE_SALES_COPY.subhead}
-                    </p>
-                    <p
-                        className="mt-4 text-sm leading-relaxed text-foreground/80"
-                        data-testid="sales-personalized-focus"
-                    >
-                        {personal?.reported ?? getSalesFocus(primaryCause)}
-                    </p>
-                    {personal && (
-                        <p
-                            className="mt-3 text-sm leading-relaxed text-foreground/80"
-                            data-testid="sales-personalized-why"
-                        >
-                            {personal.why}
-                        </p>
-                    )}
                     <p
                         className="mt-4 text-base leading-relaxed text-foreground/85"
                         data-testid="cta-benefit"
                     >
-                        {personal?.plan ?? (
-                            <>
-                                <strong className="font-medium">
-                                    {ROUTINE_SALES_COPY.problem}
-                                </strong>{" "}
-                                {ROUTINE_SALES_COPY.description}
-                            </>
-                        )}
-                    </p>
-                    <p className="mt-3 text-sm text-foreground/70">
-                        {ROUTINE_SALES_COPY.planScope}
+                        {personal?.plan ?? getSalesFocus(primaryCause)}
                     </p>
                     <p
-                        className="mt-4 text-xs leading-relaxed text-foreground/70"
-                        data-testid="free-vs-paid"
+                        className="mt-3 text-sm leading-relaxed text-foreground/75"
+                        data-testid="purchase-summary"
                     >
-                        {ROUTINE_SALES_COPY.freeVsPaid}
+                        {ROUTINE_SALES_COPY.decisionLine}
                     </p>
                 </div>
                 <div className="mt-6 md:mt-0 md:pt-1">
@@ -183,18 +156,34 @@ export function RoutineSalesCard({
                     >
                         {ROUTINE_OFFER.reassurance}
                     </p>
-                    <p
-                        className="mt-3 text-xs leading-relaxed text-foreground/70"
-                        data-testid="shelf-note"
-                    >
-                        {ROUTINE_SALES_COPY.shelfNote}
-                    </p>
                 </div>
             </div>
-            {preview}
-            <p className="mt-5 border-t border-foreground/10 pt-3 text-xs leading-relaxed text-foreground/60">
-                Quiz-based guidance, not a medical diagnosis or 1:1
-                consultation. Hair products sold separately.
+            {preview && (
+                <details
+                    className="group mt-5 border-t border-foreground/15 pt-4"
+                    data-testid="sales-preview-toggle"
+                    onToggle={(event) => {
+                        if (event.currentTarget.open)
+                            trackGrowthEvent("growth_preview_opened");
+                    }}
+                >
+                    <summary className="cursor-pointer text-xs font-medium uppercase tracking-widest text-foreground/75 underline underline-offset-4">
+                        <span className="group-open:hidden">
+                            See your first wash—built from your answers.
+                        </span>
+                        <span className="hidden group-open:inline">
+                            Hide preview
+                        </span>
+                    </summary>
+                    {preview}
+                </details>
+            )}
+            <p
+                className="mt-4 text-xs leading-relaxed text-foreground/60"
+                data-testid="shelf-note"
+            >
+                Hair products sold separately. Quiz-based guidance, not a
+                medical diagnosis.
             </p>
         </section>
     );

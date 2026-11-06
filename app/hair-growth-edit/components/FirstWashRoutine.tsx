@@ -1,8 +1,29 @@
+"use client";
+
+import { useState } from "react";
 import type { FirstWashPlan } from "../lib/firstWash";
 import { BasedOnAnswers } from "./GuideNotes";
 import { ROUTINE_OFFER } from "../lib/routineOffer";
 
 export function FirstWashRoutine({ plan }: { plan: FirstWashPlan }) {
+    // Session-only progress, scoped to this exact set of instructions.
+    const planKey = JSON.stringify(plan.steps);
+    const [progress, setProgress] = useState<{ key: string; done: number[] }>({
+        key: planKey,
+        done: [],
+    });
+    const completed = progress.key === planKey ? progress.done : [];
+    function toggleStep(index: number) {
+        setProgress((current) => {
+            const done = current.key === planKey ? current.done : [];
+            return {
+                key: planKey,
+                done: done.includes(index)
+                    ? done.filter((i) => i !== index)
+                    : [...done, index],
+            };
+        });
+    }
     return (
         <div className="mt-10 space-y-10" data-testid="first-wash-routine">
             <section
@@ -29,12 +50,38 @@ export function FirstWashRoutine({ plan }: { plan: FirstWashPlan }) {
                     labels call for. Keep those labels nearby for the exact
                     amounts and directions.
                 </p>
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-y border-foreground/15 py-3">
+                    <p
+                        className="text-xs text-foreground/75"
+                        aria-live="polite"
+                    >
+                        {completed.length} of {plan.steps.length} steps checked
+                        for this wash
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => setProgress({ key: planKey, done: [] })}
+                        className="text-xs underline underline-offset-4"
+                    >
+                        Start a new wash
+                    </button>
+                </div>
+                <p className="mt-2 text-xs text-foreground/65">
+                    Check each step as you go. Checks reset when you leave or
+                    refresh; they don’t change your treatment schedule.
+                </p>
                 <ol className="mt-6 list-decimal space-y-5 pl-5 marker:text-foreground/50">
-                    {plan.steps.map((step) => (
+                    {plan.steps.map((step, index) => (
                         <li key={step.title} className="pl-2">
-                            <h4 className="text-sm font-medium text-foreground">
-                                {step.title}
-                            </h4>
+                            <label className="flex cursor-pointer items-start gap-3 text-sm font-medium text-foreground">
+                                <input
+                                    type="checkbox"
+                                    className="mt-0.5 h-4 w-4 shrink-0 accent-foreground"
+                                    checked={completed.includes(index)}
+                                    onChange={() => toggleStep(index)}
+                                />
+                                <span>{step.title}</span>
+                            </label>
                             <p className="mt-1 max-w-3xl text-sm leading-relaxed text-foreground/75">
                                 {step.detail}
                             </p>

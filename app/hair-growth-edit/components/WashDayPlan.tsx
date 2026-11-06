@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { RoutineStep } from "../data/recommendations";
 import { getWashDayPlan } from "../lib/washDays";
 import { BasedOnAnswers, GuideFitNote } from "./GuideNotes";
@@ -10,6 +13,15 @@ export function WashDayPlan({
     hasSevereRedFlag?: boolean;
 }) {
     const plan = getWashDayPlan(routine, hasSevereRedFlag);
+    const [washType, setWashType] = useState<"regular" | "treatment">(
+        "regular",
+    );
+    const selectedType = plan.mask ? washType : "regular";
+    const toning = hasSevereRedFlag
+        ? undefined
+        : routine.find(
+              (step) => step.product.category === "Optional toning shampoo",
+          );
     return (
         <section
             className="mt-10 rounded-2xl border border-foreground/15 bg-blue/30 p-5 md:p-8"
@@ -26,8 +38,38 @@ export function WashDayPlan({
                 You don’t need to use everything at every wash. Here’s the
                 difference, using the products in your routine.
             </p>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div
+                className="mt-5 flex flex-wrap gap-2"
+                role="group"
+                aria-label="Choose your wash type"
+            >
+                <button
+                    type="button"
+                    aria-pressed={selectedType === "regular"}
+                    onClick={() => setWashType("regular")}
+                    className={`rounded-full border border-foreground/20 px-4 py-2 text-sm ${selectedType === "regular" ? "bg-foreground text-background" : "bg-background text-foreground"}`}
+                >
+                    Regular wash
+                </button>
+                {plan.mask && (
+                    <button
+                        type="button"
+                        aria-pressed={selectedType === "treatment"}
+                        onClick={() => setWashType("treatment")}
+                        className={`rounded-full border border-foreground/20 px-4 py-2 text-sm ${selectedType === "treatment" ? "bg-foreground text-background" : "bg-background text-foreground"}`}
+                    >
+                        Treatment wash
+                    </button>
+                )}
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-foreground/70">
+                Choose treatment only when your mask is due. This selector shows
+                the route; it doesn’t track your wash dates or change your
+                treatment timing.
+            </p>
+            <div className="mt-5">
                 <div
+                    hidden={selectedType !== "regular"}
                     className="rounded-2xl border border-foreground/15 bg-background/60 p-5"
                     data-testid="regular-wash"
                 >
@@ -51,6 +93,7 @@ export function WashDayPlan({
                     </p>
                 </div>
                 <div
+                    hidden={selectedType !== "treatment"}
                     className="rounded-2xl border border-foreground/15 bg-background/60 p-5"
                     data-testid="treatment-wash"
                 >
@@ -99,6 +142,27 @@ export function WashDayPlan({
                     )}
                 </div>
             </div>
+            {toning && (
+                <aside
+                    className="mt-5 border-t border-foreground/15 pt-5"
+                    data-testid="toning-wash"
+                >
+                    <h3 className="font-serif text-xl">
+                        Your second shampoo is optional—not another step
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-foreground/80">
+                        <strong>{toning.product.name}:</strong> {toning.timing}.
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground/75">
+                        {toning.instruction}
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed text-foreground/65">
+                        Toning changes color; it doesn’t replace conditioning or
+                        repair care. Being blonde is not a reason to use it at
+                        every wash.
+                    </p>
+                </aside>
+            )}
             {plan.scrub && (
                 <p className="mt-5 text-sm leading-relaxed text-foreground/75">
                     <strong className="font-medium text-foreground">

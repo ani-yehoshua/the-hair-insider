@@ -9,6 +9,8 @@ import { getSalesFocus, getStartingFocusLabel } from "../lib/salesFocus";
 import { getHeatCareCallout } from "../lib/salesPersonalization";
 import { RoutineSalesCard } from "./RoutineSalesCard";
 import { NextWashPreview } from "./NextWashPreview";
+import { FounderVideoSpotlight } from "./FounderVideoSpotlight";
+import { FounderStory } from "./FounderStory";
 import { getFirstWashPlan } from "../lib/firstWash";
 import type { HairProfile } from "../data/recommendations";
 import {
@@ -218,6 +220,7 @@ export function Results({
                             </>
                         ) : (
                             <>
+                                <FounderVideoSpotlight />
                                 <RoutineSalesCard
                                     availability={availability}
                                     primaryCause={primaryCause}
@@ -342,7 +345,7 @@ export function Results({
                 </div>
 
                 {/* Foundation / top-priority products */}
-                {product1 && product2 && (
+                {product1 && (
                     <div className="border-t border-foreground/15 pt-10">
                         <span className="text-[0.65rem] font-medium uppercase tracking-widest text-foreground/50">
                             {hasSevereRedFlag
@@ -352,10 +355,10 @@ export function Results({
                         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-foreground/70">
                             {hasSevereRedFlag
                                 ? "These conservative recommendations can support gentle cleansing and handling in the meantime. Stop using anything that causes irritation, and bring your assessment notes to your professional appointment."
-                                : "Your starting product recommendations are below, selected from your answers. Your full personalized Growth Edit is a separate, one-time purchase; hair products are sold separately."}
+                                : "Your starting product recommendation is below, selected from your answers. This is where to start—not your complete routine. Your full Growth Edit shows how to build around it, without buying products you don’t need. Hair products are sold separately."}
                         </p>
-                        <div className="mt-8 grid gap-6 sm:grid-cols-2">
-                            {[product1, product2].map((prod) => (
+                        <div className="mt-8 grid max-w-xl gap-6">
+                            {[product1].map((prod) => (
                                 <div
                                     key={prod.id}
                                     className="panel-outline rounded-2xl bg-border px-6 py-8"
@@ -483,6 +486,7 @@ export function Results({
                 </div>
             )}
 
+            {!hasSevereRedFlag && <FounderStory />}
             <div className="mt-20 text-center">
                 <button
                     onClick={onReset}
