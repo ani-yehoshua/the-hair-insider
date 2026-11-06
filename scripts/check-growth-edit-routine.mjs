@@ -77,12 +77,12 @@ assert.ok(
     ),
 );
 const legacy = Object.fromEntries(
-    ids.filter((id) => id !== "repairTreatmentResponse").map((id) => [id, 0]),
+    ids.filter((id) => !["repairTreatmentResponse", "blondeToning"].includes(id)).map((id) => [id, 0]),
 );
 assert.equal(hasCompleteRoutineAnswers(legacy, ids), false);
 assert.equal(hasCompleteRoutineAnswers(legacy, ids, true), true);
 assert.equal(
-    hasCompleteRoutineAnswers({ ...legacy, repairTreatmentResponse: 3 }, ids),
+    hasCompleteRoutineAnswers({ ...legacy, repairTreatmentResponse: 3, blondeToning: 3 }, ids),
     true,
 );
 const missingOriginal = { ...legacy };

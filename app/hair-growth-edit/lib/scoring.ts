@@ -344,6 +344,7 @@ export function calculateResults(answers: AnswerMap) {
                 ? "weekly"
                 : "lessWeekly";
     const profile = {
+        toningNeed: (answers.blondeToning === 0 ? "yellow" : answers.blondeToning === 1 ? "orange" : "none") as HairProfile["toningNeed"],
         diagnosis,
         secondaryDiagnosis,
         texture,

@@ -168,7 +168,7 @@ assert.match(
 assert.match(resultsSource, /Quiz-based guidance\. Persistent or worsening/);
 assert.match(resultsSource, /Please get this change checked/);
 assert.equal(
-    resultsSource.split("Your starting product recommendations are below")
+    resultsSource.split("Your starting product recommendation is below")
         .length - 1,
     1,
 );
@@ -321,12 +321,12 @@ for (const availability of [
     const checkout = renderToStaticMarkup(
         React.createElement(RoutineCheckoutSummary, { availability }),
     );
-    assert.ok(sales.includes(ROUTINE_SALES_COPY.headline));
-    assert.ok(checkout.includes(ROUTINE_SALES_COPY.headline));
-    assert.match(sales, /don’t need to buy the whole shelf/);
+    assert.ok(sales.includes("Your Personalized Routine"));
+    assert.ok(checkout.includes("Your Personalized Routine"));
+    assert.ok(sales.includes(ROUTINE_SALES_COPY.decisionLine));
+    assert.ok(checkout.includes(ROUTINE_SALES_COPY.purchaseSummary));
     assert.match(checkout, /don’t need to buy the whole shelf/);
-    assert.match(sales, /Roots feel coated/);
-    assert.match(sales, /Heavy or coated/);
+    assert.ok(!sales.includes('sales-personalized-why'));
     assert.ok(
         sales.indexOf("routine-fit-promise") > sales.indexOf("</button>"),
     );
@@ -335,8 +335,8 @@ for (const availability of [
     );
     assert.match(sales, /receipt within 7 days of purchase/);
     assert.match(sales, /match your answers/);
-    assert.ok(sales.includes(ROUTINE_SALES_COPY.subhead));
-    assert.ok(checkout.includes(ROUTINE_SALES_COPY.subhead));
+    assert.ok(!sales.includes(ROUTINE_SALES_COPY.subhead));
+    assert.ok(!checkout.includes(ROUTINE_SALES_COPY.subhead));
 }
 const { trackGrowthEvent } = load(path.join(app, "lib/conversionAnalytics.ts"));
 trackGrowthEvent("growth_offer_viewed"); // SSR: no-op.

@@ -378,6 +378,17 @@ export const QUESTIONS: Question[] = [
     ]
   },
   {
+    id: "blondeToning",
+    prompt: "If you have blonde or lightened hair, are there tones you want to change?",
+    help: "Blonde hair does not automatically need purple shampoo. This only helps us choose optional color maintenance; it does not change your hair-care scores.",
+    options: [
+      { label: "Yes—unwanted yellow tones; I prefer a cooler blonde", scores: {} },
+      { label: "Yes—unwanted orange or brassy tones", scores: {} },
+      { label: "No—I like my color, including its warmth", scores: {} },
+      { label: "Not sure, or my hair isn’t blonde or lightened", scores: {} }
+    ]
+  },
+  {
     id: "tension",
     prompt: "How often is hair pulled tight or carries added weight?",
     help: "Repeatedly tight styles can put stress on the hair and scalp. Pain or thinning is a reason to consider professional advice.",

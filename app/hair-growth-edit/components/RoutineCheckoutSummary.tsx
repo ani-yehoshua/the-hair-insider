@@ -24,10 +24,10 @@ export function RoutineCheckoutSummary({
                 {ROUTINE_SALES_COPY.brand} · Your personalized routine
             </p>
             <h2 className="mt-2 font-serif text-2xl text-foreground">
-                {ROUTINE_SALES_COPY.headline}
+                {ROUTINE_OFFER.title}
             </h2>
-            <p className="mt-2 text-sm font-medium text-foreground/85">
-                {ROUTINE_SALES_COPY.subhead}
+            <p className="mt-2 text-sm leading-relaxed text-foreground/85" data-testid="purchase-summary">
+                {ROUTINE_SALES_COPY.purchaseSummary}
             </p>
             {availability && price && (
                 <div className="mt-3">
@@ -61,7 +61,7 @@ export function RoutineCheckoutSummary({
                 </div>
             )}
             <p className="mt-3 text-sm leading-relaxed text-foreground/85">
-                {ROUTINE_SALES_COPY.problem} {ROUTINE_SALES_COPY.description}
+                {ROUTINE_SALES_COPY.decisionLine}
             </p>
             <p className="mt-2 text-xs leading-relaxed text-foreground/75">
                 {ROUTINE_SALES_COPY.planScope}
@@ -74,9 +74,6 @@ export function RoutineCheckoutSummary({
             </p>
             <p className="mt-3 text-xs leading-relaxed text-foreground/75">
                 {ROUTINE_OFFER.fitPromise}
-            </p>
-            <p className="mt-3 text-xs leading-relaxed text-foreground/70">
-                {ROUTINE_OFFER.practicalCue}
             </p>
             <div
                 className="mt-4 border-t border-foreground/10 pt-3"

@@ -6,6 +6,7 @@ export type ProductId =
     | "dedeShampoo"
     | "minuShampoo"
     | "heartShampoo"
+    | "silverShampoo"
     | "curlShampoo"
     | "momoConditioner"
     | "oiConditioner"
@@ -45,10 +46,11 @@ export interface ProductRecommendation {
 }
 
 const PRODUCT_IMAGES: Record<ProductId, string> = {
+    silverShampoo: "https://us.davines.com/cdn/shop/files/Davines-67228-alchemic-shampoo-silver-280ml-8004608259053-1_2000x.jpg?v=1760460123",
     energizingShampoo:
         "https://cdn.shopify.com/s/files/1/0052/8085/8198/files/Davines-71252-energizing-shampoo-250ml-8004608255505-1.jpg?v=1760543183",
     rebalancingShampoo:
-        "https://cdn.shopify.com/s/files/1/0052/8085/8198/files/knyhbd2mrvlj6uoaho8f.jpg?v=1719320576",
+        "https://cdn.shopify.com/s/files/1/0052/8085/8198/files/Davines-71345-rebalancing-shampoo-250ml-8004608279327-1.jpg?v=1790860232",
     momoShampoo:
         "https://cdn.shopify.com/s/files/1/0052/8085/8198/files/Davines-70000UCL-MOMO-SH-250ML-8004608299967-1.jpg?v=1777569772",
     oiShampoo:
@@ -130,6 +132,7 @@ const product = (
 });
 
 export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
+    silverShampoo: product("silverShampoo", "ALCHEMIC Shampoo Silver", "Optional toning shampoo", "A purple shampoo option for unwanted yellow tones in cool blonde hair—not a replacement for your regular cleansing and conditioning routine.", "https://us.davines.com/products/alchemic-shampoo-silver"),
     energizingShampoo: product(
         "energizingShampoo",
         "Energizing Shampoo",
@@ -282,7 +285,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "Miracle Leave-In Conditioner Plus Keratin",
         "Leave-in conditioner",
         "A light strengthening leave-in that helps fine or compromised strands retain moisture.",
-        "https://go.shopmy.us/p-67238901",
+        "https://itsa10haircare.com/products/miracle-leave-in-plus-keratin",
         "It’s a 10",
     ),
     meluShield: product(
@@ -355,7 +358,7 @@ export const PRODUCTS: Record<ProductId, ProductRecommendation> = {
         "10X™ UltraLight Speed Dryer",
         "Blowout tool",
         "Uses Bio Ionic moisturizing-heat technology and adjustable heat to create the smooth, stretched finish you actually wear while limiting unnecessary drying time.",
-        "https://go.shopmy.us/p-85121009",
+        "https://go.shopmy.us/p-97898162",
         "Bio Ionic",
     ),
     bioIonicFlatIron: product(
@@ -408,6 +411,7 @@ export interface HairProfile {
     stylePreference:
         "natural" | "blowout" | "straightened" | "curled" | "protective";
     colour: "natural" | "colour" | "blonde";
+    toningNeed?: "yellow" | "orange" | "none";
     dryScalp: boolean;
     oilyScalp: boolean;
     buildup: boolean;
@@ -530,7 +534,7 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
     }
     if (profile.colour === "blonde" && !curlish) {
         conditioner = "heartConditioner";
-        if (!diagnosisClaimsCleanser) shampoo = "heartShampoo";
+        // Blonde alone does not establish a need for pigmented shampoo.
     }
 
     const treatment: ProductId | null =
@@ -592,6 +596,14 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
             "Section clean, towel-dried hair, apply directly across the scalp, and massage gently. Do not rinse. Patch test first and stop if irritation occurs.",
         ],
     ];
+    if (profile.colour === "blonde" && !profile.irritatedScalp && profile.diagnosis !== "SC" &&
+        (profile.toningNeed === "yellow" || profile.toningNeed === "orange")) {
+        coreSteps.push([
+            profile.toningNeed === "yellow" ? "silverShampoo" : "heartShampoo",
+            "Only when unwanted warmth returns; at most every other wash to start, not every wash",
+            `Keep ${PRODUCTS[shampoo].name} as your regular shampoo. On a separate toning wash, use this instead—not as a second shampoo step. Start only when you want to reduce ${profile.toningNeed === "yellow" ? "yellow" : "orange or brassy"} tones; skip it when you like your color. Follow your bottle for sensitivity testing, application and rinse time, then use your regular conditioner and leave-in. Keep the mask and scrub for another wash while you learn how your hair responds. Use less often or pause if your hair feels dry, rough or over-toned. Your colorist’s advice and product label take priority.`,
+        ]);
+    }
     if (treatment) {
         coreSteps.push([
             treatment,
@@ -684,7 +696,9 @@ export function buildPaidRoutine(profile: HairProfile): RoutineStep[] {
                         ...PRODUCTS[id],
                         reason: "You reported a good response to protein and flexible, easier-to-handle lengths after richer repair masks, without a heavy or coated feel. That is why Hair Building Pak is the starting treatment here rather than NOUNOU. Use it on its scheduled treatment wash, then follow with conditioner; your answers cannot confirm a protein deficiency.",
                     }
-                  : PRODUCTS[id],
+                  : id === "heartShampoo"
+                    ? { ...PRODUCTS[id], category: "Optional toning shampoo", reason: "You selected unwanted orange or brassy tones. This blue-pigmented shampoo is an optional color-maintenance step, not your everyday cleanser. It is not the purple option for yellow tones." }
+                    : PRODUCTS[id],
     }));
 }
 
