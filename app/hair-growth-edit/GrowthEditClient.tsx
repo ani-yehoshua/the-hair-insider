@@ -3,8 +3,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { track } from "@vercel/analytics";
-import { QUESTIONS } from "./data/questions";
-import { calculateResults } from "./lib/scoring";
+import { QUESTIONS, getSelectedOption } from "./data/questions";
+import dynamic from "next/dynamic";
+import { usePlanResults } from "./hooks/usePlanResults";
 import {
     firstMissingQuestionIndex,
     hasCompleteRoutineAnswers,
@@ -16,7 +17,7 @@ import { useFoundingAvailability } from "./lib/useFoundingAvailability";
 import { formatFoundingPrice } from "./lib/foundingOffer";
 import { ResultsGenerating } from "./components/ResultsGenerating";
 import { EmailCapture } from "./components/EmailCapture";
-import { GuideView } from "./components/GuideView";
+const BuyerGuide = dynamic(() => import("./components/BuyerGuide"), { ssr: false });
 import { BackToTopButton } from "./components/BackToTopButton";
 import { DevOwnerToggle } from "./components/DevOwnerToggle";
 import { ViewTabs } from "./components/ViewTabs";
@@ -54,10 +55,28 @@ export default function GrowthEditClient() {
     const price = availability ? formatFoundingPrice(availability) : null;
     const didBootstrap = useRef(false);
     const completingQuiz = useRef(false);
+    const previousAccount = useRef<string | null | undefined>(undefined);
+
+    useEffect(() => {
+        if (authLoading) return;
+        const account = user?.id ?? null;
+        if (previousAccount.current !== undefined && previousAccount.current !== account) {
+            didBootstrap.current = false;
+            setBootstrapping(true);
+            setAnswers({});
+            setUnlocked(false);
+            setView("home");
+            if (previousAccount.current) {
+                clearDraftAnswers();
+                sessionStorage.removeItem(PENDING_ANSWERS_KEY);
+            }
+        }
+        previousAccount.current = account;
+    }, [authLoading, user?.id]);
 
 
     useEffect(() => {
-        document.title = "The Growth Edit — The Hair Insider";
+        document.title = "The Growth Edit — Your 30-Day Length Retention Plan";
     }, []);
 
     // Handles the one path that still leaves the page: a payment method that
@@ -96,6 +115,7 @@ export default function GrowthEditClient() {
     useEffect(() => {
         if (authLoading || didBootstrap.current) return;
         didBootstrap.current = true;
+        let cancelled = false;
 
         (async () => {
             if (!signedIn) {
@@ -107,6 +127,7 @@ export default function GrowthEditClient() {
                 if (restoreToken) {
                     window.history.replaceState(null, "", "/hair-growth-edit");
                     const restored = await loadResultsFromToken(restoreToken);
+                    if (cancelled) return;
                     if (restored) {
                         saveDraftAnswers(restored.answers);
                         // The link came from their email, so they've already
@@ -145,21 +166,21 @@ export default function GrowthEditClient() {
 
             // Any owner landing here -- from the account library page, a
             // "View My Routine" link, or a post-purchase sign-in -- goes
-            // straight to the guide. The severe-flag case has no guide to
-            // land on, so it still lands on results.
+            // straight to the guide, including the professional-care path.
             const pendingRaw = sessionStorage.getItem(PENDING_ANSWERS_KEY);
             if (pendingRaw) {
                 sessionStorage.removeItem(PENDING_ANSWERS_KEY);
                 try {
                     const pendingAnswers = JSON.parse(pendingRaw) as AnswerMap;
-                    await saveAssessment(pendingAnswers);
+                    await saveAssessment(pendingAnswers, user?.id);
+                    if (cancelled) return;
                     clearDraftAnswers();
                     setAnswers(pendingAnswers);
                     const entitled = await checkGrowthEditEntitlement();
+                    if (cancelled) return;
                     setUnlocked(entitled);
                     setView(
-                        entitled &&
-                            !calculateResults(pendingAnswers).hasSevereRedFlag
+                        entitled
                             ? "guide"
                             : "results",
                     );
@@ -174,6 +195,7 @@ export default function GrowthEditClient() {
                 loadSavedAssessment(),
                 checkGrowthEditEntitlement(),
             ]);
+            if (cancelled) return;
             setUnlocked(entitled);
             if (saved) {
                 setAnswers(saved);
@@ -184,7 +206,7 @@ export default function GrowthEditClient() {
                 );
                 if (missing === -1) {
                     setView(
-                        entitled && !calculateResults(saved).hasSevereRedFlag
+                        entitled
                             ? "guide"
                             : "results",
                     );
@@ -196,11 +218,18 @@ export default function GrowthEditClient() {
             }
             setBootstrapping(false);
         })();
-    }, [authLoading, signedIn]);
+        return () => { cancelled = true; didBootstrap.current = false; };
+    }, [authLoading, signedIn, user?.id]);
 
     const assessmentComplete = hasCompleteRoutineAnswers(
         answers, QUESTIONS.map(question => question.id), unlocked,
     );
+    const plan = usePlanResults(answers, assessmentComplete && !bootstrapping && !authLoading, user?.id ?? null);
+    const results = plan.data?.result ?? null;
+    const paidPayload = plan.data?.access === "paid" ? plan.data : null;
+    useEffect(() => {
+        if (plan.data) setUnlocked(plan.data.access === "paid");
+    }, [plan.data]);
 
     // Derived, not stored: if `view` claims 'results' (or the email step) but
     // the assessment somehow isn't actually complete, fall back without a
@@ -304,14 +333,13 @@ export default function GrowthEditClient() {
         window.location.href = `/signin?next=${encodeURIComponent("/hair-growth-edit")}`;
     };
 
-    const results = calculateResults(answers);
 
     // Development-only (see DevOwnerToggle): preview the owner's experience
     // without buying. Client state only -- nothing is written to Supabase.
     const toggleDevOwnerView = () => {
         const next = !unlocked;
         setUnlocked(next);
-        setView(next && !results.hasSevereRedFlag ? "guide" : "results");
+        setView(next ? "guide" : "results");
         window.scrollTo({ top: 0, behavior: "auto" });
     };
 
@@ -365,6 +393,7 @@ export default function GrowthEditClient() {
                             <h1 className="mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-foreground md:text-7xl">
                                 The Growth Edit
                             </h1>
+                            <p className="mt-4 max-w-md font-serif text-2xl text-foreground/80">Your 30-Day Length Retention Plan</p>
                             <div className="mt-6 h-px w-12 bg-foreground/30" />
                             <p className="mt-6 max-w-md text-sm leading-relaxed text-foreground/80 md:text-base">Answer questions about your hair and routine. Based on what you share, we’ll suggest starting points and products to consider. This is educational guidance, not a diagnosis.</p>
 
@@ -437,7 +466,7 @@ export default function GrowthEditClient() {
 
             {unlocked &&
                 assessmentComplete &&
-                !results.hasSevereRedFlag &&
+                paidPayload &&
                 (effectiveView === "results" || effectiveView === "guide") && (
                     <ViewTabs
                         active={effectiveView}
@@ -447,13 +476,19 @@ export default function GrowthEditClient() {
                     />
                 )}
 
-            {effectiveView === "results" && (
+            {(effectiveView === "results" || effectiveView === "guide") && !results && (
+                <div role={plan.error ? "alert" : "status"} className="mx-auto max-w-3xl px-6 py-24">
+                    <p>{plan.error ?? "Putting your answers together…"}</p>
+                    {plan.error && <button onClick={plan.retry} className="mt-4 underline">Try again</button>}
+                </div>
+            )}
+            {effectiveView === "results" && results && (
                 <Results
                     {...results}
                     shampooFrequencyAnswer={
-                        QUESTIONS.find(
+                        getSelectedOption(QUESTIONS.find(
                             (question) => question.id === "shampooFrequency",
-                        )?.options[answers.shampooFrequency]?.label ?? null
+                        )!, answers.shampooFrequency)?.label ?? null
                     }
                     unlocked={unlocked}
                     price={price}
@@ -476,20 +511,12 @@ export default function GrowthEditClient() {
             {effectiveView === "guide" &&
                 unlocked &&
                 assessmentComplete &&
-                !results.hasSevereRedFlag && (
-                    <GuideView
-                        paidRoutine={results.paidRoutine}
-                        shouldShampooTwice={results.shouldShampooTwice}
-                        primaryCause={results.primaryCause}
-                        behaviorToStop={results.behaviorToStop}
-                        observations={results.observations}
-                        supportingNeeds={results.supportingNeeds}
-                        washFrequency={results.washFrequency}
-                        stylePreference={results.stylePreference}
-                        reportedDensityChange={answers.density === 3}
-                        firstRecommendation={results.product1}
-                        secondRecommendation={results.product2}
-                        hasSevereRedFlag={results.hasSevereRedFlag}
+                paidPayload && (
+                    <BuyerGuide
+                        key={user?.id}
+                        payload={paidPayload}
+                        answers={answers}
+                        onBack={() => setView("results")}
                     />
                 )}
 

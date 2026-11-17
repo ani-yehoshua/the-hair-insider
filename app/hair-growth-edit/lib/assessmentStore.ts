@@ -52,10 +52,11 @@ export async function loadSavedAssessment(): Promise<AnswerMap | null> {
 }
 
 // Saves (or overwrites) the signed-in user's assessment answers.
-export async function saveAssessment(answers: AnswerMap): Promise<void> {
+export async function saveAssessment(answers: AnswerMap, expectedUserId?: string): Promise<void> {
   const { data: userData } = await supabase.auth.getUser();
   const userId = userData.user?.id;
   if (!userId) return;
+  if (expectedUserId && expectedUserId !== userId) throw new Error('Your account changed. Please reload before saving your assessment.');
 
   await supabase
     .from('growth_edit_assessments')

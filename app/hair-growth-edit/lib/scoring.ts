@@ -1,4 +1,5 @@
-import { QUESTIONS, type Dimension } from "../data/questions";
+import { QUESTIONS, getSelectedOption, type Dimension } from "../data/questions";
+import { resolveWashFrequency } from "./washFrequency";
 import {
     buildPaidRoutine,
     selectFoundationRecommendations,
@@ -81,7 +82,7 @@ export function calculateResults(answers: AnswerMap) {
         const qId = q.id;
         const optionIdx = answers[qId];
         if (optionIdx === undefined) continue;
-        const option = q.options[optionIdx];
+        const option = getSelectedOption(q, optionIdx);
         if (!option) continue;
 
         let isDamage = false;
@@ -335,14 +336,7 @@ export function calculateResults(answers: AnswerMap) {
                 : answers.usualStyle === 4
                   ? "protective"
                   : "natural";
-    const washFrequency: HairProfile["washFrequency"] =
-        answers.shampooFrequency === 0
-            ? "daily"
-            : answers.shampooFrequency === 1
-              ? "severalWeekly"
-              : answers.shampooFrequency === 2
-                ? "weekly"
-                : "lessWeekly";
+    const washFrequency = resolveWashFrequency(answers.shampooFrequency);
     const profile = {
         toningNeed: (answers.blondeToning === 0
             ? "yellow"
@@ -456,7 +450,7 @@ export function calculateResults(answers: AnswerMap) {
 
     // Shampoo rule
     const shampooFreqIdx = answers["shampooFrequency"];
-    const isDaily = shampooFreqIdx === 0;
+    const isDaily = washFrequency === "daily";
     const isDryScalp = answers["scalp"] === 2 || answers["scalp"] === 3;
     const shouldShampooTwice = !isDaily && !isDryScalp;
 

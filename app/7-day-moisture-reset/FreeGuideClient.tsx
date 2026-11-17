@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ROUTINE_OFFER } from "@/app/hair-growth-edit/lib/routineOffer";
 import { supabase } from "@/lib/supabase/client";
 import { startCheckout } from "@/lib/stripe/checkout";
 import { QUESTIONS } from "@/app/hair-growth-edit/data/questions";
@@ -2571,6 +2572,7 @@ export default function FreeGuideClient() {
                                 <div className='offer-card'>
                                     <div className='offer-card-body'>
                                         <h3>The Growth Edit</h3>
+                                        <p className='lead'>Your 30-Day Length Retention Plan</p>
                                         <p className='lead'>
                                             A private {QUESTIONS.length}-question
                                             assessment that identifies your primary
@@ -2580,25 +2582,11 @@ export default function FreeGuideClient() {
                                         </p>
                                         <ul className='offer-list'>
                                             <li>
-                                                Free results: your primary
-                                                pattern, a habit to stop, and
-                                                two matched products
+                                                Free results: your starting focus,
+                                                a habit to reconsider, and a preview
+                                                of your calendar and shelf
                                             </li>
-                                            <li>
-                                                Complete ordered routine with
-                                                why, how, and timing for every
-                                                step
-                                            </li>
-                                            <li>
-                                                Weekly schedule and first 30-day
-                                                plan
-                                            </li>
-                                            <li>
-                                                Troubleshooting checkpoints,
-                                                what to skip, and what not to
-                                                combine
-                                            </li>
-                                            <li>Instant access after checkout</li>
+                                            {ROUTINE_OFFER.purchaseBullets.map(item => <li key={item}>{item}</li>)}
                                         </ul>
                                         <div className='offer-price-row'>
                                             <span className='price'>
@@ -2675,13 +2663,13 @@ export default function FreeGuideClient() {
                             Run your three checks above &mdash; that&rsquo;s
                             your real data. If your ends feel softer and your
                             hair has that slight spring-back, your moisture
-                            rhythm is working. The full 21-day routine is where
-                            retention actually starts to show.
+                            rhythm is working. Keep that consistency going with
+                            a 30-day plan built around your own answers.
                         </p>
                         <a
-                            href='#'
+                            href='/hair-growth-edit'
                             className='btn btn-filled'>
-                            Build your 21-day rhythm now
+                            You did 7 days. Get your next 30, built for your hair.
                         </a>
                         <div>
                             <button

@@ -119,7 +119,10 @@ export function GuideView({
         ].includes(step.product.id),
     );
     const washRhythm = {
-        daily: "Most days, based on your current washing pattern",
+        daily: "Every day",
+        everyOtherDay: "Every other day",
+        everyThirdDay: "Every third day",
+        everyFourFiveDays: "Every four to five days",
         severalWeekly: "Two to three wash days each week",
         weekly: "One main wash day each week",
         lessWeekly: "One wash day every one to two weeks",
@@ -221,7 +224,7 @@ export function GuideView({
                     Your Growth Edit · Weekly Plan + First 30 Days
                 </span>
                 <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
-                    Your Personalized Routine
+                    Your 30-Day Length Retention Plan
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-foreground/80 md:text-base">
                     Your routine plan, weekly wash cadence, first 30 days, what

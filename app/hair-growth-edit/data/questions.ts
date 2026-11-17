@@ -1,3 +1,5 @@
+import { washOptionIndex } from '../lib/washFrequency';
+
 export type Dimension = 
   | 'M' | 'P' | 'BU' | 'LP' | 'HP' | 'EL' | 'BR' 
   | 'SH' | 'ME' | 'HC' | 'SC' | 'CO' | 'RF'
@@ -6,6 +8,7 @@ export type Dimension =
   | 'lowDensity' | 'mediumDensity' | 'highDensity';
 
 export interface Option {
+  value?: number;
   label: string;
   scores: Partial<Record<Dimension, number>>;
 }
@@ -468,10 +471,12 @@ export const QUESTIONS: Question[] = [
       "Choose the average frequency that best represents your routine."
     ],
     options: [
-      { label: "Daily or every other day", scores: {} },
-      { label: "2–3 times per week", scores: {} },
-      { label: "Weekly", scores: { BU: 1 } },
-      { label: "Less than weekly", scores: { BU: 2 } }
+      { value: 10, label: "Every day", scores: {} },
+      { value: 11, label: "Every other day", scores: {} },
+      { value: 12, label: "Every 3rd day", scores: {} },
+      { value: 13, label: "Every 4–5 days", scores: {} },
+      { value: 14, label: "Once a week", scores: { BU: 1 } },
+      { value: 15, label: "Less than once a week", scores: { BU: 2 } }
     ]
   },
   {
@@ -492,3 +497,12 @@ export const QUESTIONS: Question[] = [
     ]
   }
 ];
+
+export function getSelectedOption(question: Question, value: number | undefined): Option | undefined {
+  if (value === undefined) return undefined;
+  const option = question.options[question.id === 'shampooFrequency' ? washOptionIndex(value) : value];
+  if (question.id === 'shampooFrequency' && option && (value === 0 || value === 1)) {
+    return { ...option, label: value === 0 ? 'Daily or every other day' : '2–3 times per week' };
+  }
+  return option;
+}

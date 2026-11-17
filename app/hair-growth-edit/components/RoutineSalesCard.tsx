@@ -78,18 +78,10 @@ export function RoutineSalesCard({
                     >
                         {ROUTINE_OFFER.title}
                     </h2>
-                    <p
-                        className="mt-4 text-base leading-relaxed text-foreground/85"
-                        data-testid="cta-benefit"
-                    >
-                        {personal?.plan ?? getSalesFocus(primaryCause)}
-                    </p>
-                    <p
-                        className="mt-3 text-sm leading-relaxed text-foreground/75"
-                        data-testid="purchase-summary"
-                    >
-                        {ROUTINE_SALES_COPY.decisionLine}
-                    </p>
+                    <p className="mt-4 text-sm text-foreground/80">Built from your answers. Inside:</p>
+                    <ul className="mt-4 space-y-2 text-sm leading-relaxed text-foreground/80">
+                        {ROUTINE_OFFER.purchaseBullets.map(item => <li key={item} className="flex gap-3"><span aria-hidden="true">—</span><span>{item}</span></li>)}
+                    </ul>
                 </div>
                 <div className="mt-6 md:mt-0 md:pt-1">
                     <div data-testid="launch-pricing">
@@ -145,17 +137,12 @@ export function RoutineSalesCard({
                     )}
                     <div className="mt-4">{checkoutAction}</div>
                     <p
-                        className="mt-2 text-center text-xs leading-relaxed text-foreground/85"
-                        data-testid="routine-fit-promise"
-                    >
-                        {ROUTINE_OFFER.fitPromiseShort}
-                    </p>
-                    <p
                         className="mt-2 text-center text-xs text-foreground/75"
                         data-testid="cta-reassurance"
                     >
                         {ROUTINE_OFFER.reassurance}
                     </p>
+                    <p className="mt-1 text-center text-xs text-foreground/65">Sign in with the email you used at checkout.</p>
                 </div>
             </div>
             {preview && (

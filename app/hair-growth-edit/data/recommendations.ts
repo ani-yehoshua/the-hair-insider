@@ -1,3 +1,5 @@
+import { treatmentWashGap, scrubWashGap, type WashFrequency } from '../lib/washFrequency';
+
 export type ProductId =
     | "energizingShampoo"
     | "rebalancingShampoo"
@@ -432,7 +434,7 @@ export interface HairProfile {
     proteinPositive: boolean;
     easilyWeighedDown?: boolean;
     repairTreatmentResponse?: "comfortable" | "heavy" | "stiff" | "unknown";
-    washFrequency: "daily" | "severalWeekly" | "weekly" | "lessWeekly";
+    washFrequency: WashFrequency;
     lowConsistency: boolean;
     irritatedScalp: boolean;
 }
@@ -441,11 +443,23 @@ export function getWashSchedule(profile: Pick<HairProfile, "washFrequency">) {
     switch (profile.washFrequency) {
         case "daily":
             return {
-                shampoo: "Every wash day; usually 4–7 times weekly",
+                shampoo: "Every wash day; every day",
                 scalpSerum: "3 times weekly; not at every wash",
                 targetedTreatment: "Every 5–7 wash days (about once weekly)",
                 moistureTreatment: "Every 5–7 wash days (about once weekly)",
             };
+        case "everyOtherDay":
+        case "everyThirdDay":
+        case "everyFourFiveDays": {
+            const frequency = profile.washFrequency;
+            const cadence = frequency === "everyOtherDay" ? "every other day" : frequency === "everyThirdDay" ? "every third day" : "every 4–5 days";
+            return {
+                shampoo: `Every wash day; ${cadence}`,
+                scalpSerum: frequency === "everyOtherDay" ? "After washing, no more than 3 times weekly" : "On your wash days, if tolerated",
+                targetedTreatment: `Every ${scrubWashGap(frequency)} completed wash days; never more than once weekly`,
+                moistureTreatment: `Every ${treatmentWashGap(frequency)} completed wash days`,
+            };
+        }
         case "severalWeekly":
             return {
                 shampoo: "Every wash day; usually 2–3 times weekly",
@@ -483,7 +497,7 @@ export function getWashSchedule(profile: Pick<HairProfile, "washFrequency">) {
 export function getKeratinSchedule(
     washFrequency: HairProfile["washFrequency"],
 ) {
-    const skipWashes = washFrequency === "daily" ? 4 : 2;
+    const skipWashes = washFrequency === "daily" ? 4 : washFrequency === "everyOtherDay" ? 3 : washFrequency === "everyFourFiveDays" ? 1 : 2;
     return {
         skipWashes,
         timing: `Use on your first wash, then skip the next ${skipWashes} washes; repeat only if needed, no sooner than every ${skipWashes + 1} wash days`,

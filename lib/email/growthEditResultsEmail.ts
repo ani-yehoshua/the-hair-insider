@@ -31,7 +31,7 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
     const pattern = sentenceCase(getStartingFocusLabel(summary.primaryCause));
     const productsHeading = summary.hasSevereRedFlag
         ? 'Gentle support for now'
-        : 'Your two starting products';
+        : 'Your next step';
 
     const productRows = summary.products
         .map(
@@ -73,7 +73,7 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
                       <p style="margin:0 0 6px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:#7c7e73;">A habit to reconsider</p>
                       <p style="margin:0 0 16px;font-size:16px;line-height:1.5;">Reduce ${escapeHtml(summary.behaviorToStop)}</p>
                       <p style="margin:0 0 6px;font-size:13px;font-weight:bold;letter-spacing:0.06em;text-transform:uppercase;color:#7c7e73;">${productsHeading}</p>
-                      <table role="presentation" cellpadding="0" cellspacing="0">${productRows}</table>
+                      <table role="presentation" cellpadding="0" cellspacing="0">${productRows || '<tr><td style="font-size:15px;line-height:1.6;">Open your results to preview your calendar and shelf. Product recommendations and step-by-step instructions are inside Your 30-Day Length Retention Plan.</td></tr>'}</table>
                     </td>
                   </tr>
                 </table>
@@ -114,6 +114,7 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
         `A habit to reconsider: reduce ${summary.behaviorToStop}`,
         `${productsHeading}:`,
         ...summary.products.map((product) => `- ${product.name} by ${product.brand}: ${product.link}`),
+        ...(summary.products.length ? [] : ['Preview your calendar and shelf in your results. Product recommendations and step-by-step instructions are inside Your 30-Day Length Retention Plan.']),
         '',
         summary.hasSevereRedFlag
             ? 'You told us about a change that is best assessed in person. Please see a dermatologist, GP, or qualified trichology professional. These suggestions are not a treatment or a diagnosis.'
