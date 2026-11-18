@@ -187,8 +187,8 @@ for (const washFrequency of ["daily", "severalWeekly", "weekly", "lessWeekly"])
         assert.ok(html.includes(ROUTINE_OFFER.layeringHeading));
         assert.equal(html.split(ROUTINE_OFFER.progressHeading).length - 1, 2);
         assert.ok(
-            html.includes("snapshot-fit-promise") &&
-                html.includes("wash-plan-fit-promise"),
+            html.includes("snapshot-refund-window") &&
+                html.includes("wash-plan-refund-window"),
         );
         assert.ok(html.includes("scalp-serum-optional-note"));
         assert.equal(

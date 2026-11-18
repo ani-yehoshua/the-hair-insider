@@ -221,13 +221,13 @@ export function GuideView({
                     </p>
                 )}
                 <span className="mt-10 block text-[0.65rem] font-medium uppercase tracking-[0.2em] text-foreground/60">
-                    Your Growth Edit · Weekly Plan + First 30 Days
+                    {ROUTINE_OFFER.label}
                 </span>
                 <h1 className="mt-4 font-serif text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
                     Your 30-Day Length Retention Plan
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-foreground/80 md:text-base">
-                    Your routine plan, weekly wash cadence, first 30 days, what
+                    Your routine plan, wash rhythm, first 30 days, what
                     not to combine, and troubleshooting are here in one
                     place—based on the answers you just gave.{" "}
                     {starterPair.length === 2
@@ -252,7 +252,7 @@ export function GuideView({
                     className="underline underline-offset-4"
                     href="#weekly-wash-cadence"
                 >
-                    Weekly wash cadence
+                    Wash rhythm
                 </a>
                 <a
                     className="underline underline-offset-4"
@@ -420,7 +420,7 @@ export function GuideView({
                         id="weekly-wash-cadence"
                         className="mt-3 scroll-mt-8 font-serif text-3xl"
                     >
-                        Weekly wash cadence
+                        Wash rhythm
                     </h3>
                     <BasedOnAnswers className="mt-3" />
                     <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground/75">
@@ -530,8 +530,8 @@ export function GuideView({
                     </h3>
                     <BasedOnAnswers className="mt-3" />
                     <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                        A weekly plan with phased milestones—no day-by-day to-do
-                        list.
+                        Three phases over your first 30 days, with checkpoints
+                        for comfort and handling.
                     </p>
                     <p className="mt-2 text-xs leading-relaxed text-foreground/70">
                         The checks below look at comfort and handling, not a
@@ -946,13 +946,16 @@ export function GuideView({
             />
             <aside
                 className="mt-12 rounded-2xl border border-foreground/15 bg-paper p-6"
-                data-testid="guide-fit-support"
+                data-testid="guide-refund-window"
             >
                 <h2 className="font-serif text-2xl">
-                    Does this reflect your answers?
+                    Your purchase
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-foreground/80">
-                    {ROUTINE_OFFER.fitPromise}
+                    {ROUTINE_OFFER.refundWindow}{" "}
+                    <a href="/terms" target="_blank" rel="noreferrer" className="underline">
+                        Terms
+                    </a>
                 </p>
                 <p className="mt-2 text-xs leading-relaxed text-foreground/65">
                     Educational, quiz-based guidance—not a medical diagnosis or

@@ -1,6 +1,6 @@
 import type { HairProfile, RoutineStep } from "../data/recommendations";
 import { getRoutineSnapshot } from "../lib/guideSummary";
-import { BasedOnAnswers, GuideFitNote } from "./GuideNotes";
+import { BasedOnAnswers, GuideRefundNote } from "./GuideNotes";
 
 export function RoutineSnapshot({
     routine,
@@ -35,7 +35,7 @@ export function RoutineSnapshot({
                     </li>
                 ))}
             </ul>
-            <GuideFitNote location="snapshot" />
+            <GuideRefundNote location="snapshot" />
         </section>
     );
 }

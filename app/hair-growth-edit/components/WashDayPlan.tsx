@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { RoutineStep } from "../data/recommendations";
 import { getWashDayPlan } from "../lib/washDays";
-import { BasedOnAnswers, GuideFitNote } from "./GuideNotes";
+import { BasedOnAnswers, GuideRefundNote } from "./GuideNotes";
 
 export function WashDayPlan({
     routine,
@@ -181,7 +181,7 @@ export function WashDayPlan({
                 heat-styling session. Product-label directions take priority
                 over this quiz-based starting plan.
             </p>
-            <GuideFitNote location="wash-plan" />
+            <GuideRefundNote location="wash-plan" />
         </section>
     );
 }
