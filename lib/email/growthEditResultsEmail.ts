@@ -64,11 +64,13 @@ const PLACEHOLDER_TILE = `<table role="presentation" cellpadding="0" cellspacing
 function shelfRows(shelf: RoutineTeaser['shelf']) {
     return shelf
         .map((item, i) => {
-            const firstOptional = item.optional && (i === 0 || !shelf[i - 1].optional);
-            return `${firstOptional ? '<tr><td colspan="2" style="padding:18px 0 4px;font-size:12px;font-weight:bold;letter-spacing:0.08em;text-transform:uppercase;color:#7c7e73;">Optional extras</td></tr>' : ''}
+            // Same grouping as the results page: "Start here", then "Add as you run out".
+            const heading = i === 0 ? 'Start here' : !item.startHere && shelf[i - 1].startHere ? 'Add as you run out' : '';
+            const tag = (label: string) => ` <span style="font-size:10px;font-weight:bold;letter-spacing:0.08em;text-transform:uppercase;color:#7c7e73;">&nbsp;${label}</span>`;
+            return `${heading ? `<tr><td colspan="2" style="padding:18px 0 8px;font-size:21px;line-height:1.3;color:#343430;">${heading}</td></tr>` : ''}
 <tr>
   <td valign="middle" style="padding:14px 14px 14px 0;border-top:1px solid rgba(52,52,48,0.14);">
-    <p style="margin:0;font-size:17px;line-height:1.3;color:#343430;">${escapeHtml(item.category)}${item.optional ? ' <span style="font-size:10px;font-weight:bold;letter-spacing:0.08em;text-transform:uppercase;color:#7c7e73;">&nbsp;Optional</span>' : ''}</p>
+    <p style="margin:0;font-size:17px;line-height:1.3;color:#343430;">${escapeHtml(item.category)}${item.startHere ? tag('Start here') : ''}${item.optional ? tag('Optional') : ''}</p>
     <p style="margin:6px 0 0;font-size:14px;line-height:1.5;color:#55564e;">${escapeHtml(item.reason)}</p>
   </td>
   <td width="84" valign="middle" style="padding:14px 0;border-top:1px solid rgba(52,52,48,0.14);">${PLACEHOLDER_TILE}</td>
@@ -164,7 +166,10 @@ export function buildResultsEmail(summary: ResultsEmailSummary, token: string) {
               counts.line1,
               counts.line2,
               '',
-              ...teaser.shelf.map((item) => `- ${item.category}${item.optional ? ' (optional)' : ''}: ${item.reason}`),
+              ...teaser.shelf.flatMap((item, i) => {
+                  const heading = i === 0 ? 'Start here' : !item.startHere && teaser.shelf[i - 1].startHere ? 'Add as you run out' : '';
+                  return [...(heading ? ['', `${heading}:`] : []), `- ${item.category}${item.optional ? ' (optional)' : ''}: ${item.reason}`];
+              }),
               '',
               'Specific picks are revealed in your full plan.',
               '',

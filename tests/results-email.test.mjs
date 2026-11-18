@@ -34,6 +34,10 @@ test('results email shows the shelf by category with the results page placeholde
   assert.match(html, /Specific picks are revealed in your full plan/);
   assert.match(text, /Your shelf, by category/);
   assert.match(text, /Specific picks are revealed in your full plan/);
+  assert.match(html, />Start here</);
+  assert.match(html, />Add as you run out</);
+  assert.match(text, /Start here:/);
+  assert.match(text, /Add as you run out:/);
   assert.match(html, /wash days over 30 days/);
   assert.match(html, /products? chosen for you/);
 });
