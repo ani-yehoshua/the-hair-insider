@@ -39,7 +39,7 @@ function getContext(next: string): SignInContext | null {
     if (next.startsWith("/hair-growth-edit"))
         return {
             eyebrow: "The Growth Edit",
-            reason: "Create an account or sign in to save your results and pick up your personalized routine anytime.",
+            reason: "Create an account or sign in to save your results and pick up your 30-day plan anytime.",
         };
     if (next.startsWith("/courses") || next.includes("checkout"))
         return {
