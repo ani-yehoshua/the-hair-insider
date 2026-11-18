@@ -12,7 +12,11 @@ export type SolutionEnrollOutcome =
     | 'already-started'
     | 'error';
 
-async function sendEnrollEvent(email: string) {
+async function sendEnrollEvent(
+    email: string,
+    event = 'growth-edit-assessment-completed',
+    payload?: Record<string, string>,
+) {
     const res = await fetch('https://api.resend.com/events/send', {
         method: 'POST',
         headers: {
@@ -20,13 +24,14 @@ async function sendEnrollEvent(email: string) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            event: 'growth-edit-assessment-completed',
+            event,
             email,
+            ...(payload ? { payload } : {}),
         }),
     });
     if (!res.ok) {
         const text = await res.text();
-        console.error('Resend growth-edit-assessment-completed event failed:', res.status, text);
+        console.error(`Resend ${event} event failed:`, res.status, text);
     }
     return res.ok;
 }
@@ -78,6 +83,66 @@ export async function enrollInSolutionSequence(
         // Undo the marker so a retry can still enroll them.
         await resend.contacts
             .update({ email: normalized, properties: { [SEQUENCE_STARTED_PROPERTY]: 'false' } })
+            .catch(() => undefined);
+        return 'error';
+    }
+
+    return 'enrolled';
+}
+
+const PROFESSIONAL_CARE_PROPERTY = 'professional_care_started';
+
+/**
+ * Starts the two-email "Professional Care" sequence for someone whose answers
+ * point to a change best seen in person. It puts seeing a professional first and
+ * adds no sales pressure, so these contacts never enter the sales sequence.
+ * Each contact enters once; unsubscribed contacts, buyers and anyone already in
+ * the sales sequence are left alone. `resultsLink` lets the emails link back to
+ * the visitor's saved results.
+ */
+export async function enrollInProfessionalCareSequence(
+    email: string,
+    { resultsLink, createIfMissing = true }: { resultsLink?: string; createIfMissing?: boolean } = {},
+): Promise<SolutionEnrollOutcome> {
+    const normalized = email.trim().toLowerCase();
+
+    if (createIfMissing) {
+        try {
+            await resend.contacts.create({ email: normalized, unsubscribed: false });
+        } catch {
+            // Already exists; the lookup below tells us whether to proceed.
+        }
+    }
+
+    const { data: contact, error } = await resend.contacts.get({ email: normalized });
+    if (error || !contact) {
+        console.error('Resend contact lookup failed:', error);
+        return 'error';
+    }
+    if (contact.unsubscribed) return 'unsubscribed';
+    if (contact.properties?.growth_edit_purchased?.value === 'true') return 'purchased';
+    if (
+        contact.properties?.[PROFESSIONAL_CARE_PROPERTY]?.value === 'true' ||
+        contact.properties?.[SEQUENCE_STARTED_PROPERTY]?.value === 'true'
+    ) {
+        return 'already-started';
+    }
+
+    const { error: updateError } = await resend.contacts.update({
+        email: normalized,
+        properties: { [PROFESSIONAL_CARE_PROPERTY]: 'true' },
+    });
+    if (updateError) {
+        console.error('Resend professional-care marker update failed:', updateError);
+        return 'error';
+    }
+
+    const sent = await sendEnrollEvent(normalized, 'growth-edit-professional-care-started', {
+        results_link: resultsLink ?? 'https://the-hair-insider.com/hair-growth-edit',
+    });
+    if (!sent) {
+        await resend.contacts
+            .update({ email: normalized, properties: { [PROFESSIONAL_CARE_PROPERTY]: 'false' } })
             .catch(() => undefined);
         return 'error';
     }

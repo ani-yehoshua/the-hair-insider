@@ -9,8 +9,12 @@ import { firstMissingQuestionIndex } from '@/app/hair-growth-edit/lib/assessment
 import {
     RESULTS_EMAIL_SUBJECT,
     buildResultsEmail,
+    resultsLink,
 } from '@/lib/email/growthEditResultsEmail';
-import { enrollInSolutionSequence } from '@/lib/email/resendSolution';
+import {
+    enrollInProfessionalCareSequence,
+    enrollInSolutionSequence,
+} from '@/lib/email/resendSolution';
 
 export const runtime = 'nodejs';
 
@@ -128,14 +132,17 @@ export async function POST(req: Request) {
             .eq('email', email);
     }
 
-    // Someone whose answers flag a change needing professional care gets their
-    // results but not the sales emails.
-    if (!results.hasSevereRedFlag) {
-        try {
+    // Someone whose answers flag a change needing professional care never gets
+    // the sales emails. They enter the gentler two-email Professional Care
+    // sequence, which puts seeing a professional first.
+    try {
+        if (results.hasSevereRedFlag) {
+            await enrollInProfessionalCareSequence(email, { resultsLink: resultsLink(token) });
+        } else {
             await enrollInSolutionSequence(email);
-        } catch (e) {
-            console.error('Solution sequence enrollment failed:', e);
         }
+    } catch (e) {
+        console.error('Email sequence enrollment failed:', e);
     }
 
     return NextResponse.json({ ok: true, emailed });
