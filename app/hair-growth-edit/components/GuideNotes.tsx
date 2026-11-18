@@ -10,16 +10,18 @@ export function BasedOnAnswers({ className = "" }: { className?: string }) {
     );
 }
 
-export function GuideFitNote({ location }: { location: string }) {
+export function GuideRefundNote({ location }: { location: string }) {
     return (
         <p
             className="mt-5 border-t border-foreground/15 pt-4 text-xs leading-relaxed text-foreground/75"
-            data-testid={`${location}-fit-promise`}
+            data-testid={`${location}-refund-window`}
         >
             <strong className="font-medium text-foreground">
-                Seven-day fit promise:
+                {ROUTINE_OFFER.refundWindow}
             </strong>{" "}
-            {ROUTINE_OFFER.fitPromise}
+            <a href="/terms" target="_blank" rel="noreferrer" className="underline">
+                Terms
+            </a>
         </p>
     );
 }

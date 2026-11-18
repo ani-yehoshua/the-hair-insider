@@ -76,7 +76,10 @@ export function RoutineCheckoutSummary({
                 {ROUTINE_SALES_COPY.shelfNote}
             </p>
             <p className="mt-3 text-xs leading-relaxed text-foreground/75">
-                {ROUTINE_OFFER.fitPromise}
+                {ROUTINE_OFFER.refundWindow}{" "}
+                <a href="/terms" target="_blank" rel="noreferrer" className="underline">
+                    Terms
+                </a>
             </p>
             <div
                 className="mt-4 border-t border-foreground/10 pt-3"
@@ -88,9 +91,7 @@ export function RoutineCheckoutSummary({
                 <RoutineInclusions price={price} />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-foreground/65">
-                A weekly plan with phased milestones—not a day-by-day to-do
-                list. Educational guidance, not a medical diagnosis or 1:1
-                consultation. One-time purchase; products are sold separately.
+                {ROUTINE_OFFER.calendarDescription}
             </p>
         </section>
     );
