@@ -7,5 +7,5 @@ export interface RoutineTeaser {
   optionalProductCount: number;
   phases: { number: number; name: string; from: number; to: number }[];
   days: { day: number; phase: number; kind: 'regular' | 'treatment' | 'rest' }[];
-  shelf: { category: string; reason: string; optional: boolean; answerChosen: boolean }[];
+  shelf: { category: string; reason: string; optional: boolean; answerChosen: boolean; startHere: boolean }[];
 }

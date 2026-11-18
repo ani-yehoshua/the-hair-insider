@@ -3,7 +3,8 @@ import { washFrequencyAssumption } from './washFrequency.ts';
 import { PRODUCTS } from '../data/recommendations.ts';
 import { calculateResults } from './scoring.ts';
 import { buildRoutineCalendar, getMapPhases } from './routineCalendar.ts';
-import { getShelfPersonalization, orderShelf } from './shelfPersonalization.ts';
+import { getShelfPersonalization } from './shelfPersonalization.ts';
+import { getShelfGroups } from './shelfPriorities.ts';
 import { getGentleInterimRoutine } from './professionalCare.ts';
 import { getFreeResultsExplanation } from './resultsSalesContent.ts';
 import type { MapContext } from './routineMapTypes';
@@ -42,13 +43,16 @@ export function makePublicResults(answers: Record<string, number>) {
   };
   const days = buildRoutineCalendar(context, '2026-01-01');
   const phases = getMapPhases(context);
-  const shelf = orderShelf(result.paidRoutine).map(step => {
+  const shelfGroups = getShelfGroups(context);
+  const startingIds = new Set(shelfGroups.startHere.map(s => s.product.id));
+  const shelf = [...shelfGroups.startHere, ...shelfGroups.addAsYouRunOut].map(step => {
     const pick = getShelfPersonalization(step, context);
     return {
       category: publicText(step.product.category),
       reason: publicText(pick.reason),
       optional: pick.optional,
       answerChosen: pick.answerChosen,
+      startHere: startingIds.has(step.product.id),
     };
   });
   const teaser: RoutineTeaser = {

@@ -94,12 +94,14 @@ export function PersonalizedRoutineTeaser({ teaser }: { teaser: RoutineTeaser })
         <ul className="mt-4 divide-y divide-foreground/10">
           {shelf.map((s, i) => (
             <li key={`${s.category}-${i}`} className="py-5" data-testid={`row-shelf-${i}`}>
-              {s.optional && (i === 0 || !shelf[i - 1].optional) &&
-                <h3 className="mb-5 text-[0.65rem] font-medium uppercase tracking-widest text-foreground/55">Optional extras</h3>}
+              {i === 0 && <h3 className="mb-5 font-serif text-2xl text-foreground">Start here</h3>}
+              {!s.startHere && i > 0 && shelf[i - 1].startHere &&
+                <h3 className="mb-5 font-serif text-2xl text-foreground">Add as you run out</h3>}
               <div className="grid grid-cols-[1fr_5.5rem] items-center gap-4 sm:grid-cols-[1fr_7rem] sm:gap-6">
               <div>
               <p className="font-serif text-xl text-foreground">
                 {s.category}
+                {s.startHere && <span className="ml-2 align-middle text-[0.6rem] font-medium uppercase tracking-widest text-foreground/65">Start here</span>}
                 {s.optional && <span className="ml-2 align-middle text-[0.6rem] font-medium uppercase tracking-widest text-foreground/50">Optional</span>}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-foreground/75">{s.reason}</p>

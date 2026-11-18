@@ -2,6 +2,7 @@ import { CheckCircle2, Circle, Moon } from 'lucide-react';
 import type { CheckIn, MapContext, MapDay, RoutineProgress } from '../../lib/routineMapTypes';
 import { CheckInForm } from './CheckInForm';
 import { KIND_LABEL, formatDate, getCheckInSlots } from './mapUtils';
+import { getUseWhatYouOwnNotes } from '../../lib/shelfPriorities';
 
 interface Props {
   day: MapDay;
@@ -35,6 +36,8 @@ export function DayDetail({ day, today, context, progress, canSave, onToggleComp
       {day.optionalAlternative && <details className="rm-panel-blue mt-5 p-5">
         <summary className="rm-small cursor-pointer font-medium">{day.optionalAlternative.title}</summary>
         <p className="rm-small mt-3">{day.optionalAlternative.detail}</p>
+        {getUseWhatYouOwnNotes(context, day.optionalAlternative.title).map(note =>
+          <p key={note} className="rm-small mt-2 italic text-foreground/65">{note}</p>)}
       </details>}
 
       {day.steps.length > 0 ? (
@@ -45,6 +48,8 @@ export function DayDetail({ day, today, context, progress, canSave, onToggleComp
               <li key={`${s.title}-${i}`}>
                 <p className="text-[0.95rem] font-medium">{s.title}</p>
                 <p className="rm-small mt-1">{s.detail}</p>
+                {getUseWhatYouOwnNotes(context, `${s.title} ${s.detail}`).map(note =>
+                  <p key={note} className="rm-small mt-2 italic text-foreground/65">{note}</p>)}
               </li>
             ))}
           </ol>
@@ -64,6 +69,8 @@ export function DayDetail({ day, today, context, progress, canSave, onToggleComp
               <li key={`${l.title}-${i}`}>
                 <p className="text-sm font-medium">{l.title}</p>
                 <p className="rm-small">{l.detail}</p>
+                {getUseWhatYouOwnNotes(context, `${l.title} ${l.detail}`).map(note =>
+                  <p key={note} className="rm-small mt-2 italic text-foreground/65">{note}</p>)}
               </li>
             ))}
           </ul>

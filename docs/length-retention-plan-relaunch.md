@@ -6,6 +6,27 @@ deployment are part of preparing this change.
 
 ## What changed
 
+### Follow-up prepared after the original review was merged
+
+- The paid shelf now starts with **Start here**: the person's existing plan
+  shampoo, conditioner, and one moisture/strength mask, using the plan's
+  selected products rather than adding any new recommendations. If both masks
+  are present, the starting focus and reported protein tolerance prioritize one.
+  Everything else appears under **Add as you run out**; optional items stay optional.
+- A warm, guilt-free note says to keep using suitable products already owned
+  and replace them as they run out. Named calendar steps include gentle
+  category-specific alternatives. Unknown protein/repair products do **not**
+  inherit the recommended product's dose, timing or treatment spacing.
+- Mask-free fallback: the current professional-care plan deliberately contains
+  only gentle shampoo, conditioner and leave-in. Its third starting item is
+  the existing leave-in, explicitly explained as care, **not** a new mask or
+  treatment for shedding. No intensive product is added to satisfy a list.
+- The free shelf teaser marks those same three categories as **Start here**,
+  without sending product names, identifiers, brands, images, links or steps.
+- This follow-up does not change recommendation selection, calendar scheduling,
+  account progress keys, medical guidance, Stripe, prices, promotions or checkout.
+  It introduces no database migration.
+
 - The offer is now **Your 30-Day Length Retention Plan**, under The Growth Edit,
   with **Get my 30-day plan** as the results-page purchase button.
 - Free results retain starting focus, observations, answer explanations, the

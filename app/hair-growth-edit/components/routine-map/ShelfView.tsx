@@ -1,23 +1,15 @@
 import { ArrowUpRight } from 'lucide-react';
 import type { MapContext } from '../../lib/routineMapTypes';
 import { getProductGuidance } from '../../lib/productGuidance';
-import { orderShelf } from '../../lib/shelfPersonalization';
+import { getShelfGroups, START_HERE_NOTE } from '../../lib/shelfPriorities';
 
 export function ShelfView({ context }: { context: MapContext }) {
-  const steps = orderShelf(context.routine);
+  const groups = getShelfGroups(context);
+  const steps = [...groups.startHere, ...groups.addAsYouRunOut];
   return (
     <section aria-labelledby="rm-shelf-h" data-testid="routine-map-shelf">
       <p className="rm-kicker">What you’ll reach for</p>
       <h2 id="rm-shelf-h" className="rm-serif mt-2 text-3xl md:text-4xl">My shelf</h2>
-
-      <div className="rm-panel-sage mt-8 p-6 md:p-8" data-testid="start-with-what-you-own">
-        <h3 className="rm-serif text-2xl">Start with what you own</h3>
-        <div className="rm-body mt-3 space-y-3">
-          <p>This isn’t a shopping cart. If a shampoo, conditioner or leave-in you already have suits your hair, keep using it in that role—an equivalent product in the same step, not a duplicate alongside it.</p>
-          <p>Follow each label’s directions. We can’t promise that ingredients we haven’t seen will agree with your hair or scalp, so introduce anything new one at a time.</p>
-          <p>{context.hasSevereRedFlag ? 'Keep to the gentle roles shown here. No scalp serum, exfoliating scrub or repair mask is part of this interim plan. Ask your professional before introducing scalp actives, and let their advice override this shelf.' : 'Skip a second mask or a second leave-in if you already have one doing that job, and never stack treatments in the same wash.'}</p>
-        </div>
-      </div>
 
       <div className="mt-12 space-y-8">
         {steps.map((step, index) => {
@@ -25,8 +17,15 @@ export function ShelfView({ context }: { context: MapContext }) {
           const p = step.product;
           return (
             <div key={p.id}>
-            {g.optional && (index === 0 || !getProductGuidance(steps[index - 1], context).optional) &&
-              <h3 className="rm-kicker mb-5">Optional extras</h3>}
+            {index === 0 && <div className="mb-6 max-w-2xl" data-testid="shelf-start-here">
+              <h3 className="rm-serif text-3xl">Start here</h3>
+              <p className="rm-body mt-3">{START_HERE_NOTE}</p>
+              {groups.fallbackNote && <p className="rm-small mt-3">{groups.fallbackNote}</p>}
+            </div>}
+            {index === groups.startHere.length && <div className="mb-6">
+              <h3 className="rm-serif text-3xl">Add as you run out</h3>
+              <p className="rm-small mt-2">There’s no rush to replace what’s working. Optional extras are still optional.</p>
+            </div>}
             <article className="rm-panel overflow-hidden" data-testid={`map-shelf-${p.id}`}>
               <div className="grid md:grid-cols-[15rem_1fr]">
                 <div className="flex items-center justify-center bg-[hsl(38_34%_96%)] p-6">
@@ -57,6 +56,14 @@ export function ShelfView({ context }: { context: MapContext }) {
             </div>
           );
         })}
+      </div>
+      <div className="rm-panel-sage mt-8 p-6 md:p-8" data-testid="start-with-what-you-own">
+        <h3 className="rm-serif text-2xl">Start with what you own</h3>
+        <div className="rm-body mt-3 space-y-3">
+          <p>This isn’t a shopping cart. If a shampoo, conditioner or leave-in you already have suits your hair, keep using it in that role—an equivalent product in the same step, not a duplicate alongside it.</p>
+          <p>Follow each label’s directions. We can’t promise that ingredients we haven’t seen will agree with your hair or scalp, so introduce anything new one at a time.</p>
+          <p>{context.hasSevereRedFlag ? 'Keep to the gentle roles shown here. No scalp serum, exfoliating scrub or repair mask is part of this interim plan. Ask your professional before introducing scalp actives, and let their advice override this shelf.' : 'Skip a second mask or a second leave-in if you already have one doing that job, and never stack treatments in the same wash.'}</p>
+        </div>
       </div>
     </section>
   );
