@@ -11,7 +11,7 @@ export const ROUTINE_SALES_COPY = {
         "Your Growth Edit turns your answers into a clear routine: what to use, what to skip, and when. Know how your products fit together before buying more.",
     planScope: "Your wash days, treatment days, and first 30 days—mapped out.",
     launchReason: "Founding price · First 100 purchases",
-    cta: "Get My Personalized Routine",
+    cta: "Get my 30-day plan",
     freeVsPaid:
         "Your free assessment shows where to start. Your Growth Edit shows how to follow through: product order, wash and treatment timing, and what to change next.",
     shelfNote:
@@ -19,8 +19,16 @@ export const ROUTINE_SALES_COPY = {
 } as const;
 
 export const ROUTINE_OFFER = {
-    title: "Your Personalized Routine",
-    label: "Your Growth Edit · Weekly Plan + First 30 Days",
+    title: "Your 30-Day Length Retention Plan",
+    label: "The Growth Edit · Your 30-Day Length Retention Plan",
+    purchaseBullets: [
+        "A list of product recommendations based on your quiz answers",
+        "What to skip, and which combinations to avoid",
+        "Exactly what your first wash should look like",
+        "How to tell if your routine is working for you",
+        "What to stop when something doesn't feel right",
+        "The progress you should feel over the next 30 days",
+    ],
     value: "Skip months of trial and error with the exact order, cadence, and what not to combine—based on the answers you just gave.",
     launchReason: "Founding launch pricing while we collect first-30-day wins.",
     reassurance: "Instant access. Built from your answers.",

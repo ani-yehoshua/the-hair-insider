@@ -97,9 +97,7 @@ export async function POST(req: Request) {
                 primaryCause: results.primaryCause,
                 behaviorToStop: results.behaviorToStop,
                 hasSevereRedFlag: results.hasSevereRedFlag,
-                products: [results.product1, results.product2]
-                    .filter((product): product is NonNullable<typeof product> => Boolean(product))
-                    .map((product) => ({ name: product.name, brand: product.brand, link: product.link })),
+                products: [],
             },
             token,
         );

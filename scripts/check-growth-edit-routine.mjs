@@ -232,13 +232,14 @@ const loading = renderToStaticMarkup(
 assert.ok(!loading.includes("inclusions-price"));
 const client = fs.readFileSync(path.join(app, "GrowthEditClient.tsx"), "utf8");
 assert.ok(client.includes("hasCompleteRoutineAnswers("));
-for (const prop of [
-    "reportedDensityChange",
-    "firstRecommendation",
-    "secondRecommendation",
-    "hasSevereRedFlag",
+const buyer = fs.readFileSync(path.join(app, "components/BuyerGuide.tsx"), "utf8");
+assert.ok(client.includes("payload={paidPayload}"));
+for (const field of [
+    "reportedDensityChange: answers.density === 3",
+    "hasSevereRedFlag: r.hasSevereRedFlag",
+    "routine: r.paidRoutine",
 ])
-    assert.ok(client.includes(prop + "="));
+    assert.ok(buyer.includes(field));
 console.log(
     `Passed ${combinations} recommendation combinations, ${renders} paid-guide renders, legacy-access guards, promise matching, and live-price summary checks.`,
 );

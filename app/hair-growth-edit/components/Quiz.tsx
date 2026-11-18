@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { QUESTIONS, Option } from "../data/questions";
+import { QUESTIONS, getSelectedOption, type Option } from "../data/questions";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface QuizProps {
@@ -164,7 +164,8 @@ export function Quiz({
                     aria-label={currentQuestion.prompt}
                 >
                     {currentQuestion.options.map((option, index) => {
-                        const isSelected = currentAnswer === index;
+                        const value = option.value ?? index;
+                        const isSelected = (getSelectedOption(currentQuestion, currentAnswer)?.value ?? currentAnswer) === value;
                         const hasIcon =
                             currentQuestion.id === "pattern" && index < 4;
 
@@ -174,7 +175,7 @@ export function Quiz({
                                 type="button"
                                 role="radio"
                                 aria-checked={isSelected}
-                                onClick={() => handleSelect(index)}
+                                onClick={() => handleSelect(value)}
                                 className={`group flex w-full items-center justify-between border px-5 py-4 text-left transition-colors duration-200 md:px-6 md:py-5 rounded-2xl ${
                                     isSelected
                                         ? "border-foreground bg-foreground text-background"

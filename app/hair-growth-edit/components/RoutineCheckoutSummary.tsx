@@ -21,7 +21,7 @@ export function RoutineCheckoutSummary({
             data-testid="routine-checkout-summary"
         >
             <p className="pr-8 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                {ROUTINE_SALES_COPY.brand} · Your personalized routine
+                {ROUTINE_SALES_COPY.brand} · Your 30-Day Length Retention Plan
             </p>
             <h2 className="mt-2 font-serif text-2xl text-foreground">
                 {ROUTINE_OFFER.title}

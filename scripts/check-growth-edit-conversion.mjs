@@ -154,7 +154,7 @@ assert.equal(
     getStartingFocusLabel("dryness / low flexibility"),
     "dryness and flexibility",
 );
-assert.equal(ROUTINE_SALES_COPY.cta, "Get My Personalized Routine");
+assert.equal(ROUTINE_SALES_COPY.cta, "Get my 30-day plan");
 const resultsSource = fs.readFileSync(
     path.join(app, "components/Results.tsx"),
     "utf8",
@@ -321,20 +321,14 @@ for (const availability of [
     const checkout = renderToStaticMarkup(
         React.createElement(RoutineCheckoutSummary, { availability }),
     );
-    assert.ok(sales.includes("Your Personalized Routine"));
-    assert.ok(checkout.includes("Your Personalized Routine"));
-    assert.ok(sales.includes(ROUTINE_SALES_COPY.decisionLine));
+    assert.ok(sales.includes("Your 30-Day Length Retention Plan"));
+    assert.ok(checkout.includes("Your 30-Day Length Retention Plan"));
+    assert.ok(sales.includes("A list of product recommendations based on your quiz answers"));
     assert.ok(checkout.includes(ROUTINE_SALES_COPY.purchaseSummary));
     assert.match(checkout, /don’t need to buy the whole shelf/);
     assert.ok(!sales.includes("sales-personalized-why"));
-    assert.ok(
-        sales.indexOf("routine-fit-promise") > sales.indexOf("</button>"),
-    );
-    assert.ok(
-        sales.indexOf("routine-fit-promise") < sales.indexOf("cta-reassurance"),
-    );
-    assert.match(sales, /receipt within 7 days of purchase/);
-    assert.match(sales, /match your answers/);
+    assert.doesNotMatch(sales, /routine-fit-promise|receipt within 7 days of purchase/);
+    assert.match(sales, /Instant access\. Built from your answers\./);
     assert.ok(!sales.includes(ROUTINE_SALES_COPY.subhead));
     assert.ok(!checkout.includes(ROUTINE_SALES_COPY.subhead));
 }

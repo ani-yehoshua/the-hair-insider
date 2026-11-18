@@ -737,7 +737,11 @@ export default function HomeClient() {
                                                 {growthEditCourse && (
                                                     <WorkbookCard
                                                         course={
-                                                            growthEditCourse
+                                                            { ...growthEditCourse,
+                                                                title: "The Growth Edit",
+                                                                subtitle: "Your 30-Day Length Retention Plan",
+                                                                description: "Start free with your personal starting focus, a habit to reconsider, and a preview of your calendar and shelf. Your paid 30-day plan brings together your product recommendations, first wash, what to skip, signs your routine is working, what to stop, and progress checkpoints.",
+                                                            }
                                                         }
                                                         owned={ownedCourseIds.has(
                                                             growthEditCourse.id,
@@ -760,11 +764,11 @@ export default function HomeClient() {
                                                         }
                                                         onBuy={onBuy}
                                                         href="/hair-growth-edit"
-                                                        ownedCta="View My Routine →"
-                                                        buyCta="Unlock My Full Routine →"
+                                                        ownedCta="Open My 30-Day Plan →"
+                                                        buyCta="Get My 30-Day Plan →"
                                                         hidePrice
                                                         buyAsLink
-                                                        detailNote="Not sure where to start? Take the quiz first — you'll see two of your matched products free before deciding to unlock the rest."
+                                                        detailNote="Start free: your starting focus, a habit to reconsider, and a preview of your calendar and shelf. Unlock Your 30-Day Length Retention Plan when you’re ready."
                                                         promoCode={
                                                             PRODUCT_PROMO_CODES[
                                                                 "hair-growth-edit"

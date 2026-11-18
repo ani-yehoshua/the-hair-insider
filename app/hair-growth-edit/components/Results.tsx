@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { track } from "@vercel/analytics";
-import { ProductResult } from "../lib/scoring";
+import type { ProductResult } from "../lib/scoring";
 import type { RoutineStep } from "../data/recommendations";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { CheckoutSheet } from "./CheckoutSheet";
@@ -8,10 +8,11 @@ import { ROUTINE_SALES_COPY } from "../lib/routineOffer";
 import { getSalesFocus, getStartingFocusLabel } from "../lib/salesFocus";
 import { getHeatCareCallout } from "../lib/salesPersonalization";
 import { RoutineSalesCard } from "./RoutineSalesCard";
-import { NextWashPreview } from "./NextWashPreview";
+import { PersonalizedRoutineTeaser } from "./PersonalizedRoutineTeaser";
+import { ProfessionalCareNote } from "./ProfessionalCareNote";
+import type { RoutineTeaser } from "../lib/routineTeaserTypes";
 import { FounderVideoSpotlight } from "./FounderVideoSpotlight";
 import { FounderStory } from "./FounderStory";
-import { getFirstWashPlan } from "../lib/firstWash";
 import type { HairProfile } from "../data/recommendations";
 import {
     formatRegularPrice,
@@ -26,6 +27,8 @@ import {
 const GROWTH_EDIT_SLUG = "hair-growth-edit";
 
 interface ResultsProps {
+    teaser?: RoutineTeaser | null;
+    washFrequencyAssumption?: string | null;
     primaryCause: string;
     shampooFrequencyAnswer: string | null;
     observations: string[];
@@ -51,6 +54,8 @@ interface ResultsProps {
 }
 
 export function Results({
+    teaser = null,
+    washFrequencyAssumption = null,
     primaryCause,
     shampooFrequencyAnswer,
     observations,
@@ -74,14 +79,6 @@ export function Results({
     onReset,
 }: ResultsProps) {
     const displayPrice = price ?? "$–";
-    const previewPlan = hasSevereRedFlag
-        ? null
-        : getFirstWashPlan(
-              paidRoutine,
-              washFrequency,
-              shouldShampooTwice,
-              stylePreference,
-          );
     const [checkoutOpen, setCheckoutOpen] = useState(false);
     const [purchaseComplete, setPurchaseComplete] = useState(() =>
         isPurchasePendingSignIn(),
@@ -167,6 +164,7 @@ export function Results({
                         ? `You shampoo ${shampooFrequencyAnswer.toLowerCase()}`
                         : "Your Wash Days"}
                 </span>
+                {washFrequencyAssumption && <p className="mt-3 text-xs leading-relaxed text-foreground/65">{washFrequencyAssumption}</p>}
                 <p className="mt-4 max-w-2xl rounded-xl bg-sage/35 px-5 py-4 text-sm leading-relaxed text-foreground/80">
                     {leadObservation}
                 </p>
@@ -182,6 +180,7 @@ export function Results({
                         {disclaimer}
                     </p>
                 )}
+                {hasSevereRedFlag && <ProfessionalCareNote />}
                 {!hasSevereRedFlag && hasMinorRedFlag && (
                     <p className="mt-3 text-xs leading-relaxed text-foreground/70">
                         Quiz-based guidance. Persistent or worsening scalp or
@@ -203,7 +202,7 @@ export function Results({
                                         Purchase Complete
                                     </span>
                                     <h2 className="mt-2 font-serif text-2xl text-foreground md:text-3xl">
-                                        Your personalized routine is ready.
+                                        Your 30-Day Length Retention Plan is ready.
                                     </h2>
                                     <p className="mt-3 text-sm text-foreground/75">
                                         Sign in with the email you used at
@@ -221,17 +220,11 @@ export function Results({
                         ) : (
                             <>
                                 <FounderVideoSpotlight />
+                                {teaser && <PersonalizedRoutineTeaser teaser={teaser} />}
                                 <RoutineSalesCard
                                     availability={availability}
                                     primaryCause={primaryCause}
                                     answers={answers}
-                                    preview={
-                                        previewPlan && (
-                                            <NextWashPreview
-                                                plan={previewPlan}
-                                            />
-                                        )
-                                    }
                                     checkoutAction={
                                         <button
                                             type="button"
