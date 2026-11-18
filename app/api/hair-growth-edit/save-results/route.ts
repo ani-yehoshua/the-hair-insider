@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { QUESTIONS } from '@/app/hair-growth-edit/data/questions';
 import { calculateResults } from '@/app/hair-growth-edit/lib/scoring';
+import { makePublicResults } from '@/app/hair-growth-edit/lib/publicResults';
 import { firstMissingQuestionIndex } from '@/app/hair-growth-edit/lib/assessmentCompleteness';
 import {
     RESULTS_EMAIL_SUBJECT,
@@ -92,12 +93,19 @@ export async function POST(req: Request) {
         ? new Date(existing.results_email_sent_at as string).getTime()
         : 0;
     if (source === 'results' && Date.now() - lastSent > RESEND_COOLDOWN_MS) {
+        // Same category-only shelf the free results page shows; never product names.
+        let teaser = null;
+        try {
+            teaser = makePublicResults(answers).teaser;
+        } catch (e) {
+            console.error('Could not build the results teaser for the email:', e);
+        }
         const { html, text } = buildResultsEmail(
             {
                 primaryCause: results.primaryCause,
                 behaviorToStop: results.behaviorToStop,
                 hasSevereRedFlag: results.hasSevereRedFlag,
-                products: [],
+                teaser,
             },
             token,
         );
