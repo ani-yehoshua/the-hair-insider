@@ -13,7 +13,7 @@ const SLUG_TO_SUBJECT: Record<string, string> = {
     'hair-growth-bundle': "You're in, start here first",
     'hair-growth-foundations-mini-course': "You're in, here's where to start",
     'hair-growth-workbook': 'Your digital workbook is ready, start here',
-    'hair-growth-edit': 'Your Growth Edit is ready, start here',
+    'hair-growth-edit': 'Your 30-Day Length Retention Plan is ready',
 };
 
 // Temporarily paused while this specific email gets a content pass --

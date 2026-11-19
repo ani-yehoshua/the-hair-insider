@@ -35,7 +35,7 @@ export function getRoutineSummary(
             `Optional scalp serum ${compactFrequency(schedule.scalpSerum)}`,
         );
     }
-    return `Here’s your weekly routine in one glance: ${steps.join(" → ")}.`;
+    return `Here’s your routine in one glance: ${steps.join(" → ")}.`;
 }
 
 export function getRoutineSnapshot(

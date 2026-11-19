@@ -20,7 +20,7 @@ export function GET() {
         `- [Inside the course](${absoluteUrl("/inside-the-course")}): what each course covers`,
         `- [FAQ](${absoluteUrl("/faq")}): common questions about the courses and access`,
         `- [7-Day Moisture Reset](${absoluteUrl("/7-day-moisture-reset")}): free interactive guide to resetting hair moisture`,
-        `- [Hair Growth Edit](${absoluteUrl("/hair-growth-edit")}): a personalized hair routine assessment`,
+        `- [The Growth Edit](${absoluteUrl("/hair-growth-edit")}): a free hair assessment with your starting focus and a preview of your 30-day calendar and shelf; the full Your 30-Day Length Retention Plan is a one-time purchase`,
     ];
 
     if (articles.length) {

@@ -1,11 +1,5 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "git": {
-        "deploymentEnabled": {
-            "growth-edit/length-retention-plan-relaunch": false,
-            "growth-edit/plan-copy-consistency": false
-        }
-    },
     "crons": [
         {
             "path": "/api/cron/cleanup-unconfirmed-users",
