@@ -1,12 +1,10 @@
-import { ROUTINE_OFFER, ROUTINE_SALES_COPY } from "../lib/routineOffer";
+import { ROUTINE_OFFER } from "../lib/routineOffer";
 import {
     formatFoundingPrice,
     formatRegularPrice,
-    foundingReason,
     isFoundingClosed,
     type FoundingAvailability,
 } from "../lib/foundingOffer";
-import { RoutineInclusions } from "./RoutineInclusions";
 
 export function RoutineCheckoutSummary({
     availability,
@@ -20,18 +18,9 @@ export function RoutineCheckoutSummary({
             aria-label="Order summary"
             data-testid="routine-checkout-summary"
         >
-            <p className="pr-8 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-foreground/60">
-                {ROUTINE_SALES_COPY.brand} · Your 30-Day Length Retention Plan
-            </p>
-            <h2 className="mt-2 font-serif text-2xl text-foreground">
+            <h2 className="pr-8 font-serif text-2xl leading-tight text-foreground">
                 {ROUTINE_OFFER.title}
             </h2>
-            <p
-                className="mt-2 text-sm leading-relaxed text-foreground/85"
-                data-testid="purchase-summary"
-            >
-                {ROUTINE_SALES_COPY.purchaseSummary}
-            </p>
             {availability && price && (
                 <div className="mt-3">
                     <p className="flex items-baseline gap-2">
@@ -52,7 +41,7 @@ export function RoutineCheckoutSummary({
                     </p>
                     {availability.active && (
                         <p className="mt-1 text-xs leading-relaxed text-foreground/75">
-                            {foundingReason(availability)}
+                            Founding price · {Math.max(0, availability.limit - availability.claimed)} spots left
                         </p>
                     )}
                     {isFoundingClosed(availability) && (
@@ -63,35 +52,26 @@ export function RoutineCheckoutSummary({
                     )}
                 </div>
             )}
-            <p className="mt-3 text-sm leading-relaxed text-foreground/85">
-                {ROUTINE_SALES_COPY.decisionLine}
-            </p>
-            <p className="mt-2 text-xs leading-relaxed text-foreground/75">
-                {ROUTINE_SALES_COPY.planScope}
-            </p>
-            <p className="mt-2 text-xs text-foreground/75">
-                {ROUTINE_OFFER.reassurance}
-            </p>
-            <p className="mt-3 text-xs leading-relaxed text-foreground/70">
-                {ROUTINE_SALES_COPY.shelfNote}
-            </p>
+            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-foreground/85">
+                {[
+                    "Your 30-day calendar, built from your answers",
+                    "Your shelf: the 3 products to start with, and what to skip",
+                    "Check-ins so you can see it working",
+                ].map((line) => (
+                    <li key={line} className="flex items-start gap-2">
+                        <span aria-hidden="true" className="shrink-0 text-foreground/60">✓</span>
+                        <span>{line}</span>
+                    </li>
+                ))}
+            </ul>
             <p className="mt-3 text-xs leading-relaxed text-foreground/75">
-                {ROUTINE_OFFER.refundWindow}{" "}
+                Instant access · One-time payment · 7-day refund{" "}
                 <a href="/terms" target="_blank" rel="noreferrer" className="underline">
                     Terms
                 </a>
             </p>
-            <div
-                className="mt-4 border-t border-foreground/10 pt-3"
-                data-testid="routine-contents"
-            >
-                <p className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-foreground/60">
-                    Included in your routine
-                </p>
-                <RoutineInclusions price={price} />
-            </div>
-            <p className="mt-3 text-xs leading-relaxed text-foreground/65">
-                {ROUTINE_OFFER.calendarDescription}
+            <p className="mt-2 text-xs leading-relaxed text-foreground/65">
+                Products sold separately. Educational guidance, not medical advice.
             </p>
         </section>
     );

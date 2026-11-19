@@ -224,8 +224,10 @@ const checkout = renderToStaticMarkup(
         },
     }),
 );
-assert.ok(/One-time.*\$49/.test(checkout));
-assert.ok(checkout.includes(ROUTINE_OFFER.inclusions.join(" · ")));
+assert.ok(checkout.includes("$49") && checkout.includes("$69"));
+assert.ok(checkout.includes("Founding price · 96 spots left"));
+assert.ok(checkout.includes("Instant access · One-time payment · 7-day refund"));
+assert.ok(checkout.includes("Your 30-day calendar, built from your answers"));
 const loading = renderToStaticMarkup(
     createElement(RoutineCheckoutSummary, { availability: null }),
 );
