@@ -324,8 +324,10 @@ for (const availability of [
     assert.ok(sales.includes("Your 30-Day Length Retention Plan"));
     assert.ok(checkout.includes("Your 30-Day Length Retention Plan"));
     assert.ok(sales.includes("A list of product recommendations based on your quiz answers"));
-    assert.ok(checkout.includes(ROUTINE_SALES_COPY.purchaseSummary));
-    assert.match(checkout, /don’t need to buy the whole shelf/);
+    assert.ok(checkout.includes("Your shelf: the 3 products to start with, and what to skip"));
+    assert.match(checkout, /Check-ins so you can see it working/);
+    assert.ok(!checkout.includes(ROUTINE_SALES_COPY.purchaseSummary));
+    assert.doesNotMatch(checkout, /whole shelf|Included in your routine/);
     assert.ok(!sales.includes("sales-personalized-why"));
     assert.doesNotMatch(sales, /routine-fit-promise|receipt within 7 days of purchase/);
     assert.match(sales, /Instant access\. Built from your answers\./);
