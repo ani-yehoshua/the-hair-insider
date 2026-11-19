@@ -13,15 +13,35 @@ import { GuideRefundNote } from '../app/hair-growth-edit/components/GuideNotes.t
 const root = fileURLToPath(new URL('../', import.meta.url));
 const source = p => readFileSync(path.join(root, p), 'utf8');
 
-test('checkout accurately describes the daily calendar, phases and check-ins with the existing disclaimer', () => {
+test('checkout keeps only the three approved benefits, reassurance, Terms and short disclaimer', () => {
   const markup = renderToStaticMarkup(React.createElement(RoutineCheckoutSummary, { availability: null }));
-  assert.ok(markup.includes(ROUTINE_OFFER.calendarDescription));
-  assert.match(markup, /day-by-day 30-day calendar built from your answers/);
-  assert.match(markup, /three phases and progress check-ins/);
-  assert.match(markup, /not a medical diagnosis or 1:1 consultation/);
-  assert.match(markup, /One-time purchase; products are sold separately/);
-  assert.equal((markup.match(/7-day refund window for first-time purchases/g) || []).length, 1);
+  assert.match(markup, /Your 30-Day Length Retention Plan/);
+  for (const line of [
+    'Your 30-day calendar, built from your answers',
+    'Your shelf: the 3 products to start with, and what to skip',
+    'Check-ins so you can see it working',
+  ]) assert.ok(markup.includes(line));
+  assert.equal((markup.match(/<li /g) || []).length, 3);
+  assert.match(markup, /Instant access · One-time payment · 7-day refund/);
+  assert.equal((markup.match(/7-day refund/g) || []).length, 1);
+  assert.match(markup, /Products sold separately\. Educational guidance, not medical advice\./);
   assert.match(markup, /href="\/terms"/);
+  assert.doesNotMatch(markup, /Stop buying|Your quiz answers become|mapped out|whole shelf|Included in your routine|three phases|1:1 consultation/);
+});
+
+test('checkout prices and spots use live availability without inventing a loading price or closed discount', () => {
+  const offer = { claimed: 17, limit: 100, active: true, unitAmount: 5100, regularAmount: 7300, currency: 'usd' };
+  const render = availability => renderToStaticMarkup(React.createElement(RoutineCheckoutSummary, { availability }));
+  assert.match(render(offer), /\$51/);
+  assert.match(render(offer), /<s [^>]*>\$73<\/s>/);
+  assert.match(render(offer), /Founding price · 83 spots left/);
+  const closed = render({ ...offer, active:false, claimed:100, unitAmount:7300 });
+  assert.match(closed, /\$73/);
+  assert.doesNotMatch(closed, /<s |Founding price ·/);
+  assert.match(closed, /Regular pricing now applies/);
+  assert.doesNotMatch(render(null), /\$\d|spots left/);
+  assert.match(render({ ...offer, claimed:101 }), /Founding price · 0 spots left/);
+  assert.match(render({ ...offer, claimed:99 }), /Founding price · 1 spot left/);
 });
 
 test('shared inclusions match the six approved plan labels in order', () => {
