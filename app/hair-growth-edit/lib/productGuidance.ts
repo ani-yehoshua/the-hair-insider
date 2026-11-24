@@ -3,6 +3,7 @@ import { QUESTIONS, getSelectedOption } from '../data/questions.ts';
 import { OPTIONAL_PRODUCT_IDS } from './routineCalendar.ts';
 import type { MapContext, ProductGuidance } from './routineMapTypes';
 import { getShelfPersonalization } from './shelfPersonalization.ts';
+import { getShelfGroups } from './shelfPriorities.ts';
 
 function answer(context: MapContext, id: string): string {
   const question = QUESTIONS.find(q => q.id === id);
@@ -110,6 +111,6 @@ function getProductGuidanceDetails(step: RoutineStep, context: MapContext): Prod
 export function getProductGuidance(step: RoutineStep, context: MapContext): ProductGuidance {
   const guidance = getProductGuidanceDetails(step, context);
   if (context.hasSevereRedFlag) return guidance;
-  const pick = getShelfPersonalization(step, context);
+  const pick = getShelfPersonalization(step, context, getShelfGroups(context).startHere.some(s => s.product.id === step.product.id));
   return { ...guidance, why: pick.reason, evidence: pick.reason, general: !pick.answerChosen };
 }

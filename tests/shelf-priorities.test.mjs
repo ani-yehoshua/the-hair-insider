@@ -9,6 +9,8 @@ import { getProfessionalCareContext } from '../app/hair-growth-edit/lib/professi
 import { buildRoutineCalendar, getPlanKey, OPTIONAL_PRODUCT_IDS } from '../app/hair-growth-edit/lib/routineCalendar.ts';
 import { getShelfGroups, getUseWhatYouOwnNotes, START_HERE_NOTE } from '../app/hair-growth-edit/lib/shelfPriorities.ts';
 import { makePublicResults } from '../app/hair-growth-edit/lib/publicResults.ts';
+import { getProductGuidance } from '../app/hair-growth-edit/lib/productGuidance.ts';
+import { getShelfPersonalization } from '../app/hair-growth-edit/lib/shelfPersonalization.ts';
 import { ShelfView } from '../app/hair-growth-edit/components/routine-map/ShelfView.tsx';
 import { DayDetail } from '../app/hair-growth-edit/components/routine-map/DayDetail.tsx';
 import { PersonalizedRoutineTeaser } from '../app/hair-growth-edit/components/PersonalizedRoutineTeaser.tsx';
@@ -53,6 +55,12 @@ test('each answer keeps shampoo, conditioner and one existing treatment first; p
         assert.deepEqual(teaser.shelf.slice(0,3).map(s => s.category), first.map(s => s.product.category));
         assert.ok(teaser.shelf.slice(3).every(s => !s.startHere));
         assert.ok(teaser.shelf.every(s => !s.startHere || !s.optional));
+        for (const [index, startingStep] of first.entries()) {
+          const reason = teaser.shelf[index].reason;
+          assert.match(reason, /^Your starting (cleanse|conditioner|treatment|care step):/);
+          assert.doesNotMatch(reason, /not an extra need|general softening option/i);
+          assert.equal(reason, getProductGuidance(startingStep, c).why);
+        }
         for (const row of teaser.shelf) assert.deepEqual(
           Object.keys(row).sort(), ['answerChosen','category','optional','reason','startHere']);
       }
@@ -61,6 +69,19 @@ test('each answer keeps shampoo, conditioner and one existing treatment first; p
       assert.deepEqual(buildRoutineCalendar(c, '2026-11-18'), calendar);
     }
   }
+});
+
+test('default starting moisture treatment stays positive without claiming an answer-confirmed need', () => {
+  const c = { ...context(base()), focus:'product buildup',
+    answers:{ ...base(), proteinResponse:2, repairTreatmentResponse:0 } };
+  const pick = getShelfPersonalization(step('oiMask'), c, true);
+  assert.equal(pick.reason, 'Your starting treatment: a gentle moisture mask to keep your lengths soft while the rest of your routine settles in.');
+  assert.equal(pick.answerChosen, false);
+  assert.equal(pick.optional, false);
+  const sensitive = getShelfPersonalization(step('oiMask'), {
+    ...c, answers:{...c.answers,proteinResponse:1},
+  }, true);
+  assert.match(sensitive.reason, /repair treatments have left your lengths hard or rough/);
 });
 
 test('when both masks exist the focus and protein tolerance select one, leaving the other for later', () => {

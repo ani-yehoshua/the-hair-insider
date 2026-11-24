@@ -46,7 +46,7 @@ export function makePublicResults(answers: Record<string, number>) {
   const shelfGroups = getShelfGroups(context);
   const startingIds = new Set(shelfGroups.startHere.map(s => s.product.id));
   const shelf = [...shelfGroups.startHere, ...shelfGroups.addAsYouRunOut].map(step => {
-    const pick = getShelfPersonalization(step, context);
+    const pick = getShelfPersonalization(step, context, startingIds.has(step.product.id));
     return {
       category: publicText(step.product.category),
       reason: publicText(pick.reason),
