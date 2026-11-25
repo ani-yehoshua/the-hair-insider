@@ -48,8 +48,8 @@ export default function AboutClient() {
                                 what it does, and what to do about it.
                             </p>
                             <p className='text-lg leading-8'>
-                                We are education-first, product-neutral, and
-                                built around one belief: when you truly
+                                We are education-first and built around one
+                                belief: when you truly
                                 understand your hair, everything changes.
                             </p>
                         </div>

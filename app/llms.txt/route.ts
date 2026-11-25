@@ -10,7 +10,7 @@ export function GET() {
     const lines = [
         `# ${SITE_NAME}`,
         "",
-        `> ${SITE_NAME} is an education-first hair care library by ${LAUREN.name}, ${LAUREN.jobTitle.toLowerCase()}. It teaches what your hair needs and how to build a simple routine, covering hair health, growth and length retention. The site does not sell products or earn commissions on recommendations.`,
+        `> ${SITE_NAME} is an education-first hair care library by ${LAUREN.name}, ${LAUREN.jobTitle.toLowerCase()}. It teaches what your hair needs and how to build a simple routine, covering hair health, growth and length retention. The site does not sell products itself; some product links are affiliate links that may earn a commission.`,
         "",
         "## About the author",
         `- [${LAUREN.name}](${LAUREN.url}): ${LAUREN.description}`,

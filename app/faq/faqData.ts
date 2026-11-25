@@ -34,7 +34,7 @@ export const FAQ_SECTIONS = [
             },
             {
                 q: "Will I need to buy new products to follow the routines?",
-                a: "No. The courses teach you to evaluate what you already have and understand whether it's working for your hair. In most cases, people end up buying fewer products, not more. We don't sell products, and we don't earn commissions on recommendations.",
+                a: "No. The courses teach you to evaluate what you already have and understand whether it's working for your hair. In most cases, people end up buying fewer products, not more. We don't sell products ourselves. Some product links are affiliate links, so we may earn a small commission if you buy through them, at no extra cost to you, and it never decides what we recommend.",
             },
             {
                 q: "What are the downloadable guides?",
