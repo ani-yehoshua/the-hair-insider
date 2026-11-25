@@ -350,7 +350,14 @@ function WorkbookCard({
 
     return (
         <Card id={course.slug} className="rounded-3xl overflow-hidden p-0">
-            {course.cover_image_url ? (
+            {course.slug === "hair-growth-edit" ? (
+                <div className="flex aspect-[16/10] w-full flex-col justify-center gap-4 bg-muted px-7 py-8 text-foreground">
+                    <p className="text-xs uppercase tracking-[0.2em]">The Growth Edit</p>
+                    <p className="max-w-xs font-serif text-3xl leading-tight">
+                        Your 30-day plan to keep the length you grow.
+                    </p>
+                </div>
+            ) : course.cover_image_url ? (
                 <div className="relative aspect-[16/10] w-full">
                     <Image
                         src={course.cover_image_url}
@@ -497,7 +504,7 @@ function WorkbookCard({
                                     {course.description}
                                 </p>
                             )}
-                            <p className="text-xs">{detailNote}</p>
+                            {detailNote && <p className="text-xs">{detailNote}</p>}
                         </div>
                     </div>
                 </div>
@@ -740,7 +747,7 @@ export default function HomeClient() {
                                                             { ...growthEditCourse,
                                                                 title: "The Growth Edit",
                                                                 subtitle: "Your 30-Day Length Retention Plan",
-                                                                description: "Start free with your personal starting focus, a habit to reconsider, and a preview of your calendar and shelf. Your paid 30-day plan brings together your product recommendations, first wash, what to skip, signs your routine is working, what to stop, and progress checkpoints.",
+                                                                description: "Start free with your starting focus, a habit to reconsider, and a preview of your calendar and shelf. Unlock your 30-day plan when you're ready.",
                                                             }
                                                         }
                                                         owned={ownedCourseIds.has(
@@ -768,7 +775,7 @@ export default function HomeClient() {
                                                         buyCta="Get My 30-Day Plan →"
                                                         hidePrice
                                                         buyAsLink
-                                                        detailNote="Start free: your starting focus, a habit to reconsider, and a preview of your calendar and shelf. Unlock Your 30-Day Length Retention Plan when you’re ready."
+                                                        detailNote=""
                                                         promoCode={
                                                             PRODUCT_PROMO_CODES[
                                                                 "hair-growth-edit"
@@ -911,10 +918,7 @@ export default function HomeClient() {
                                             <li className="flex items-start gap-2">
                                                 <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                                                 <span>
-                                                    Build a simple, repeatable
-                                                    routine with what you
-                                                    already own, no new products
-                                                    required.
+                                                    Build a simple, repeatable routine, starting with what you already own.
                                                 </span>
                                             </li>
                                             <li className="flex items-start gap-2">
@@ -1086,8 +1090,7 @@ export default function HomeClient() {
                                         </Link>
                                     </Button>
                                     <p className="text-sm font-semibold bg-background/50 rounded-xl p-3">
-                                        Education-first &middot; Product-neutral
-                                        &middot; Built by a licensed stylist
+                                        Education-first &middot; Built by a licensed stylist
                                     </p>
                                 </div>
                             </FadeIn>

@@ -8,11 +8,14 @@ import { OPTIONAL_PRODUCT_IDS } from './routineCalendar.ts';
 const DEFAULT_PRODUCT_IDS = new Set<string>();
 
 /** Selection explanations, not new recommendation or scheduling rules. */
-export function getShelfPersonalization(step: RoutineStep, context: MapContext) {
+export function getShelfPersonalization(step: RoutineStep, context: MapContext, startHere = false) {
   const a = context.answers, id = step.product.id;
   const optional = OPTIONAL_PRODUCT_IDS.has(id);
   const result = (reason: string, answerChosen = true) => ({
-    reason, answerChosen: answerChosen && !(context.defaultProductIds ? new Set(context.defaultProductIds) : DEFAULT_PRODUCT_IDS).has(id), optional,
+    reason: startHere && !context.hasSevereRedFlag
+      ? `${/cleanse|shampoo/i.test(step.product.category) ? 'Your starting cleanse' : /conditioner/i.test(step.product.category) && !/leave-in/i.test(step.product.category) ? 'Your starting conditioner' : /mask|treatment/i.test(step.product.category) ? 'Your starting treatment' : 'Your starting care step'}: ${reason.charAt(0).toLowerCase()}${reason.slice(1)}`
+      : reason,
+    answerChosen: answerChosen && !(context.defaultProductIds ? new Set(context.defaultProductIds) : DEFAULT_PRODUCT_IDS).has(id), optional,
   });
   if (context.hasSevereRedFlag) return result(
     'Gentle care for your hair while you get professional advice—not a way to treat the cause of shedding or scalp changes.', false);
@@ -74,7 +77,7 @@ export function getShelfPersonalization(step: RoutineStep, context: MapContext) 
     case 'oiMask':
       if (a.proteinResponse === 1 || a.repairTreatmentResponse === 2) return result('Softening care, because repair treatments have left your lengths hard or rough.');
       if (/moisture|dryness|high-porosity/.test(context.focus)) return result('Extra softening care for the dryness or flexibility needs your answers pointed to.');
-      return result('A general softening option to have in your plan—not an extra need your answers confirmed.', false);
+      return result('A gentle moisture mask to keep your lengths soft while the rest of your routine settles in.', false);
     case 'detoxScrub':
       return result('A separate cleansing option, because your answers point to buildup rather than a need for more layers.');
     case 'meluShield':

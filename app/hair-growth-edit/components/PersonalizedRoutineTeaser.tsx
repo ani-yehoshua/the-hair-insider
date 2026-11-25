@@ -111,7 +111,7 @@ export function PersonalizedRoutineTeaser({ teaser }: { teaser: RoutineTeaser })
                   <div className="prt-product-cap" />
                   <div className="prt-product-bottle"><span /></div>
                 </div>
-                <p className="mt-2 text-[0.6rem] leading-snug text-foreground/65">Unlocks with your plan</p>
+                <p className="mt-2 text-[0.65rem] leading-snug text-foreground/65">Unlocks with your plan</p>
               </div>
               </div>
             </li>
